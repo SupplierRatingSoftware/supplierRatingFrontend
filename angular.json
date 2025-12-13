@@ -30,7 +30,15 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles.scss", "node_modules/bootstrap-icons/font/bootstrap-icons.css", "node_modules/bootstrap/dist/css/bootstrap.min.css"],
+            "styles": [
+              "src/styles.scss",
+              "node_modules/bootstrap-icons/font/bootstrap-icons.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss",
+              "node_modules/@fortawesome/fontawesome-free/scss/regular.scss",
+              "node_modules/@fortawesome/fontawesome-free/scss/solid.scss",
+              "node_modules/@fortawesome/fontawesome-free/scss/brands.scss"
+            ],
             "scripts": ["node_modules/bootstrap/dist/js/bootstrap.min.js", "node_modules/@popperjs/core/dist/umd/popper.min.js"]
           },
           "configurations": {
