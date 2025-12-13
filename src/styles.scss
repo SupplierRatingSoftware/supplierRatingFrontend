@@ -1,9 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
-@use 'bootstrap/scss/bootstrap';
+@use "bootstrap/scss/bootstrap";
 @use "bootstrap-icons/font/bootstrap-icons.scss";
-$fa-font-path: 'fontawesome-free/webfonts';
-@use 'fontawesome-free/scss/fontawesome.scss';
-@use 'fontawesome-free/scss/regular.scss';
-@use 'fontawesome-free/scss/solid.scss';
-@use 'fontawesome-free/scss/brands.scss';
-
+$fa-font-path: "fontawesome-free/webfonts";
+@use "fontawesome-free/scss/fontawesome.scss";
+@use "fontawesome-free/scss/regular.scss";
+@use "fontawesome-free/scss/solid.scss";
+@use "fontawesome-free/scss/brands.scss";
