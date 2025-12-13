@@ -38,8 +38,7 @@
               "node_modules/@fortawesome/fontawesome-free/scss/regular.scss",
               "node_modules/@fortawesome/fontawesome-free/scss/solid.scss",
               "node_modules/@fortawesome/fontawesome-free/scss/brands.scss"
-            ],
-            "scripts": ["node_modules/bootstrap/dist/js/bootstrap.min.js", "node_modules/@popperjs/core/dist/umd/popper.min.js"]
+            ]
           },
           "configurations": {
             "production": {
