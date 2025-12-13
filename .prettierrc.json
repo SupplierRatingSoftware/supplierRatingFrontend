@@ -10,10 +10,7 @@
   "printWidth": 100,
   "overrides": [
     {
-      "files": [
-        "*.html",
-        "*.ts"
-      ],
+      "files": ["*.html", "*.ts"],
       "options": {
         "printWidth": 120
       }
