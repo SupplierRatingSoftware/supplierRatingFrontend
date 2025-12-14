@@ -1,0 +1,14 @@
+<div id="theme-switcher">
+  <input
+    type="checkbox"
+    class="checkbox"
+    id="chk"
+    [checked]="isDarkMode"
+    (change)="toggleTheme($event)"/>
+  <label class="label" for="chk">
+    <i class="bi bi-moon-fill fa-moon"></i>
+    <i class="bi bi-sun-fill fa-sun"></i>
+    <span class="ball"></span>
+  </label>
+</div>
+
