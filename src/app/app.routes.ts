@@ -1,18 +1,10 @@
 import {Routes} from '@angular/router';
-import {Component} from '@angular/core';
 import {LoginComponent} from './pages/login/login.component';
 import {MainLayoutComponent} from './layout/main-layout/main-layout.component';
-
-// This component renders INSIDE the MainLayoutComponent's <router-outlet>
-@Component({
-  template: `
-    <div class="p-4">
-      <h1>Dashboard Works!</h1>
-      <p>This is the content area.</p>
-    </div>
-  `
-})
-export class DashboardPlaceholder {}
+import {DashboardComponent} from './pages/dashboard/dashboard.component';
+import {RatingsComponent} from './pages/ratings/ratings.component';
+import {SuppliersComponent} from './pages/suppliers/suppliers.component';
+import {OrdersComponent} from './pages/orders/orders.component';
 
 export const routes: Routes = [
   // 1. Redirect root URL
@@ -26,8 +18,10 @@ export const routes: Routes = [
     path: 'main',
     component: MainLayoutComponent,
     children: [
-      { path: "dashboard", component: DashboardPlaceholder },
-      // Later: { path: 'lieferanten', component: LieferantenComponent }, etc.
+      { path: "dashboard", component: DashboardComponent },
+      { path: "orders", component: OrdersComponent },
+      { path: "suppliers", component: SuppliersComponent },
+      { path: "ratings", component: RatingsComponent },
     ]
   }
 ];
