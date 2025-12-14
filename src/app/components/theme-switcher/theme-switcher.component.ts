@@ -24,8 +24,8 @@ export class ThemeSwitcherComponent implements OnInit {
   }
 
   toggleTheme(event: Event): void {
-    const isChecked = (event.target as HTMLInputElement).checked;
-    this.isDarkMode = isChecked;
+    this.isDarkMode = (event.target as HTMLInputElement).checked;
+
     const newTheme = this.isDarkMode ? 'dark' : 'light';
 
     // Setzt das Attribut am <html> Tag
