@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit, Renderer2} from '@angular/core';
+import {Component, inject, OnInit, Renderer2} from '@angular/core';
 import {DOCUMENT} from '@angular/common';
 
 @Component({
@@ -7,12 +7,10 @@ import {DOCUMENT} from '@angular/common';
   styleUrl: './theme-switcher.component.scss' // oder .css, je nachdem was generiert wurde
 })
 export class ThemeSwitcherComponent implements OnInit {
-  isDarkMode = false;
+  private document = inject<Document>(DOCUMENT);
+  private renderer = inject(Renderer2);
 
-  constructor(
-    @Inject(DOCUMENT) private document: Document,
-    private renderer: Renderer2 // Angular-way um DOM zu manipulieren
-  ) {}
+  isDarkMode = false;
 
   ngOnInit(): void {
     // Beim Starten prüfen, welches Theme aktiv ist
