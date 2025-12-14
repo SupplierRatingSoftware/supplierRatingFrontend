@@ -1,0 +1,32 @@
+# Ignore Paths
+
+## Build output
+dist
+.angular
+
+## Dependencies
+node_modules
+
+## IDE and Tooling Configuration
+.idea
+.vscode
+.github
+.gemini
+.claude
+.junie
+
+## Project and Package Files
+package.json
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+## Configuration Files
+.eslintrc.json
+tsconfig.json
+angular.json
+lint-*
+
+## Miscellaneous
+public
+coverage
