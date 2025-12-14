@@ -4,19 +4,25 @@
     <button class="btn ms-auto" (click)="toggleSidebar()">
       @if (isCollapsed()) {
         <i class="bi bi-chevron-right"></i>
-      } @else { <i class="bi bi-chevron-left"></i> }
+      } @else {
+        <i class="bi bi-chevron-left"></i>
+      }
     </button>
   </div>
 
   <ul class="nav nav-pills flex-column mb-auto mt-3">
     <li class="nav-item">
-      <a [routerLink]="['/', baseRoute, 'dashboard']" routerLinkActive="active" class="nav-link text-white" aria-current="page">
+      <a
+        [routerLink]="['/', baseRoute, 'dashboard']"
+        routerLinkActive="active"
+        class="nav-link text-white"
+        aria-current="page">
         <i class="bi bi-speedometer2 me-2"></i>
         <span class="sidebar-text">Dashboard</span>
       </a>
     </li>
     <li>
-      <a [routerLink]="['/', baseRoute, 'orders']"  class="nav-link text-white">
+      <a [routerLink]="['/', baseRoute, 'orders']" class="nav-link text-white">
         <i class="bi bi-box-seam me-2"></i>
         <span class="sidebar-text">Bestellungen</span>
       </a>
@@ -35,18 +41,22 @@
     </li>
   </ul>
 
-  <hr>
+  <hr />
 
   <div class="dropdown" ngbDropdown>
-    <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
-       id="dropdownUser1" ngbDropdownToggle role="button" style="cursor: pointer">
-      <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
+    <a
+      class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+      id="dropdownUser1"
+      ngbDropdownToggle
+      role="button"
+      style="cursor: pointer">
+      <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2" />
       <strong class="sidebar-text">Testuser</strong>
     </a>
     <ul ngbDropdownMenu class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser1">
       <li><a class="dropdown-item" href="#">Settings</a></li>
       <li>
-        <hr class="dropdown-divider">
+        <hr class="dropdown-divider" />
       </li>
       <li><a class="dropdown-item" href="#">Sign out</a></li>
     </ul>

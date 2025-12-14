@@ -8,7 +8,7 @@ import {AppRoutes} from '../../app.routes.config';
   imports: [RouterLink, RouterLinkActive, NgbDropdownModule],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidebarComponent {
   // Global base-routing

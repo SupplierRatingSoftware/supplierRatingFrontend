@@ -1,9 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
-@use "bootstrap/scss/bootstrap";
-@use "bootstrap-icons/font/bootstrap-icons.scss";
+@use 'bootstrap/scss/bootstrap';
+@use 'bootstrap-icons/font/bootstrap-icons.scss';
 
 /* Wechselt das Logo basierend auf dem data-bs-theme Attribut */
-[data-bs-theme="dark"] .theme-aware-logo {
+[data-bs-theme='dark'] .theme-aware-logo {
   /* Tauscht die Bildquelle aus, wenn das Theme dunkel ist */
   content: url('../public/brand-logo/empa_logo_dark.png');
 }

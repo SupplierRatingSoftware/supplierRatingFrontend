@@ -19,10 +19,10 @@ export const routes: Routes = [
     path: AppRoutes.BASE,
     component: MainLayoutComponent,
     children: [
-      { path: "dashboard", component: DashboardComponent },
-      { path: "orders", component: OrdersComponent },
-      { path: "suppliers", component: SuppliersComponent },
-      { path: "ratings", component: RatingsComponent },
-    ]
-  }
+      { path: 'dashboard', component: DashboardComponent },
+      { path: 'orders', component: OrdersComponent },
+      { path: 'suppliers', component: SuppliersComponent },
+      { path: 'ratings', component: RatingsComponent },
+    ],
+  },
 ];

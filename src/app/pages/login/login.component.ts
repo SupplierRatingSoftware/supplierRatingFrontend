@@ -3,12 +3,8 @@ import {ThemeSwitcherComponent} from '../../components/theme-switcher/theme-swit
 
 @Component({
   selector: 'app-login',
-  imports: [
-    ThemeSwitcherComponent
-  ],
+  imports: [ThemeSwitcherComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
-export class LoginComponent {
-
-}
+export class LoginComponent {}

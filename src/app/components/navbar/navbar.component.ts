@@ -3,12 +3,8 @@ import {ThemeSwitcherComponent} from '../theme-switcher/theme-switcher.component
 
 @Component({
   selector: 'app-navbar',
-  imports: [
-    ThemeSwitcherComponent
-  ],
+  imports: [ThemeSwitcherComponent],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
 })
-export class NavbarComponent {
-
-}
+export class NavbarComponent {}

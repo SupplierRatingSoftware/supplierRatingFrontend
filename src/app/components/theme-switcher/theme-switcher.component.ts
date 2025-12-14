@@ -4,7 +4,7 @@ import {DOCUMENT} from '@angular/common';
 @Component({
   selector: 'app-theme-switcher',
   templateUrl: './theme-switcher.component.html',
-  styleUrl: './theme-switcher.component.scss' // oder .css, je nachdem was generiert wurde
+  styleUrl: './theme-switcher.component.scss', // oder .css, je nachdem was generiert wurde
 })
 export class ThemeSwitcherComponent implements OnInit {
   private document = inject<Document>(DOCUMENT);
@@ -29,4 +29,3 @@ export class ThemeSwitcherComponent implements OnInit {
     this.renderer.setAttribute(this.document.documentElement, 'data-bs-theme', newTheme);
   }
 }
-
