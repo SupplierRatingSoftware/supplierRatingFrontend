@@ -1,6 +1,7 @@
 import {ChangeDetectionStrategy, Component, signal} from '@angular/core';
 import {RouterLink, RouterLinkActive} from '@angular/router';
-import {NgbDropdownModule} from '@ng-bootstrap/ng-bootstrap'; // Für das Dropdown
+import {NgbDropdownModule} from '@ng-bootstrap/ng-bootstrap';
+import {AppRoutes} from '../../app.routes.config';
 
 @Component({
   selector: 'app-sidebar',
@@ -10,7 +11,10 @@ import {NgbDropdownModule} from '@ng-bootstrap/ng-bootstrap'; // Für das Dropdo
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SidebarComponent {
-  // Signal für den Collapsed-Status (Standard: false/nicht eingeklappt)
+  // Global base-routing
+  protected readonly baseRoute = AppRoutes.BASE;
+
+  // Signal for the collapsed status (Standard: false/not collapsed)
   isCollapsed = signal(false);
 
   toggleSidebar() {

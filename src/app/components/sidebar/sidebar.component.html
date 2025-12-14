@@ -10,25 +10,25 @@
 
   <ul class="nav nav-pills flex-column mb-auto mt-3">
     <li class="nav-item">
-      <a routerLink="/dashboard" routerLinkActive="active" class="nav-link text-white" aria-current="page">
+      <a [routerLink]="['/', baseRoute, 'dashboard']" routerLinkActive="active" class="nav-link text-white" aria-current="page">
         <i class="bi bi-speedometer2 me-2"></i>
         <span class="sidebar-text">Dashboard</span>
       </a>
     </li>
     <li>
-      <a routerLink="/orders"  class="nav-link text-white">
+      <a [routerLink]="['/', baseRoute, 'orders']"  class="nav-link text-white">
         <i class="bi bi-box-seam me-2"></i>
         <span class="sidebar-text">Bestellungen</span>
       </a>
     </li>
     <li>
-      <a routerLink="/suppliers" class="nav-link text-white">
+      <a [routerLink]="['/', baseRoute, 'suppliers']" class="nav-link text-white">
         <i class="bi bi-people me-2"></i>
         <span class="sidebar-text">Lieferanten</span>
       </a>
     </li>
     <li>
-      <a routerLink="/ratings" class="nav-link text-white">
+      <a [routerLink]="['/', baseRoute, 'ratings']" class="nav-link text-white">
         <i class="bi bi-star me-2"></i>
         <span class="sidebar-text">Bewertungen</span>
       </a>
