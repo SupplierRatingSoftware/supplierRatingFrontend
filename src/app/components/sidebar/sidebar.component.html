@@ -1,0 +1,54 @@
+<aside class="sidebar d-flex flex-column flex-shrink-0 p-3 h-100" [class.collapsed]="isCollapsed()">
+  <div class="d-flex align-items-center text-white">
+    <span class="fs-4 sidebar-text">Menü</span>
+    <button class="btn ms-auto" (click)="toggleSidebar()">
+      @if (isCollapsed()) {
+        <i class="bi bi-chevron-right"></i>
+      } @else { <i class="bi bi-chevron-left"></i> }
+    </button>
+  </div>
+
+  <ul class="nav nav-pills flex-column mb-auto mt-3">
+    <li class="nav-item">
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-link text-white" aria-current="page">
+        <i class="bi bi-speedometer2 me-2"></i>
+        <span class="sidebar-text">Dashboard</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/orders"  class="nav-link text-white">
+        <i class="bi bi-box-seam me-2"></i>
+        <span class="sidebar-text">Bestellungen</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/suppliers" class="nav-link text-white">
+        <i class="bi bi-people me-2"></i>
+        <span class="sidebar-text">Lieferanten</span>
+      </a>
+    </li>
+    <li>
+      <a routerLink="/ratings" class="nav-link text-white">
+        <i class="bi bi-star me-2"></i>
+        <span class="sidebar-text">Bewertungen</span>
+      </a>
+    </li>
+  </ul>
+
+  <hr>
+
+  <div class="dropdown" ngbDropdown>
+    <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+       id="dropdownUser1" ngbDropdownToggle role="button" style="cursor: pointer">
+      <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
+      <strong class="sidebar-text">Testuser</strong>
+    </a>
+    <ul ngbDropdownMenu class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser1">
+      <li><a class="dropdown-item" href="#">Settings</a></li>
+      <li>
+        <hr class="dropdown-divider">
+      </li>
+      <li><a class="dropdown-item" href="#">Sign out</a></li>
+    </ul>
+  </div>
+</aside>

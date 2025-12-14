@@ -1,0 +1,88 @@
+.sidebar {
+  width: 240px;
+  transition: width 0.3s ease;
+  position: relative;
+  background-color: var(--bs-tertiary-bg);
+}
+
+.sidebar.collapsed {
+  width: 80px;
+}
+
+.sidebar-text {
+  white-space: nowrap;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.1s ease-in-out 0.1s;
+  color: var( --bs-body-color);
+}
+
+.sidebar.collapsed .sidebar-text {
+  white-space: nowrap;
+  opacity: 0;
+  display: none;
+  transition-delay: 0s;
+}
+
+#sidebar-toggle {
+  background-color: transparent;
+  border: none;
+  color: var(--bs-body-color-rgb);
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.sidebar.collapsed #sidebar-toggle {
+  right: auto;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.sidebar.collapsed .nav {
+  padding-top: 1rem;
+}
+
+.sidebar .nav-link {
+  /* Use body color with some transparency for non-active links */
+  color: rgba(var(--bs-body-color-rgb), 0.7);
+  margin: 0.25rem 0.5rem;
+  padding: 0.75rem 1rem;
+}
+
+.sidebar.collapsed .nav-link {
+  margin: 0.25rem auto;
+  padding: 0.75rem;
+}
+
+.sidebar .nav-link.active,
+.sidebar .nav-link:hover {
+  background-color: var(--bs-secondary-bg);
+  color: var(--bs-body-color-rgb);
+  border-radius: 50rem;
+}
+
+aside i {
+  color: var(--bs-emphasis-color);
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 80px;
+  }
+  .sidebar .sidebar-text {
+    display: none;
+  }
+  .sidebar .nav {
+    padding-top: 1rem;
+  }
+  .sidebar #sidebar-toggle {
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .sidebar .nav {
+    padding-top: 1rem;
+  }
+}
