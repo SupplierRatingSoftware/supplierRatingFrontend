@@ -3,7 +3,6 @@ import {DOCUMENT} from '@angular/common';
 
 @Component({
   selector: 'app-theme-switcher',
-  standalone: true,
   templateUrl: './theme-switcher.component.html',
   styleUrl: './theme-switcher.component.scss' // oder .css, je nachdem was generiert wurde
 })
