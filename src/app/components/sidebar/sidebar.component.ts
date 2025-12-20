@@ -11,11 +11,10 @@ import {AppRoutes} from '../../app.routes.config';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidebarComponent {
-  // Global base-routing
-  protected readonly baseRoute = AppRoutes.BASE;
-
   // Signal for the collapsed status (Standard: false/not collapsed)
   isCollapsed = signal(false);
+  // Global base-routing
+  protected readonly baseRoute = AppRoutes.BASE;
 
   toggleSidebar() {
     this.isCollapsed.update(value => !value);

@@ -7,10 +7,9 @@ import {DOCUMENT} from '@angular/common';
   styleUrl: './theme-switcher.component.scss', // oder .css, je nachdem was generiert wurde
 })
 export class ThemeSwitcherComponent implements OnInit {
+  isDarkMode = false;
   private document = inject<Document>(DOCUMENT);
   private renderer = inject(Renderer2);
-
-  isDarkMode = false;
 
   ngOnInit(): void {
     // Beim Starten prüfen, welches Theme aktiv ist
