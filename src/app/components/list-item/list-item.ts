@@ -15,4 +15,12 @@ export class ListItem {
    */
   protected readonly UserStar = UserStar;
   protected readonly Pencil = Pencil;
+
+  protected openModal() {
+    console.log('open modal');
+  }
+
+  protected editSupplier() {
+    console.log('edit supplier');
+  }
 }
