@@ -1,7 +1,7 @@
-import {ChangeDetectionStrategy, Component, signal} from '@angular/core';
-import {RouterLink, RouterLinkActive} from '@angular/router';
-import {NgbDropdownModule} from '@ng-bootstrap/ng-bootstrap';
-import {AppRoutes} from '../../app.routes.config';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { AppRoutes } from '../../app.routes.config';
 
 @Component({
   selector: 'app-sidebar',
