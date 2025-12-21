@@ -1,0 +1,13 @@
+.supplier-card {
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--bs-box-shadow-lg) !important;
+  }
+}
+
+button:hover {
+  background-color: var(--bs-secondary-bg);
+}
