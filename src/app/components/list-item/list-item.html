@@ -1,0 +1,24 @@
+<li>
+  <div class="list-card d-flex align-items-center mt-2 mb-2 p-2 rounded-4 shadow bg-body-tertiary border">
+    <button
+      type="button"
+      class="d-flex align-items-center flex-grow-1 border-0 bg-transparent p-0 text-start text-body"
+      (click)="openModal()">
+      <i-lucide
+        [img]="UserStar"
+        [size]="36"
+        [strokeWidth]="1.5"
+        class="flex-grow-0 ps-2 me-2"
+        aria-hidden="true"></i-lucide>
+      <p class="m-0 ms-2 flex-grow-1">{{ supplierName }}</p>
+    </button>
+    <button
+      id="editBtn"
+      type="button"
+      class="btn align-items-center border border-1 rounded-3 me-2 ms-2"
+      aria-label="Bearbeiten"
+      (click)="editSupplier()">
+      <i-lucide [img]="Pencil" [size]="18" [strokeWidth]="1.5" aria-hidden="true"></i-lucide>
+    </button>
+  </div>
+</li>
