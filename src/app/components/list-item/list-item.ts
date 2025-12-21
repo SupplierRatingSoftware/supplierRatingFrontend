@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { LucideAngularModule, UserStar } from 'lucide-angular';
+import { LucideAngularModule, Pencil, UserStar } from 'lucide-angular';
 
 @Component({
   selector: 'app-list-item',
@@ -9,8 +9,9 @@ import { LucideAngularModule, UserStar } from 'lucide-angular';
 })
 export class ListItem {
   /**
-   * Lucide Icon
+   * Lucide Icons
    * @protected
    */
   protected readonly UserStar = UserStar;
+  protected readonly Pencil = Pencil;
 }
