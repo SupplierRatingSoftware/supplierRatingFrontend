@@ -15,6 +15,7 @@ export class ListItem {
    */
   protected readonly UserStar = UserStar;
   protected readonly Pencil = Pencil;
+  protected supplierName: string = 'Lieferant X';
 
   protected openModal() {
     console.log('open modal');
