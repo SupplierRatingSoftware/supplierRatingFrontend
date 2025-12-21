@@ -1,4 +1,4 @@
-<aside [class.collapsed]="isCollapsed()" class="sidebar d-flex flex-column flex-shrink-0 p-3 h-100">
+<aside [class.collapsed]="isCollapsed()" class="sidebar d-flex flex-column flex-shrink-0 p-3 h-100 shadow">
   <div class="d-flex align-items-center text-white">
     <span class="fs-4 sidebar-text">Menü</span>
     <button (click)="toggleSidebar()" class="btn ms-auto">
@@ -31,6 +31,12 @@
       <a [routerLink]="['/', baseRoute, 'suppliers']" class="nav-link text-white">
         <i class="bi bi-people me-2"></i>
         <span class="sidebar-text">Lieferanten</span>
+      </a>
+    </li>
+    <li>
+      <a [routerLink]="['/', baseRoute, 'ratings']" class="nav-link text-white">
+        <i class="bi bi-star me-2"></i>
+        <span class="sidebar-text">Bewertungen</span>
       </a>
     </li>
   </ul>
