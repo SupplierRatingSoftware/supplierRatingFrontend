@@ -1,4 +1,4 @@
-.supplier-card {
+.list-card {
   transition: all 0.2s ease-in-out;
   cursor: pointer;
 
@@ -8,6 +8,6 @@
   }
 }
 
-button:hover {
+#editBtn:hover {
   background-color: var(--bs-secondary-bg);
 }
