@@ -1,5 +1,5 @@
-import {Component} from '@angular/core';
-import {ThemeSwitcherComponent} from '../../components/theme-switcher/theme-switcher.component';
+import { Component } from '@angular/core';
+import { ThemeSwitcherComponent } from '../../components/theme-switcher/theme-switcher.component';
 
 @Component({
   selector: 'app-login',
