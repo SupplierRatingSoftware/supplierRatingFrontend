@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, output } from '@angular/core';
 import { LucideAngularModule, Plus } from 'lucide-angular';
 
 @Component({
@@ -12,4 +12,10 @@ export class AddBtn {
    * lucide-icon for the floating button
    */
   readonly Plus = Plus;
+
+  readonly action = output<void>();
+
+  protected onClick() {
+    this.action.emit();
+  }
 }
