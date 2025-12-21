@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { LucideAngularModule, Pencil, UserStar } from 'lucide-angular';
 
 @Component({
@@ -6,6 +6,7 @@ import { LucideAngularModule, Pencil, UserStar } from 'lucide-angular';
   imports: [LucideAngularModule],
   templateUrl: './list-item.html',
   styleUrl: './list-item.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ListItem {
   /**
