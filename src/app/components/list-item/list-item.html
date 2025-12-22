@@ -3,7 +3,7 @@
     <button
       type="button"
       class="d-flex align-items-center flex-grow-1 border-0 bg-transparent p-0 text-start text-body"
-      (click)="openModal()">
+      (click)="showContent()">
       <i-lucide
         [img]="icon()"
         [size]="36"
@@ -17,7 +17,7 @@
       type="button"
       class="btn align-items-center border border-1 rounded-3 me-2 ms-2"
       aria-label="Bearbeiten"
-      (click)="editSupplier()">
+      (click)="editContent()">
       <i-lucide [img]="Pencil" [size]="18" [strokeWidth]="1.5" aria-hidden="true"></i-lucide>
     </button>
   </div>
