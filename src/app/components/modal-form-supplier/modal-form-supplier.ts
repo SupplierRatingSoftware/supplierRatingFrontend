@@ -5,6 +5,22 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 // NgbAccordionModule: Das Werkzeug für das Auf- und Zuklappen
 import { NgbAccordionModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap'; // NgbActiveModal hinzugefügt
 
+export interface SupplierFormData {
+  fullName: string;
+  customerNumber: string;
+  street: string;
+  poBox: string;
+  zipCode: string;
+  city: string;
+  country: string;
+  email: string;
+  phoneNumber: string;
+  website: string;
+  vatNumber: string;
+  paymentConditions: string;
+  notes: string;
+}
+
 @Component({
   selector: 'app-modal-form-supplier',
   imports: [CommonModule, ReactiveFormsModule, NgbAccordionModule],
@@ -22,25 +38,24 @@ export class ModalFormSupplierComponent {
     fullName: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     customerNumber: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     //Felder für den Abschnitt 2 Anschrift
-    street: new FormControl(''),
-    poBox: new FormControl(''),
-    zipCode: new FormControl(''),
-    city: new FormControl(''),
-    country: new FormControl('Schweiz'), // Standardwert 'Schweiz'
+    street: new FormControl('', { nonNullable: true }),
+    poBox: new FormControl('', { nonNullable: true }),
+    zipCode: new FormControl('', { nonNullable: true }),
+    city: new FormControl('', { nonNullable: true }),
+    country: new FormControl('Schweiz', { nonNullable: true }), // Standardwert 'Schweiz'
     // Abschnitt 3: Kontakt & Web
-    email: new FormControl(''),
-    phoneNumber: new FormControl(''),
-    website: new FormControl(''),
+    email: new FormControl('', { nonNullable: true, validators: [Validators.email] }),
+    phoneNumber: new FormControl('', { nonNullable: true }),
+    website: new FormControl('', { nonNullable: true }),
     // Abschnitt 4: Kundeninformation
-    vatNumber: new FormControl(''),
-    paymentConditions: new FormControl(''),
-    notes: new FormControl(''),
+    vatNumber: new FormControl('', { nonNullable: true }),
+    paymentConditions: new FormControl('', { nonNullable: true }),
+    notes: new FormControl('', { nonNullable: true }),
   });
 
   // Diese Funktion wird aufgerufen, wenn man auf "Speichern" klickt
   onSubmit() {
     if (this.supplierForm.valid) {
-      console.log('Speichern...', this.supplierForm.value);
       // .close() schliesst das Fenster und schickt die Daten an die SuppliersComponent zurück
       this.activeModal.close(this.supplierForm.value);
     }

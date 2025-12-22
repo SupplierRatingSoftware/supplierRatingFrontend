@@ -5,7 +5,7 @@
     <div ngbAccordion>
       <div ngbAccordionItem [collapsed]="false">
         <h2 ngbAccordionHeader>
-          <button ngbAccordionButton type="button">1. Name und Kundennummer</button>
+          <button ngbAccordionButton type="button" aria-label="Abschnitt Name und Kundennummer öffnen oder schliessen">1. Name und Kundennummer</button>
         </h2>
         <div ngbAccordionCollapse>
           <div ngbAccordionBody>
@@ -44,7 +44,7 @@
 
       <div ngbAccordionItem>
         <h2 ngbAccordionHeader>
-          <button ngbAccordionButton type="button">2. Anschrift</button>
+          <button ngbAccordionButton type="button" aria-label="Abschnitt Anschrift öffnen oder schliessen">2. Anschrift</button>
         </h2>
         <div ngbAccordionCollapse>
           <div ngbAccordionBody>
@@ -92,7 +92,7 @@
 
       <div ngbAccordionItem>
         <h2 ngbAccordionHeader>
-          <button ngbAccordionButton type="button">3. Kontakt & Web</button>
+          <button ngbAccordionButton type="button" aria-label="Abschnitt Kontakt und Web öffnen oder schliessen">3. Kontakt & Web</button>
         </h2>
         <div ngbAccordionCollapse>
           <div ngbAccordionBody>
@@ -105,7 +105,16 @@
                     id="email"
                     class="form-control"
                     formControlName="email"
-                    placeholder="beispiel@firma.ch" />
+                    placeholder="beispiel@firma.ch"
+                    [attr.aria-invalid]="supplierForm.get('email')?.invalid && (supplierForm.get('email')?.dirty || supplierForm.get('email')?.touched) ? 'true' : 'false'"
+                    [attr.aria-describedby]="supplierForm.get('email')?.invalid && (supplierForm.get('email')?.dirty || supplierForm.get('email')?.touched) ? 'email-error' : null" />
+                  @if (supplierForm.get('email')?.invalid && (supplierForm.get('email')?.dirty || supplierForm.get('email')?.touched)) {
+                    <div id="email-error" class="mt-1 text-danger" role="alert">
+                      @if (supplierForm.get('email')?.hasError('email')) {
+                        <span>Bitte geben Sie eine gültige E-Mail-Adresse ein.</span>
+                      }
+                    </div>
+                  }
                 </div>
                 <div class="col-md-6 mb-3">
                   <label for="phoneNumber" class="form-label">TELEFONNUMMER</label>
@@ -135,7 +144,7 @@
 
       <div ngbAccordionItem>
         <h2 ngbAccordionHeader>
-          <button ngbAccordionButton type="button">4. Kundeninformation</button>
+          <button ngbAccordionButton type="button" aria-label="Abschnitt Kundeninformation öffnen oder schliessen">4. Kundeninformation</button>
         </h2>
         <div ngbAccordionCollapse>
           <div ngbAccordionBody>
