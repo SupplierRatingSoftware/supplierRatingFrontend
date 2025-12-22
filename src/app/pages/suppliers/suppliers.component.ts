@@ -42,7 +42,7 @@ export class SuppliersComponent implements OnInit {
   /**
    * Lifecycle hook that is called after the component is initialized.
    */
-  ngOnInit(): void {
+  ngOnInit() {
     this.loadSuppliers();
   }
 
@@ -50,12 +50,13 @@ export class SuppliersComponent implements OnInit {
    * Loads supplier-data from the service and updates the signal state
    * If an error occurs, an error message should be displayed.
    */
-  loadSuppliers() {
+  private loadSuppliers() {
     this.errorMessage.set(null);
-    // simulated error
-    // throwError(() => new Error('Simulated Error'))
+
     this.supplierService
       .getSuppliers()
+      // uncomment for simulated error for displaying the toast
+      // throwError(() => new Error('Simulated Error'))
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: data => {
@@ -67,14 +68,18 @@ export class SuppliersComponent implements OnInit {
       });
   }
 
+  /**
+   * TODO: Add openModal functionality and save supplier-data here
+   */
   addSupplier() {
-    /**
-     * TODO: Add openModal functionality and save supplier-data here
-     */
     // this.suppliers.update();
   }
 
-  closeToast() {
+  /**
+   * Closes the Toast error message
+   * @protected
+   */
+  protected closeToast() {
     this.errorMessage.set(null);
   }
 }
