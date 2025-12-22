@@ -13,6 +13,11 @@ export class AddBtn {
    */
   readonly Plus = Plus;
 
+  /**
+   * Event emitted when the add button is activated (for example, clicked).
+   *
+   * Parent components should handle this output to start their corresponding workflow
+   */
   readonly action = output<void>();
 
   protected onClick() {
