@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { LucideAngularModule, Pencil } from 'lucide-angular';
+import { LucideAngularModule, LucideIconData, Pencil } from 'lucide-angular';
 
 @Component({
   selector: 'app-list-item',
@@ -19,7 +19,7 @@ export class ListItem {
    * Input properties
    */
   readonly label = input.required<string>();
-  readonly icon = input.required<any>();
+  readonly icon = input.required<LucideIconData>();
 
   protected openModal() {
     console.log('open modal');
