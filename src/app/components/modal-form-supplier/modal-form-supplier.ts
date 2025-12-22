@@ -7,7 +7,6 @@ import { NgbAccordionModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-modal-form-supplier',
-  standalone: true, // In Angular 21 ist jede Komponente eigenständig
   imports: [CommonModule, ReactiveFormsModule, NgbAccordionModule],
   templateUrl: './modal-form-supplier.html',
   styleUrl: './modal-form-supplier.scss',
