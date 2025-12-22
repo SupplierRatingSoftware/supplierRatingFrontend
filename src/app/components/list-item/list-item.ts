@@ -16,7 +16,8 @@ export class ListItem {
   protected readonly Pencil = Pencil;
 
   /**
-   * Input properties
+   * Input properties for dynamically rendering the component
+   * @readonly
    */
   readonly label = input.required<string>();
   readonly icon = input.required<LucideIconData>();
