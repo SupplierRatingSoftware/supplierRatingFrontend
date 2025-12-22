@@ -6,11 +6,11 @@ import { NotepadText } from 'lucide-angular';
 import { OrderService } from '../../services/order.service';
 import { Order } from '../../models/order.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { throwError } from 'rxjs';
+import { ToastComponent } from '../../components/toast/toast.component';
 
 @Component({
   selector: 'app-orders',
-  imports: [ListSearch, AddBtn, ListItem],
+  imports: [ListSearch, AddBtn, ListItem, ToastComponent],
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -73,5 +73,12 @@ export class OrdersComponent implements OnInit {
    */
   addOrder() {
     // this.orders.update();
+  }
+
+  /**
+   * Closes the Toast error message
+   */
+  protected closeToast() {
+    this.errorMessage.set(null);
   }
 }
