@@ -53,10 +53,11 @@ export class OrdersComponent implements OnInit {
    */
   private loadOrders() {
     this.errorMessage.set(null);
-    // simulated error
-    throwError(() => new Error('Simulated Error'));
+
     this.orderService
       .getOrders()
+      // uncomment for simulated error for displaying the toast
+      // throwError(() => new Error('Simulated Error'))
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: data => {
@@ -77,6 +78,7 @@ export class OrdersComponent implements OnInit {
 
   /**
    * Closes the Toast error message
+   * @protected
    */
   protected closeToast() {
     this.errorMessage.set(null);

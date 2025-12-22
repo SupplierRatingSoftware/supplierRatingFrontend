@@ -52,10 +52,11 @@ export class SuppliersComponent implements OnInit {
    */
   private loadSuppliers() {
     this.errorMessage.set(null);
-    // simulated error
-    // throwError(() => new Error('Simulated Error'))
+
     this.supplierService
       .getSuppliers()
+      // uncomment for simulated error for displaying the toast
+      // throwError(() => new Error('Simulated Error'))
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: data => {
@@ -74,7 +75,11 @@ export class SuppliersComponent implements OnInit {
     // this.suppliers.update();
   }
 
-  closeToast() {
+  /**
+   * Closes the Toast error message
+   * @protected
+   */
+  protected closeToast() {
     this.errorMessage.set(null);
   }
 }
