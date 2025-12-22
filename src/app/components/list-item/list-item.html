@@ -5,12 +5,12 @@
       class="d-flex align-items-center flex-grow-1 border-0 bg-transparent p-0 text-start text-body"
       (click)="openModal()">
       <i-lucide
-        [img]="UserStar"
+        [img]="icon()"
         [size]="36"
         [strokeWidth]="1.5"
         class="flex-grow-0 ps-2 me-2"
         aria-hidden="true"></i-lucide>
-      <p class="m-0 ms-2 flex-grow-1">{{ supplierName }}</p>
+      <p class="m-0 ms-2 flex-grow-1">{{ label() }}</p>
     </button>
     <button
       id="editBtn"

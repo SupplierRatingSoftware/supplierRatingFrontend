@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, output } from '@angular/core';
 import { LucideAngularModule, Plus } from 'lucide-angular';
 
 @Component({
@@ -12,4 +12,15 @@ export class AddBtn {
    * lucide-icon for the floating button
    */
   readonly Plus = Plus;
+
+  /**
+   * Event emitted when the add button is activated (for example, clicked).
+   *
+   * Parent components should handle this output to start their corresponding workflow
+   */
+  readonly action = output<void>();
+
+  protected onClick() {
+    this.action.emit();
+  }
 }
