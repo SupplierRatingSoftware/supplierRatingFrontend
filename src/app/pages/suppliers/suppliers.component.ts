@@ -1,8 +1,11 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ListSearch } from '../../components/list-search/list-search';
 import { AddBtn } from '../../components/add-btn/add-btn';
 import { ListItem } from '../../components/list-item/list-item';
 import { User } from 'lucide-angular';
+import { SupplierService } from '../../services/supplier.service';
+import { Supplier } from '../../models/supplier.model';
 
 @Component({
   selector: 'app-suppliers',
@@ -11,18 +14,54 @@ import { User } from 'lucide-angular';
   styleUrl: './suppliers.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SuppliersComponent {
+export class SuppliersComponent implements OnInit {
   /**
    * Lucide Icon
    * @protected
    */
   protected readonly User = User;
 
-  // State: List of suppliers
-  readonly suppliers = signal<string[]>(['Lieferant A', 'Lieferant B']);
+  /**
+   * Injected SupplierService
+   * @private
+   */
+  private supplierService: SupplierService = inject(SupplierService);
+  private destroyRef = inject(DestroyRef);
+
+  // State: Initial List of suppliers
+  readonly suppliers = signal<Supplier[]>([]);
+  // State: Error message for UI display
+  readonly errorMessage = signal<string | null>(null);
+
+  ngOnInit(): void {
+    this.loadSuppliers();
+  }
+
+  /**
+   * Loads supplier-data from the service and updates the signal state
+   * If an error occurs, an error message should be displayed.
+   */
+  loadSuppliers() {
+    this.errorMessage.set(null);
+    this.supplierService
+      .getSuppliers()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: data => {
+          this.suppliers.set(data);
+        },
+        error: () => {
+          this.errorMessage.set('Unable to load suppliers. Please check your connection and try again.');
+        },
+      });
+  }
 
   addSupplier() {
+    /**
+     * TODO: Add openModal functionality and save supplier-data here
+     */
+    // console.log('Add/Save Supplier clicked');
     // Logic to add a new item to the signal array
-    this.suppliers.update(current => [...current, `Lieferant ${current.length + 1}`]);
+    // this.suppliers.update();
   }
 }
