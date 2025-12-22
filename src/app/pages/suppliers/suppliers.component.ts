@@ -40,7 +40,8 @@ export class SuppliersComponent implements OnInit {
     this.supplierService.getSuppliers().subscribe({
       next: data => {
         this.suppliers.set(data);
-        console.log('Suppliers loaded:', data);
+        // TODO: Optional LOGGING
+        // console.log('Suppliers loaded:', data);
       },
       error: err => console.error('Error loading suppliers:', err),
     });
