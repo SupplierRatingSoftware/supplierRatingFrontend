@@ -11,6 +11,9 @@
   height: 50px;
   border-radius: 50%;
   padding: 0;
+  transition:
+    transform 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
 
   /* Adjust position for mobile devices */
   @include media-breakpoint-down(md) {
