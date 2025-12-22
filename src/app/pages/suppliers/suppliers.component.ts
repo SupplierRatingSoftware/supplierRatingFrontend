@@ -30,6 +30,8 @@ export class SuppliersComponent implements OnInit {
 
   // State: Initial List of suppliers
   readonly suppliers = signal<Supplier[]>([]);
+  // State: Error message for UI display
+  readonly errorMessage = signal<string | null>(null);
 
   ngOnInit(): void {
     this.loadSuppliers();
@@ -37,18 +39,20 @@ export class SuppliersComponent implements OnInit {
 
   /**
    * Loads supplier-data from the service and updates the signal state
+   * If an error occurs, an error message should be displayed.
    */
   loadSuppliers() {
+    this.errorMessage.set(null);
     this.supplierService
       .getSuppliers()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: data => {
           this.suppliers.set(data);
-          // TODO: Optional LOGGING
-          // console.log('Suppliers loaded:', data);
         },
-        error: err => console.error('Error loading suppliers:', err),
+        error: () => {
+          this.errorMessage.set('Unable to load suppliers. Please check your connection and try again.');
+        },
       });
   }
 
