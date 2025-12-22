@@ -6,10 +6,11 @@ import { ListItem } from '../../components/list-item/list-item';
 import { User } from 'lucide-angular';
 import { SupplierService } from '../../services/supplier.service';
 import { Supplier } from '../../models/supplier.model';
+import { ToastComponent } from '../../components/toast/toast.component';
 
 @Component({
   selector: 'app-suppliers',
-  imports: [ListSearch, AddBtn, ListItem],
+  imports: [ListSearch, AddBtn, ListItem, ToastComponent],
   templateUrl: './suppliers.component.html',
   styleUrl: './suppliers.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,11 +29,19 @@ export class SuppliersComponent implements OnInit {
   private supplierService: SupplierService = inject(SupplierService);
   private destroyRef = inject(DestroyRef);
 
-  // State: Initial List of suppliers
+  /**
+   * State: Initial list of suppliers
+   */
   readonly suppliers = signal<Supplier[]>([]);
-  // State: Error message for UI display
+
+  /**
+   * State: Error message for UI to display
+   */
   readonly errorMessage = signal<string | null>(null);
 
+  /**
+   * Lifecycle hook that is called after the component is initialized.
+   */
   ngOnInit(): void {
     this.loadSuppliers();
   }
@@ -43,6 +52,8 @@ export class SuppliersComponent implements OnInit {
    */
   loadSuppliers() {
     this.errorMessage.set(null);
+    // simulated error
+    // throwError(() => new Error('Simulated Error'))
     this.supplierService
       .getSuppliers()
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -60,8 +71,10 @@ export class SuppliersComponent implements OnInit {
     /**
      * TODO: Add openModal functionality and save supplier-data here
      */
-    // console.log('Add/Save Supplier clicked');
-    // Logic to add a new item to the signal array
     // this.suppliers.update();
+  }
+
+  closeToast() {
+    this.errorMessage.set(null);
   }
 }
