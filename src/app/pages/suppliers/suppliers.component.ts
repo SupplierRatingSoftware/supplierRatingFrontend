@@ -3,7 +3,7 @@ import { ListSearch } from '../../components/list-search/list-search';
 import { AddBtn } from '../../components/add-btn/add-btn';
 import { ListItem } from '../../components/list-item/list-item';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap'; // Den Modal-Dienst importieren
-import { ModalFormSupplierComponent } from '../../components/modal-form-supplier/modal-form-supplier';
+import { ModalFormSupplierComponent, SupplierFormData } from '../../components/modal-form-supplier/modal-form-supplier';
 import { User } from 'lucide-angular';
 
 @Component({
@@ -38,15 +38,14 @@ export class SuppliersComponent {
 
     // Hier warten wir darauf, was der User im Modal macht
     modalRef.result.then(
-      result => {
+      (result: SupplierFormData) => {
         // Wenn der User auf "Speichern" klickt und Daten zurückkommen
         if (result && result.fullName) {
           this.addSupplierFromModal(result.fullName);
         }
       },
       () => {
-        // Dieser Bereich wird ausgeführt, wenn das Modal abgebrochen wird (X oder Abbrechen)
-        console.log('Modal wurde geschlossen ohne zu speichern');
+        // Modal wurde bewusst ohne Speichern geschlossen; keine Aktion erforderlich.
       }
     );
   }
