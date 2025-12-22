@@ -1,7 +1,8 @@
 .list-card {
-  transition: all 0.2s ease-in-out;
+  transition:
+    transform 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
   cursor: pointer;
-
   &:hover {
     transform: translateY(-1px);
     box-shadow: var(--bs-box-shadow-lg) !important;
@@ -10,4 +11,10 @@
 
 #editBtn:hover {
   background-color: var(--bs-secondary-bg);
+}
+
+button {
+  transition:
+    transform 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
 }
