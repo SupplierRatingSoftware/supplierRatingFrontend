@@ -7,8 +7,9 @@ export type RatingStatus = 'RATED' | 'PENDING';
  * OrderBaseDTO interface
  */
 export interface OrderBase {
+  name: string;
+
   // Optional fields, not marked as "required"
-  name?: string;
   mainCategory?: string;
   subCategory?: string;
   details?: string;
