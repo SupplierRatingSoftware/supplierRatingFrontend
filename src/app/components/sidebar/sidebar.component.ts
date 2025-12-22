@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutes } from '../../app.routes.config';
-import { LayoutDashboard, LucideAngularModule, NotepadText, User } from 'lucide-angular';
+import { ChevronLeft, ChevronRight, LayoutDashboard, LucideAngularModule, NotepadText, User } from 'lucide-angular';
 
 @Component({
   selector: 'app-sidebar',
@@ -19,13 +19,23 @@ export class SidebarComponent {
   protected readonly NotepadText = NotepadText;
   protected readonly User = User;
   protected readonly LayoutDashboard = LayoutDashboard;
+  protected readonly ChevronRight = ChevronRight;
+  protected readonly ChevronLeft = ChevronLeft;
 
-  // Signal for the collapsed status (Standard: false/not collapsed)
+  /**
+   * Signal for the collapsed status
+   */
   isCollapsed = signal(false);
 
-  // Global base-routing
+  /**
+   * Global base-routing
+   * @protected
+   */
   protected readonly baseRoute = AppRoutes.BASE;
 
+  /**
+   * Toggle the sidebar collapsed state
+   */
   toggleSidebar() {
     this.isCollapsed.update(value => !value);
   }
