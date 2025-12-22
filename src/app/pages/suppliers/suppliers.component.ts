@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ListSearch } from '../../components/list-search/list-search';
 import { AddBtn } from '../../components/add-btn/add-btn';
 import { ListItem } from '../../components/list-item/list-item';
@@ -25,6 +26,7 @@ export class SuppliersComponent implements OnInit {
    * @private
    */
   private supplierService: SupplierService = inject(SupplierService);
+  private destroyRef = inject(DestroyRef);
 
   // State: Initial List of suppliers
   readonly suppliers = signal<Supplier[]>([]);
@@ -37,14 +39,17 @@ export class SuppliersComponent implements OnInit {
    * Loads supplier-data from the service and updates the signal state
    */
   loadSuppliers() {
-    this.supplierService.getSuppliers().subscribe({
-      next: data => {
-        this.suppliers.set(data);
-        // TODO: Optional LOGGING
-        // console.log('Suppliers loaded:', data);
-      },
-      error: err => console.error('Error loading suppliers:', err),
-    });
+    this.supplierService
+      .getSuppliers()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: data => {
+          this.suppliers.set(data);
+          // TODO: Optional LOGGING
+          // console.log('Suppliers loaded:', data);
+        },
+        error: err => console.error('Error loading suppliers:', err),
+      });
   }
 
   addSupplier() {
