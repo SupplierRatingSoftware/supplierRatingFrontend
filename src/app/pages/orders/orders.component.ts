@@ -21,7 +21,7 @@ export class OrdersComponent {
   // State: List of orders
   readonly orders = signal<string[]>(['Bestellung 1', 'Bestellung 2']);
 
-  protected addOrders() {
+  protected addOrder() {
     console.log('add orders');
     this.orders.update(current => [...current, `Bestellung ${current.length + 1}`]);
   }
