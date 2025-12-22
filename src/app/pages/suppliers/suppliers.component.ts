@@ -55,8 +55,6 @@ export class SuppliersComponent implements OnInit {
 
     this.supplierService
       .getSuppliers()
-      // uncomment for simulated error for displaying the toast
-      // throwError(() => new Error('Simulated Error'))
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: data => {
