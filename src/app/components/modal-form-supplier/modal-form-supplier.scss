@@ -13,7 +13,8 @@
   }
 
   // Die Input-Felder so abrunden wie in deinem Bild
-  .form-control, .form-select {
+  .form-control,
+  .form-select {
     border-radius: 12px;
     border: 1px solid #e0e0e0;
     padding: 12px 15px;
@@ -39,4 +40,3 @@
     display: block;
   }
 }
-
