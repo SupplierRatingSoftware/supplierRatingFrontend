@@ -22,11 +22,19 @@ export class ListItem {
   readonly label = input.required<string>();
   readonly icon = input.required<LucideIconData>();
 
-  protected openModal() {
+  /**
+   * Click on List-Item
+   * @protected
+   */
+  protected showContent() {
     console.log('open modal');
   }
 
-  protected editSupplier() {
+  /**
+   * Click on Edit-Button in List-Item
+   * @protected
+   */
+  protected editContent() {
     console.log('edit supplier');
   }
 }
