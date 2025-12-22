@@ -49,9 +49,9 @@ export class SuppliersComponent implements OnInit {
 
   addSupplier() {
     /**
-     * TODO: No Backend at the moment to save supplier-data
+     * TODO: Add openModal functionality and save supplier-data here
      */
-    console.log('Add/Save Supplier clicked');
+    // console.log('Add/Save Supplier clicked');
     // Logic to add a new item to the signal array
     // this.suppliers.update();
   }
