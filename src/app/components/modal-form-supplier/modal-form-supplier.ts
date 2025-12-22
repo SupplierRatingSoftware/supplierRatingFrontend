@@ -21,10 +21,21 @@ export class ModalFormSupplierComponent {
     // Ein FormControl ist ein einzelnes Eingabefeld
     // Validators.required = Pflichtfeld
     fullName: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    email: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.email] }),
-    phone: new FormControl(''),
-    serviceCategory: new FormControl(''),
-    message: new FormControl(''),
+    customerNumber: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    //Felder für den Abschnitt 2 Anschrift
+    street: new FormControl(''),
+    poBox: new FormControl(''),
+    zipCode: new FormControl(''),
+    city: new FormControl(''),
+    country: new FormControl('Schweiz'), // Standardwert 'Schweiz'
+    // Abschnitt 3: Kontakt & Web
+    email: new FormControl(''),
+    phoneNumber: new FormControl(''),
+    website: new FormControl(''),
+    // Abschnitt 4: Kundeninformation
+    vatNumber: new FormControl(''),
+    paymentConditions: new FormControl(''),
+    notes: new FormControl(''),
   });
 
   // Diese Funktion wird aufgerufen, wenn man auf "Speichern" klickt
