@@ -1,0 +1,42 @@
+// Die Haupt-Container-Klasse
+.supplier-form-container {
+  padding: 20px;
+  background-color: #fcfcfc;
+
+  // SCSS Nesting: Wir stylen alle Labels innerhalb des Containers
+  .form-label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #444;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  // Die Input-Felder so abrunden wie in deinem Bild
+  .form-control,
+  .form-select {
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    padding: 12px 15px;
+    background-color: #fff;
+
+    // Wenn man in ein Feld klickt (Focus)
+    &:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.1);
+    }
+
+    // Farbe des Platzhalter-Textes
+    &::placeholder {
+      color: #ccc;
+      font-weight: 300;
+    }
+  }
+
+  .error-text {
+    color: #dc3545;
+    font-size: 0.7rem;
+    margin-top: 4px;
+    display: block;
+  }
+}

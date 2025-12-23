@@ -1,1 +1,202 @@
-<p>modal-form-supplier works!</p>
+<div class="supplier-form-container">
+  <h4 class="mb-4">Neuen Lieferanten erfassen</h4>
+
+  <form [formGroup]="supplierForm" (ngSubmit)="onSubmit()">
+    <div ngbAccordion>
+      <div ngbAccordionItem [collapsed]="false">
+        <h2 ngbAccordionHeader>
+          <button ngbAccordionButton type="button" aria-label="Abschnitt Name und Kundennummer öffnen oder schliessen">
+            1. Name und Kundennummer
+          </button>
+        </h2>
+        <div ngbAccordionCollapse>
+          <div ngbAccordionBody>
+            <ng-template>
+              <div class="row">
+                <div class="col-md-8 mb-3">
+                  <label for="fullName" class="form-label">NAME *</label>
+                  <input
+                    type="text"
+                    id="fullName"
+                    class="form-control"
+                    formControlName="fullName"
+                    placeholder="Name des Lieferanten" />
+                  @if (supplierForm.get('fullName')?.invalid && supplierForm.get('fullName')?.touched) {
+                  <small class="error-text">Name ist erforderlich.</small>
+                  }
+                </div>
+
+                <div class="col-md-4 mb-3">
+                  <label for="customerNumber" class="form-label">KUNDENNUMMER *</label>
+                  <input
+                    type="text"
+                    id="customerNumber"
+                    class="form-control"
+                    formControlName="customerNumber"
+                    placeholder="z.B. KD-12345" />
+                  @if (supplierForm.get('customerNumber')?.invalid && supplierForm.get('customerNumber')?.touched) {
+                  <small class="error-text">Kundennummer ist erforderlich.</small>
+                  }
+                </div>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+
+      <div ngbAccordionItem>
+        <h2 ngbAccordionHeader>
+          <button ngbAccordionButton type="button" aria-label="Abschnitt Anschrift öffnen oder schliessen">
+            2. Anschrift
+          </button>
+        </h2>
+        <div ngbAccordionCollapse>
+          <div ngbAccordionBody>
+            <ng-template>
+              <div class="row">
+                <div class="col-md-8 mb-3">
+                  <label for="street" class="form-label">STRASSE + HAUSNUMMER</label>
+                  <input
+                    type="text"
+                    id="street"
+                    class="form-control"
+                    formControlName="street"
+                    placeholder="Musterstrasse 1" />
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="poBox" class="form-label">POSTFACH</label>
+                  <input type="text" id="poBox" class="form-control" formControlName="poBox" placeholder="1234" />
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-3 mb-3">
+                  <label for="zipCode" class="form-label">PLZ</label>
+                  <input type="text" id="zipCode" class="form-control" formControlName="zipCode" placeholder="8000" />
+                </div>
+                <div class="col-md-5 mb-3">
+                  <label for="city" class="form-label">ORT</label>
+                  <input type="text" id="city" class="form-control" formControlName="city" placeholder="Zürich" />
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="country" class="form-label">LAND</label>
+                  <select id="country" class="form-select" formControlName="country">
+                    <option value="Schweiz">Schweiz</option>
+                    <option value="Deutschland">Deutschland</option>
+                    <option value="Österreich">Österreich</option>
+                    <option value="Liechtenstein">Liechtenstein</option>
+                    <option value="Andere">Andere...</option>
+                  </select>
+                </div>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+
+      <div ngbAccordionItem>
+        <h2 ngbAccordionHeader>
+          <button ngbAccordionButton type="button" aria-label="Abschnitt Kontakt und Web öffnen oder schliessen">
+            3. Kontakt & Web
+          </button>
+        </h2>
+        <div ngbAccordionCollapse>
+          <div ngbAccordionBody>
+            <ng-template>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="email" class="form-label">EMAIL</label>
+                  <input
+                    type="email"
+                    id="email"
+                    class="form-control"
+                    formControlName="email"
+                    placeholder="beispiel@firma.ch"
+                    [attr.aria-invalid]="supplierForm.get('email')?.invalid && (supplierForm.get('email')?.dirty || supplierForm.get('email')?.touched) ? 'true' : 'false'"
+                    [attr.aria-describedby]="supplierForm.get('email')?.invalid && (supplierForm.get('email')?.dirty || supplierForm.get('email')?.touched) ? 'email-error' : null" />
+                  @if (supplierForm.get('email')?.invalid && (supplierForm.get('email')?.dirty ||
+                  supplierForm.get('email')?.touched)) {
+                  <div id="email-error" class="mt-1 text-danger" role="alert">
+                    @if (supplierForm.get('email')?.hasError('email')) {
+                    <span>Bitte geben Sie eine gültige E-Mail-Adresse ein.</span>
+                    }
+                  </div>
+                  }
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="phoneNumber" class="form-label">TELEFONNUMMER</label>
+                  <input
+                    type="tel"
+                    id="phoneNumber"
+                    class="form-control"
+                    formControlName="phoneNumber"
+                    placeholder="+41 44 123 45 67" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12 mb-3">
+                  <label for="website" class="form-label">WEBLINK / WEBSEITE</label>
+                  <input
+                    type="url"
+                    id="website"
+                    class="form-control"
+                    formControlName="website"
+                    placeholder="https://www.lieferant.ch" />
+                </div>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+
+      <div ngbAccordionItem>
+        <h2 ngbAccordionHeader>
+          <button ngbAccordionButton type="button" aria-label="Abschnitt Kundeninformation öffnen oder schliessen">
+            4. Kundeninformation
+          </button>
+        </h2>
+        <div ngbAccordionCollapse>
+          <div ngbAccordionBody>
+            <ng-template>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="vatNumber" class="form-label">MWST / UST / TVA</label>
+                  <input
+                    type="text"
+                    id="vatNumber"
+                    class="form-control"
+                    formControlName="vatNumber"
+                    placeholder="CHE-123.456.789 MWST" />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="paymentConditions" class="form-label">KONDITIONEN</label>
+                  <input
+                    type="text"
+                    id="paymentConditions"
+                    class="form-control"
+                    formControlName="paymentConditions"
+                    placeholder="z.B. 30 Tage netto" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12 mb-3">
+                  <label for="notes" class="form-label">ZUSATZ (BEMERKUNGEN)</label>
+                  <textarea
+                    id="notes"
+                    class="form-control"
+                    formControlName="notes"
+                    rows="2"
+                    placeholder="Weitere Informationen..."></textarea>
+                </div>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex justify-content-end mt-4">
+      <button type="button" class="btn btn-secondary me-2" (click)="cancel()">Abbrechen</button>
+      <button type="submit" class="btn btn-primary px-5" [disabled]="supplierForm.invalid">Speichern</button>
+    </div>
+  </form>
+</div>
