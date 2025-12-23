@@ -3,12 +3,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ListSearch } from '../../components/list-search/list-search';
 import { AddBtn } from '../../components/add-btn/add-btn';
 import { ListItem } from '../../components/list-item/list-item';
-import { ModalFormSupplierComponent, SupplierFormData } from '../../components/modal-form-supplier/modal-form-supplier';
 import { LucideAngularModule, User } from 'lucide-angular'; //LucideAngularModule importierenklkklll
 import { NgbAccordionModule, NgbModal } from '@ng-bootstrap/ng-bootstrap'; // NgbAccordionModule importiert
 import { SupplierService } from '../../services/supplier.service';
-import { Supplier } from '../../models/supplier.model';
+import { Supplier, SupplierFormData, SupplierMapper } from '../../models/supplier.model';
 import { ToastComponent } from '../../components/toast/toast.component';
+import { ModalFormSupplierComponent } from '../../components/modal-form-supplier/modal-form-supplier';
 
 @Component({
   selector: 'app-suppliers',
@@ -95,26 +95,11 @@ export class SuppliersComponent implements OnInit {
    * 2. Diese Funktion speichert die Änderungen
    */
   private updateExistingSupplier(id: string, formData: SupplierFormData) {
-    // Wir bauen aus den Formulardaten wieder ein echtes Lieferanten-Objekt
-    const updatedData: Supplier = {
-      id: id, // Die ID bleibt gleich!
-      code: '',
-      name: formData.fullName,
-      customerNumber: formData.customerNumber,
-      street: formData.street,
-      zipCode: formData.zipCode,
-      city: formData.city,
-      country: formData.country,
-      email: formData.email,
-      phoneNumber: formData.phoneNumber,
-      website: formData.website,
-      vatId: formData.vatNumber,
-      conditions: formData.paymentConditions,
-      customerInfo: formData.notes,
-    };
+    // NEU: Nur noch eine Zeile statt der langen Liste!
+    const updatedSupplier = SupplierMapper.mapFormToSupplier(formData, id);
 
     this.supplierService
-      .updateSupplier(id, updatedData) // Diese Methode muss in deinem Service existieren
+      .updateSupplier(id, updatedSupplier) // Diese Methode muss in deinem Service existieren
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: res => {
@@ -155,22 +140,8 @@ export class SuppliersComponent implements OnInit {
   }
 
   private createAndAddSupplier(formData: SupplierFormData) {
-    const newSupplierData: Supplier = {
-      id: '',
-      code: '',
-      name: formData.fullName,
-      customerNumber: formData.customerNumber,
-      street: formData.street,
-      zipCode: formData.zipCode,
-      city: formData.city,
-      country: formData.country,
-      email: formData.email,
-      phoneNumber: formData.phoneNumber,
-      website: formData.website,
-      vatId: formData.vatNumber,
-      conditions: formData.paymentConditions,
-      customerInfo: formData.notes,
-    };
+    // NEU: Nur noch eine Zeile statt der langen Liste!
+    const newSupplierData = SupplierMapper.mapFormToSupplier(formData);
 
     this.supplierService
       .addSupplier(newSupplierData)

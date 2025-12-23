@@ -3,24 +3,8 @@ import { Component, inject, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgbAccordionModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap'; // NgbActiveModal hinzugefügt
-// 2. Wir importieren das Supplier-Modell, damit TypeScript weiss, wie ein Lieferant aussieht
-import { Supplier } from '../../models/supplier.model';
-
-export interface SupplierFormData {
-  fullName: string;
-  customerNumber: string;
-  street: string;
-  poBox: string;
-  zipCode: string;
-  city: string;
-  country: string;
-  email: string;
-  phoneNumber: string;
-  website: string;
-  vatNumber: string;
-  paymentConditions: string;
-  notes: string;
-}
+// Wir importieren jetzt alles gesammelt aus der Model-Datei
+import { Supplier, SupplierMapper } from '../../models/supplier.model';
 
 @Component({
   selector: 'app-modal-form-supplier',
@@ -55,23 +39,12 @@ export class ModalFormSupplierComponent implements OnInit {
   ngOnInit() {
     // Wir prüfen: Liegt ein Lieferant im Postfach?
     if (this.supplier) {
-      // Wenn ja, nutzen wir 'patchValue', um das Formular auszufüllen.
-      // Wir müssen darauf achten, welches Feld vom Lieferanten in welches Formularfeld kommt.
-      this.supplierForm.patchValue({
-        fullName: this.supplier.name,
-        customerNumber: this.supplier.customerNumber,
-        street: this.supplier.street,
-        poBox: this.supplier.poBox,
-        zipCode: this.supplier.zipCode,
-        city: this.supplier.city,
-        country: this.supplier.country,
-        email: this.supplier.email,
-        phoneNumber: this.supplier.phoneNumber,
-        website: this.supplier.website,
-        vatNumber: this.supplier.vatId, // Mapping: vatId (Modell) -> vatNumber (Formular)
-        paymentConditions: this.supplier.conditions,
-        notes: this.supplier.customerInfo, // Mapping: customerInfo (Modell) -> notes (Formular)
-      });
+      // +++ GEÄNDERT: Wir nutzen jetzt den Mapper +++
+      // Wir lassen den Mapper die Arbeit machen und erhalten fertige Daten fürs Formular
+      const formData = SupplierMapper.mapSupplierToForm(this.supplier);
+
+      // Jetzt müssen wir nur noch diese fertigen Daten ins Formular "patchen"
+      this.supplierForm.patchValue(formData);
     }
   }
 
