@@ -3,7 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ListSearch } from '../../components/list-search/list-search';
 import { AddBtn } from '../../components/add-btn/add-btn';
 import { ListItem } from '../../components/list-item/list-item';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap'; // Den Modal-Dienst importieren
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalFormSupplierComponent, SupplierFormData } from '../../components/modal-form-supplier/modal-form-supplier';
 import { User } from 'lucide-angular';
 import { SupplierService } from '../../services/supplier.service';
@@ -29,7 +29,7 @@ export class SuppliersComponent implements OnInit {
    * @private
    */
   private modalService = inject(NgbModal);
-  
+
   /**
    * Injected SupplierService
    * @private
@@ -46,7 +46,14 @@ export class SuppliersComponent implements OnInit {
    * State: Error message for UI to display
    */
   readonly errorMessage = signal<string | null>(null);
-    
+
+  /**
+   * Lifecycle hook that is called after the component is initialized.
+   */
+  ngOnInit() {
+    this.loadSuppliers();
+  }
+
   /**
    * This method opens the modal
    */
@@ -74,13 +81,7 @@ export class SuppliersComponent implements OnInit {
 
   // Hilfsfunktion, um den neuen Namen in deine Signal-Liste zu schreiben
   private addSupplierFromModal(name: string) {
-    this.suppliers.update(current => [...current, name]);
-
-  /**
-   * Lifecycle hook that is called after the component is initialized.
-   */
-  ngOnInit() {
-    this.loadSuppliers();
+    // this.suppliers.update(current => [...current, name]);
   }
 
   /**
