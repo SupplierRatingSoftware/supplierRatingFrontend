@@ -1,0 +1,19 @@
+:host {
+  display: block;
+  height: 100vh;
+}
+
+.selected-item {
+  ::ng-deep .list-card {
+    background-color: var(--bs-primary-light) !important;
+    border-color: var(--bs-primary) !important;
+    transition: all 0.2s ease-in-out;
+  }
+}
+
+.form-control-plaintext {
+  padding-left: 0.5rem;
+  font-weight: 500;
+  // Ein leichter Unterstrich hilft bei der Lesbarkeit von Plaintext in Floating Labels
+  border-bottom: 1px solid var(--bs-border-color) !important;
+}

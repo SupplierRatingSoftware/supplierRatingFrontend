@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core'; // output hinzugefügt
 import { LucideAngularModule, LucideIconData, Pencil } from 'lucide-angular';
 
 @Component({
@@ -21,13 +21,16 @@ export class ListItem {
    */
   readonly label = input.required<string>();
   readonly icon = input.required<LucideIconData>();
+  // NEU: Definiere das Event für die Auswahl
+  readonly itemSelected = output<void>();
 
   /**
    * Click on List-Item
    * @protected
    */
   protected showContent() {
-    console.log('open modal');
+    // Sende das Event nach oben an die SuppliersComponent
+    this.itemSelected.emit();
   }
 
   /**
@@ -35,6 +38,6 @@ export class ListItem {
    * @protected
    */
   protected editContent() {
-    console.log('open edit');
+    console.log('Edit clicked - noch nicht implementiert');
   }
 }

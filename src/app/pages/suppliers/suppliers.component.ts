@@ -3,16 +3,16 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ListSearch } from '../../components/list-search/list-search';
 import { AddBtn } from '../../components/add-btn/add-btn';
 import { ListItem } from '../../components/list-item/list-item';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalFormSupplierComponent, SupplierFormData } from '../../components/modal-form-supplier/modal-form-supplier';
-import { User } from 'lucide-angular';
+import { LucideAngularModule, User } from 'lucide-angular'; //LucideAngularModule importieren
+import { NgbAccordionModule, NgbModal } from '@ng-bootstrap/ng-bootstrap'; // NgbAccordionModule importiert
 import { SupplierService } from '../../services/supplier.service';
 import { Supplier } from '../../models/supplier.model';
 import { ToastComponent } from '../../components/toast/toast.component';
 
 @Component({
   selector: 'app-suppliers',
-  imports: [ListSearch, AddBtn, ListItem, ToastComponent],
+  imports: [ListSearch, AddBtn, ListItem, ToastComponent, LucideAngularModule, NgbAccordionModule],
   templateUrl: './suppliers.component.html',
   styleUrl: './suppliers.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -42,6 +42,9 @@ export class SuppliersComponent implements OnInit {
    */
   readonly suppliers = signal<Supplier[]>([]);
 
+  // Neu: State für den ausgewählten Lieferanten
+  readonly selectedSupplier = signal<Supplier | null>(null); // State für Detailansicht
+
   /**
    * State: Error message for UI to display
    */
@@ -55,22 +58,29 @@ export class SuppliersComponent implements OnInit {
   }
 
   /**
+   * Neu: Setzt den aktuell ausgewählten Lieferanten
+   */
+  selectSupplier(supplier: Supplier) {
+    this.selectedSupplier.set(supplier);
+  }
+
+  /**
    * This method opens the modal
+   * // +++ NEUE METHODE: Öffnet das Modal zum Bearbeiten +++
    */
   openSupplierModal() {
-    // modalService.open sagt: "Öffne ein Fenster mit dem Inhalt dieser Komponente"
     const modalRef = this.modalService.open(ModalFormSupplierComponent, {
-      size: 'lg', // Größe: Large
-      centered: true, // Schön mittig auf dem Bildschirm
-      backdrop: 'static', // Verhindert Schliessen beim Klicken in den grauen Bereich
+      size: 'lg',
+      centered: true,
+      backdrop: 'static',
     });
 
     // Hier warten wir darauf, was der User im Modal macht
     modalRef.result.then(
       (result: SupplierFormData) => {
-        // Wenn der User auf "Speichern" klickt und Daten zurückkommen
-        if (result && result.fullName) {
-          this.addSupplierFromModal(result.fullName);
+        if (result) {
+          // Wenn gespeichert wurde, rufen wir die Update-Logik auf
+          this.createAndAddSupplier(result);
         }
       },
       () => {
@@ -79,9 +89,34 @@ export class SuppliersComponent implements OnInit {
     );
   }
 
-  // Hilfsfunktion, um den neuen Namen in deine Signal-Liste zu schreiben
-  private addSupplierFromModal(name: string) {
-    // this.suppliers.update(current => [...current, name]);
+  private createAndAddSupplier(formData: SupplierFormData) {
+    const newSupplierData: Supplier = {
+      id: '',
+      code: '',
+      name: formData.fullName,
+      customerNumber: formData.customerNumber,
+      street: formData.street,
+      zipCode: formData.zipCode,
+      city: formData.city,
+      country: formData.country,
+      email: formData.email,
+      phoneNumber: formData.phoneNumber,
+      website: formData.website,
+      vatId: formData.vatNumber,
+      conditions: formData.paymentConditions,
+      customerInfo: formData.notes,
+    };
+
+    this.supplierService
+      .addSupplier(newSupplierData)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: addedSupplier => {
+          this.suppliers.update(current => [...current, addedSupplier]);
+          this.selectSupplier(addedSupplier);
+        },
+        error: () => this.errorMessage.set('Fehler beim Speichern.'),
+      });
   }
 
   /**
@@ -90,7 +125,6 @@ export class SuppliersComponent implements OnInit {
    */
   private loadSuppliers() {
     this.errorMessage.set(null);
-
     this.supplierService
       .getSuppliers()
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -105,17 +139,17 @@ export class SuppliersComponent implements OnInit {
   }
 
   /**
-   * TODO: Add openModal functionality and save supplier-data here
-   */
-  addSupplier() {
-    // this.suppliers.update();
-  }
-
-  /**
    * Closes the Toast error message
    * @protected
    */
   protected closeToast() {
     this.errorMessage.set(null);
+  }
+
+  /**
+   * Setzt die Auswahl zurück und schließt somit die rechte Spalte
+   */
+  protected closeDetail() {
+    this.selectedSupplier.set(null);
   }
 }

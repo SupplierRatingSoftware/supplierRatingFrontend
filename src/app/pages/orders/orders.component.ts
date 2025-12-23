@@ -98,7 +98,7 @@ export class OrdersComponent implements OnInit {
       (result: OrderFormData) => {
         // Wenn der User auf "Speichern" klickt und Daten zurückkommen
         if (result && result.shortName) {
-          this.addOrderFromModal(result.shortName);
+          this.addOrderFromModal();
         }
       },
       () => {
@@ -108,7 +108,8 @@ export class OrdersComponent implements OnInit {
   }
 
   // Hilfsfunktion, um den neuen Namen in deine Signal-Liste zu schreiben
-  private addOrderFromModal(name: string) {
-    // this.orders.update(current => [...current, name]);
+  private addOrderFromModal() {
+    //TODO: Logik für Orders implementieren, sobald OrderService bereit ist
+    console.log('Order Modal gespeichert');
   }
 }
