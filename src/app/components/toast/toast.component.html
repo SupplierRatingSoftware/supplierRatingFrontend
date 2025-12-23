@@ -1,0 +1,19 @@
+@if (message()) {
+  <div
+    class="toast show position-absolute top-0 end-0 m-3 border rounded-4 shadow bg-body-tertiary"
+    role="alert"
+    aria-live="assertive"
+    aria-atomic="true">
+    <div class="toast-header bg-transparent border-bottom-0">
+      <strong class="me-auto text-danger">Error</strong>
+      <button
+        type="button"
+        class="btn btn-link p-0 text-decoration-none text-reset"
+        aria-label="Close"
+        (click)="onClose()">
+        <i-lucide [img]="X" [size]="16" [strokeWidth]="1.5" aria-hidden="true"></i-lucide>
+      </button>
+    </div>
+    <div class="toast-body pt-0">{{ message() }}</div>
+  </div>
+}

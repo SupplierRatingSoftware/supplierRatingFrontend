@@ -1,9 +1,10 @@
-<div class="container-fluid d-flex flex-column p-2 h-100">
+<div class="container-fluid d-flex flex-column p-2 h-100 position-relative">
+  <app-toast [message]="errorMessage()" (exitToast)="closeToast()"></app-toast>
   <app-list-search class="mb-3"></app-list-search>
 
   <ul class="list-unstyled">
-    @for (item of suppliers(); track $index) {
-      <app-list-item [label]="item" [icon]="User"></app-list-item>
+    @for (item of suppliers(); track item.id) {
+      <app-list-item [label]="item.name" [icon]="User"></app-list-item>
     }
   </ul>
 </div>

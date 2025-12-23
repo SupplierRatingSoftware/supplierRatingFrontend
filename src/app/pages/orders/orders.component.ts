@@ -1,20 +1,24 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ModalFormOrderComponent, OrderFormData } from '../../components/modal-form-order/modal-form-order'; // Pfad anpassen
+import { NotepadText, ShoppingCart } from 'lucide-angular';
+import { ModalFormOrderComponent, OrderFormData } from '../../components/modal-form-order/modal-form-order';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { ListSearch } from '../../components/list-search/list-search';
 import { AddBtn } from '../../components/add-btn/add-btn';
 import { ListItem } from '../../components/list-item/list-item';
-import { NotepadText, ShoppingCart } from 'lucide-angular'; // Anderes Icon für Bestellungen
+import { NotepadText } from 'lucide-angular';
+import { OrderService } from '../../services/order.service';
+import { Order } from '../../models/order.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ToastComponent } from '../../components/toast/toast.component';
 
 @Component({
   selector: 'app-orders',
-  standalone: true,
-  imports: [ListSearch, AddBtn, ListItem],
+  imports: [ListSearch, AddBtn, ListItem, ToastComponent],
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OrdersComponent {
+export class OrdersComponent implements OnInit {
   /**
    * Lucide Icon
    * @protected
@@ -23,11 +27,64 @@ export class OrdersComponent {
   protected readonly OrderIcon = ShoppingCart;
   private modalService = inject(NgbModal);
 
-  // State: List of orders
-  readonly orders = signal<string[]>(['Bestellung 1', 'Bestellung 2']);
+  /**
+   * Injected OrderService
+   * @private
+   */
+  private orderService: OrderService = inject(OrderService);
+  private destroyRef = inject(DestroyRef);
 
-  protected addOrder() {
-    this.orders.update(current => [...current, `Bestellung ${current.length + 1}`]);
+  /**
+   * State: Initial list of orders
+   */
+  readonly orders = signal<Order[]>([]);
+
+  /**
+   * State: Error message for UI to display
+   */
+  readonly errorMessage = signal<string | null>(null);
+
+  /**
+   * Lifecycle hook that is called after the component is initialized.
+   */
+  ngOnInit() {
+    this.loadOrders();
+  }
+
+  /**
+   * Loads order-data from the service and updates the signal state
+   * If an error occurs, an error message should be displayed.
+   * @private
+   */
+  private loadOrders() {
+    this.errorMessage.set(null);
+
+    this.orderService
+      .getOrders()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: data => {
+          this.orders.set(data);
+        },
+        error: () => {
+          this.errorMessage.set('Unable to load orders. Please check your connection and try again.');
+        },
+      });
+  }
+
+  /**
+   * TODO: Add openModal functionality and save order-data here
+   */
+  addOrder() {
+    // this.orders.update();
+  }
+
+  /**
+   * Closes the Toast error message
+   * @protected
+   */
+  protected closeToast() {
+    this.errorMessage.set(null);
   }
 
   openOrderModal() {
