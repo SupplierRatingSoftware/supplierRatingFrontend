@@ -5,7 +5,6 @@ import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal 
 import { ListSearch } from '../../components/list-search/list-search';
 import { AddBtn } from '../../components/add-btn/add-btn';
 import { ListItem } from '../../components/list-item/list-item';
-import { NotepadText } from 'lucide-angular';
 import { OrderService } from '../../services/order.service';
 import { Order } from '../../models/order.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -110,6 +109,6 @@ export class OrdersComponent implements OnInit {
 
   // Hilfsfunktion, um den neuen Namen in deine Signal-Liste zu schreiben
   private addOrderFromModal(name: string) {
-    this.orders.update(current => [...current, name]);
+    // this.orders.update(current => [...current, name]);
   }
 }
