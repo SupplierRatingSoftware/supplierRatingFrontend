@@ -1,6 +1,8 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { Supplier } from '../models/supplier.model';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 /**
  * Service for providing mocked, async supplier-data.
@@ -9,47 +11,124 @@ import { Supplier } from '../models/supplier.model';
   providedIn: 'root',
 })
 export class SupplierService {
-  getSuppliers(): Observable<Supplier[]> {
-    const mockSuppliers: Supplier[] = [
-      {
-        id: 'perm-1',
-        code: 'SUP-001',
-        name: 'Müller Baustoffe GmbH',
-        city: 'Berlin',
-        country: 'DE',
-        zipCode: '10115',
-        email: 'kontakt@mueller-bau.de',
-        stats: {
-          avgQuality: 4.5,
-          avgCost: 3.2,
-          avgDeadline: 4.8,
-          avgAvailability: 5.0,
-          avgTotal: 4.4,
-          totalRatingCount: 12,
-        },
-      },
-      {
-        id: 'perm-2',
-        code: 'SUP-002',
-        name: 'Swiss Tech AG',
-        city: 'Zürich',
-        country: 'CH',
-        zipCode: '8005',
-        stats: {
-          avgQuality: 5.0,
-          avgCost: 2.5,
-          avgDeadline: 5.0,
-          avgAvailability: 4.5,
-          avgTotal: 4.2,
-          totalRatingCount: 5,
-        },
-      },
-    ];
+  /**
+   * Injected HttpClient
+   * @private
+   */
+  private http = inject(HttpClient);
 
-    /**
-     * 'of()' takes data and packages it in an Observable.
-     * For the component it looks exactly the same as if it came from the real server.
-     */
-    return of(mockSuppliers);
+  /**
+   * Base URL for supplier API & headers
+   * @private
+   */
+  private baseUrl = `${environment.apiUrl}/suppliers`;
+  private headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+  /**
+   * Mocked supplier data
+   * @private
+   */
+  private readonly mockSuppliers: Supplier[] = [
+    {
+      id: 'perm-1',
+      code: 'SUP-001',
+      name: 'Müller Baustoffe GmbH',
+      city: 'Berlin',
+      country: 'DE',
+      zipCode: '10115',
+      email: 'kontakt@mueller-bau.de',
+      stats: {
+        avgQuality: 4.5,
+        avgCost: 3.2,
+        avgDeadline: 4.8,
+        avgAvailability: 5.0,
+        avgTotal: 4.4,
+        totalRatingCount: 12,
+      },
+    },
+    {
+      id: 'perm-2',
+      code: 'SUP-002',
+      name: 'Swiss Tech AG',
+      city: 'Zürich',
+      country: 'CH',
+      zipCode: '8005',
+      stats: {
+        avgQuality: 5.0,
+        avgCost: 2.5,
+        avgDeadline: 5.0,
+        avgAvailability: 4.5,
+        avgTotal: 4.2,
+        totalRatingCount: 5,
+      },
+    },
+  ];
+
+  /**
+   * GET /suppliers
+   * @description Retrieves a list of all suppliers
+   */
+  getSuppliers(): Observable<Supplier[]> {
+    // if mock data is enabled, return mock data
+    if (environment.useMockData) {
+      console.log('⚠️ Using Mock Data for getSuppliers');
+      return of(this.mockSuppliers);
+    }
+    // real backend API call
+    return this.http.get<Supplier[]>(this.baseUrl, { headers: this.headers });
+  }
+
+  /**
+   * POST /suppliers
+   * @description Creates a new supplier
+   */
+  addSupplier(supplier: Supplier): Observable<Supplier> {
+    // if mock data is enabled, return mock data
+    if (environment.useMockData) {
+      console.log('⚠️ Using Mock Data for createSupplier');
+      // we simulate a new object to be returned with an ID
+      const newMockSupplier: Supplier = {
+        ...supplier,
+        id: `mock-id-${Date.now()}`,
+        code: `MOCK-${Date.now()}`,
+      };
+      // push freshly created supplier to mockSuppliers array
+      this.mockSuppliers.push(newMockSupplier);
+
+      return of(newMockSupplier);
+    }
+    // real backend API call
+    return this.http.post<Supplier>(this.baseUrl, supplier, { headers: this.headers });
+  }
+
+  /**
+   * GET /suppliers/{id}
+   * @description Retrieves a supplier by its ID
+   */
+  getSupplierById(id: string): Observable<Supplier> {
+    // if mock data is enabled, return mock data
+    if (environment.useMockData) {
+      console.log('⚠️ Mocking Data for getSupplierById with ID:', id);
+      // find the supplier in the mockSuppliers array
+      const mockSupplier = this.mockSuppliers.find(s => s.id === id);
+      // return the found supplier or the first supplier in the array
+      return of(mockSupplier || this.mockSuppliers[0]);
+    }
+    // real backend API call
+    return this.http.get<Supplier>(`${this.baseUrl}/${id}`);
+  }
+
+  /**
+   * PUT /suppliers/{id}
+   * @description Updates an existing supplier
+   */
+  updateSupplier(id: string, supplier: Supplier): Observable<Supplier> {
+    // if mock data is enabled, return mock data
+    if (environment.useMockData) {
+      console.log('⚠️ Mocking Data for updateSupplier with ID:', id);
+      return of({ ...supplier, id, code: `MOCK-${id}-${Date.now()}` } as Supplier);
+    }
+    // real backend API call
+    return this.http.put<Supplier>(`${this.baseUrl}/${id}`, supplier);
   }
 }

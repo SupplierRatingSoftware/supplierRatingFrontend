@@ -35,6 +35,6 @@ export class ListItem {
    * @protected
    */
   protected editContent() {
-    console.log('edit supplier');
+    console.log('open edit');
   }
 }
