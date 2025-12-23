@@ -66,6 +66,7 @@ export class SupplierService {
 
   /**
    * GET /suppliers
+   * @description Retrieves a list of all suppliers
    */
   getSuppliers(): Observable<Supplier[]> {
     // if mock data is enabled, return mock data
@@ -79,6 +80,7 @@ export class SupplierService {
 
   /**
    * POST /suppliers
+   * @description Creates a new supplier
    */
   addSupplier(supplier: Supplier): Observable<Supplier> {
     // if mock data is enabled, return mock data
@@ -97,5 +99,36 @@ export class SupplierService {
     }
     // real backend API call
     return this.http.post<Supplier>(this.baseUrl, supplier, { headers: this.headers });
+  }
+
+  /**
+   * GET /suppliers/{id}
+   * @description Retrieves a supplier by its ID
+   */
+  getSupplierById(id: string): Observable<Supplier> {
+    // if mock data is enabled, return mock data
+    if (environment.useMockData) {
+      console.log('⚠️ Mocking Data for getSupplierById with ID:', id);
+      // find the supplier in the mockSuppliers array
+      const mockSupplier = this.mockSuppliers.find(s => s.id === id);
+      // return the found supplier or the first supplier in the array
+      return of(mockSupplier || this.mockSuppliers[0]);
+    }
+    // real backend API call
+    return this.http.get<Supplier>(`${this.baseUrl}/${id}`);
+  }
+
+  /**
+   * PUT /suppliers/{id}
+   * @description Updates an existing supplier
+   */
+  updateSupplier(id: string, supplier: Supplier): Observable<Supplier> {
+    // if mock data is enabled, return mock data
+    if (environment.useMockData) {
+      console.log('⚠️ Mocking Data for updateSupplier with ID:', id);
+      return of({ ...supplier, id, code: `MOCK-${id}-${Date.now()}` } as Supplier);
+    }
+    // real backend API call
+    return this.http.put<Supplier>(`${this.baseUrl}/${id}`, supplier);
   }
 }
