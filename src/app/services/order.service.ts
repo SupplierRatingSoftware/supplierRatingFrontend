@@ -92,4 +92,35 @@ export class OrderService {
     // real backend API call
     return this.http.post<Order>(this.baseUrl, order, { headers: this.headers });
   }
+
+  /**
+   * GET /orders/{id}
+   * @description Retrieves a supplier by its ID
+   */
+  getOrderById(id: string): Observable<Order> {
+    // if mock data is enabled, return mock data
+    if (environment.useMockData) {
+      console.log('⚠️ Mocking Data for getOrderById with ID:', id);
+      // find the supplier in the mockOrders array
+      const mockOrder = this.mockOrders.find(s => s.id === id);
+      // return the found supplier or the first supplier in the array
+      return of(mockOrder || this.mockOrders[0]);
+    }
+    // real backend API call
+    return this.http.get<Order>(`${this.baseUrl}/${id}`);
+  }
+
+  /**
+   * PUT /orders/{id}
+   * @description Updates an existing supplier
+   */
+  updateOrder(id: string, supplier: Order): Observable<Order> {
+    // if mock data is enabled, return mock data
+    if (environment.useMockData) {
+      console.log('⚠️ Mocking Data for updateOrder with ID:', id);
+      return of({ ...supplier, id, code: `MOCK-${id}-${Date.now()}` } as Order);
+    }
+    // real backend API call
+    return this.http.put<Order>(`${this.baseUrl}/${id}`, supplier);
+  }
 }
