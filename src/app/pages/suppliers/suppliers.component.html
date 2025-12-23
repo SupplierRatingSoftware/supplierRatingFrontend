@@ -12,6 +12,7 @@
             [label]="item.name"
             [icon]="User"
             (itemSelected)="selectSupplier(item)"
+            (editSelected)="openEditSupplierModal(item)"
             [class.bg-primary-subtle]="selectedSupplier()?.id === item.id">
           </app-list-item>
         }
@@ -31,13 +32,25 @@
             <div class="row">
               <div class="col-md-8">
                 <div class="form-floating mb-3">
-                  <input type="text" readonly class="form-control-plaintext fw-bold" id="detailName" [value]="s.name" placeholder="Name">
+                  <input
+                    type="text"
+                    readonly
+                    class="form-control-plaintext fw-bold"
+                    id="detailName"
+                    [value]="s.name"
+                    placeholder="Name" />
                   <label for="detailName">NAME</label>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="form-floating mb-3">
-                  <input type="text" readonly class="form-control-plaintext fw-bold" id="detailCustNum" [value]="s.customerNumber || '-'" placeholder="Kundennummer">
+                  <input
+                    type="text"
+                    readonly
+                    class="form-control-plaintext fw-bold"
+                    id="detailCustNum"
+                    [value]="s.customerNumber || '-'"
+                    placeholder="Kundennummer" />
                   <label for="detailCustNum">KUNDENNUMMER</label>
                 </div>
               </div>
@@ -49,13 +62,25 @@
             <div class="row">
               <div class="col-md-8">
                 <div class="form-floating mb-3">
-                  <input type="text" readonly class="form-control-plaintext" id="detailStreet" [value]="s.street || '-'" placeholder="Strasse">
+                  <input
+                    type="text"
+                    readonly
+                    class="form-control-plaintext"
+                    id="detailStreet"
+                    [value]="s.street || '-'"
+                    placeholder="Strasse" />
                   <label for="detailStreet">STRASSE + HAUSNUMMER</label>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="form-floating mb-3">
-                  <input type="text" readonly class="form-control-plaintext" id="detailPoBox" [value]="s.poBox || '-'" placeholder="Postfach">
+                  <input
+                    type="text"
+                    readonly
+                    class="form-control-plaintext"
+                    id="detailPoBox"
+                    [value]="s.poBox || '-'"
+                    placeholder="Postfach" />
                   <label for="detailPoBox">POSTFACH</label>
                 </div>
               </div>
@@ -63,19 +88,37 @@
             <div class="row">
               <div class="col-md-3">
                 <div class="form-floating mb-3">
-                  <input type="text" readonly class="form-control-plaintext" id="detailZip" [value]="s.zipCode || '-'" placeholder="PLZ">
+                  <input
+                    type="text"
+                    readonly
+                    class="form-control-plaintext"
+                    id="detailZip"
+                    [value]="s.zipCode || '-'"
+                    placeholder="PLZ" />
                   <label for="detailZip">PLZ</label>
                 </div>
               </div>
               <div class="col-md-5">
                 <div class="form-floating mb-3">
-                  <input type="text" readonly class="form-control-plaintext" id="detailCity" [value]="s.city || '-'" placeholder="Ort">
+                  <input
+                    type="text"
+                    readonly
+                    class="form-control-plaintext"
+                    id="detailCity"
+                    [value]="s.city || '-'"
+                    placeholder="Ort" />
                   <label for="detailCity">ORT</label>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="form-floating mb-3">
-                  <input type="text" readonly class="form-control-plaintext" id="detailCountry" [value]="s.country || '-'" placeholder="Land">
+                  <input
+                    type="text"
+                    readonly
+                    class="form-control-plaintext"
+                    id="detailCountry"
+                    [value]="s.country || '-'"
+                    placeholder="Land" />
                   <label for="detailCountry">LAND</label>
                 </div>
               </div>
@@ -87,19 +130,37 @@
             <div class="row">
               <div class="col-md-6">
                 <div class="form-floating mb-3">
-                  <input type="email" readonly class="form-control-plaintext text-primary" id="detailEmail" [value]="s.email || '-'" placeholder="Email">
+                  <input
+                    type="email"
+                    readonly
+                    class="form-control-plaintext text-primary"
+                    id="detailEmail"
+                    [value]="s.email || '-'"
+                    placeholder="Email" />
                   <label for="detailEmail">EMAIL</label>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-floating mb-3">
-                  <input type="tel" readonly class="form-control-plaintext" id="detailPhone" [value]="s.phoneNumber || '-'" placeholder="Telefon">
+                  <input
+                    type="tel"
+                    readonly
+                    class="form-control-plaintext"
+                    id="detailPhone"
+                    [value]="s.phoneNumber || '-'"
+                    placeholder="Telefon" />
                   <label for="detailPhone">TELEFONNUMMER</label>
                 </div>
               </div>
             </div>
             <div class="form-floating mb-3">
-              <input type="url" readonly class="form-control-plaintext text-primary" id="detailWeb" [value]="s.website || '-'" placeholder="Webseite">
+              <input
+                type="url"
+                readonly
+                class="form-control-plaintext text-primary"
+                id="detailWeb"
+                [value]="s.website || '-'"
+                placeholder="Webseite" />
               <label for="detailWeb">WEBLINK / WEBSEITE</label>
             </div>
           </div>
@@ -109,13 +170,25 @@
             <div class="row">
               <div class="col-md-6">
                 <div class="form-floating mb-3">
-                  <input type="text" readonly class="form-control-plaintext" id="detailVat" [value]="s.vatId || '-'" placeholder="MWST">
+                  <input
+                    type="text"
+                    readonly
+                    class="form-control-plaintext"
+                    id="detailVat"
+                    [value]="s.vatId || '-'"
+                    placeholder="MWST" />
                   <label for="detailVat">MWST / UST / TVA</label>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-floating mb-3">
-                  <input type="text" readonly class="form-control-plaintext" id="detailCond" [value]="s.conditions || '-'" placeholder="Konditionen">
+                  <input
+                    type="text"
+                    readonly
+                    class="form-control-plaintext"
+                    id="detailCond"
+                    [value]="s.conditions || '-'"
+                    placeholder="Konditionen" />
                   <label for="detailCond">KONDITIONEN</label>
                 </div>
               </div>
@@ -127,7 +200,8 @@
                 id="detailNotes"
                 style="height: 100px"
                 placeholder="Bemerkungen"
-              >{{ s.customerInfo || '-' }}</textarea>
+                >{{ s.customerInfo || '-' }}</textarea
+              >
               <label for="detailNotes">ZUSATZ (BEMERKUNGEN)</label>
             </div>
           </div>

@@ -126,8 +126,14 @@ export class SupplierService {
   updateSupplier(id: string, supplier: Supplier): Observable<Supplier> {
     // if mock data is enabled, return mock data
     if (environment.useMockData) {
+      const index = this.mockSuppliers.findIndex(s => s.id === id);
       console.log('⚠️ Mocking Data for updateSupplier with ID:', id);
-      return of({ ...supplier, id, code: `MOCK-${id}-${Date.now()}` } as Supplier);
+      if (index !== -1) {
+        // Wir überschreiben den alten Eintrag im Array
+        this.mockSuppliers[index] = { ...supplier, id };
+        // Wir geben eine Kopie zurück, um wieder doppelte Einträge zu vermeiden
+        return of({ ...this.mockSuppliers[index] });
+      }
     }
     // real backend API call
     return this.http.put<Supplier>(`${this.baseUrl}/${id}`, supplier);

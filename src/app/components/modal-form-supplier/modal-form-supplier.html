@@ -1,5 +1,5 @@
 <div class="supplier-form-container">
-  <h4 class="mb-4">Neuen Lieferanten erfassen</h4>
+  <h4 class="mb-4">{{ supplier ? 'Lieferanten bearbeiten' : 'Neuen Lieferanten erfassen' }}</h4>
 
   <form [formGroup]="supplierForm" (ngSubmit)="onSubmit()">
     <div ngbAccordion>
@@ -196,7 +196,9 @@
     </div>
     <div class="d-flex justify-content-end mt-4">
       <button type="button" class="btn btn-secondary me-2" (click)="cancel()">Abbrechen</button>
-      <button type="submit" class="btn btn-primary px-5" [disabled]="supplierForm.invalid">Speichern</button>
+      <button type="submit" class="btn btn-primary px-5" [disabled]="supplierForm.invalid">
+        {{ supplier ? 'Änderungen speichern' : 'Lieferant erstellen' }}
+      </button>
     </div>
   </form>
 </div>

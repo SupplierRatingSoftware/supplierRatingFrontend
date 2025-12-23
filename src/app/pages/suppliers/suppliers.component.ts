@@ -4,7 +4,7 @@ import { ListSearch } from '../../components/list-search/list-search';
 import { AddBtn } from '../../components/add-btn/add-btn';
 import { ListItem } from '../../components/list-item/list-item';
 import { ModalFormSupplierComponent, SupplierFormData } from '../../components/modal-form-supplier/modal-form-supplier';
-import { LucideAngularModule, User } from 'lucide-angular'; //LucideAngularModule importieren
+import { LucideAngularModule, User } from 'lucide-angular'; //LucideAngularModule importierenklkklll
 import { NgbAccordionModule, NgbModal } from '@ng-bootstrap/ng-bootstrap'; // NgbAccordionModule importiert
 import { SupplierService } from '../../services/supplier.service';
 import { Supplier } from '../../models/supplier.model';
@@ -65,8 +65,73 @@ export class SuppliersComponent implements OnInit {
   }
 
   /**
-   * This method opens the modal
-   * // +++ NEUE METHODE: Öffnet das Modal zum Bearbeiten +++
+   * 1. Diese Funktion öffnet das Modal im Bearbeitungs-Modus (wird im suppliers.component.html aufgerufen)
+   */
+  openEditSupplierModal(supplier: Supplier) {
+    const modalRef = this.modalService.open(ModalFormSupplierComponent, {
+      size: 'lg',
+      centered: true,
+      backdrop: 'static',
+    });
+    // WICHTIG: Hier füllen wir das "Postfach" (Input) des Modals
+    // mit dem Lieferanten, den wir gerade bearbeiten wollen.
+    modalRef.componentInstance.supplier = supplier;
+
+    // Wir warten darauf, dass der User im Modal auf "Speichern" klickt
+    modalRef.result.then(
+      (result: SupplierFormData) => {
+        if (result) {
+          // Wenn Daten zurückkommen, rufen wir die Update-Funktion auf
+          this.updateExistingSupplier(supplier.id, result);
+        }
+      },
+      () => {
+        /* User hat abgebrochen (Dismiss) */
+      }
+    );
+  }
+
+  /**
+   * 2. Diese Funktion speichert die Änderungen
+   */
+  private updateExistingSupplier(id: string, formData: SupplierFormData) {
+    // Wir bauen aus den Formulardaten wieder ein echtes Lieferanten-Objekt
+    const updatedData: Supplier = {
+      id: id, // Die ID bleibt gleich!
+      code: '',
+      name: formData.fullName,
+      customerNumber: formData.customerNumber,
+      street: formData.street,
+      zipCode: formData.zipCode,
+      city: formData.city,
+      country: formData.country,
+      email: formData.email,
+      phoneNumber: formData.phoneNumber,
+      website: formData.website,
+      vatId: formData.vatNumber,
+      conditions: formData.paymentConditions,
+      customerInfo: formData.notes,
+    };
+
+    this.supplierService
+      .updateSupplier(id, updatedData) // Diese Methode muss in deinem Service existieren
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: res => {
+          // REAKTIVITÄT: Wir aktualisieren unsere Liste im Signal.
+          // Wir gehen die Liste durch (.map) und tauschen nur den einen
+          // Lieferanten mit der passenden ID gegen die neue Version (res) aus.
+          this.suppliers.update(current => current.map(s => (s.id === id ? res : s)));
+
+          // Auch die Detailansicht rechts soll sofort den neuen Namen zeigen
+          this.selectSupplier(res);
+        },
+        error: () => this.errorMessage.set('Fehler beim Aktualisieren.'),
+      });
+  }
+
+  /**
+   * This method opens the modal (für den add button, wird im suppliers.component.html aufgerufen)
    */
   openSupplierModal() {
     const modalRef = this.modalService.open(ModalFormSupplierComponent, {
