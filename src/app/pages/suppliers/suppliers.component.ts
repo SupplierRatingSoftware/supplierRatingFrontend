@@ -73,9 +73,9 @@ export class SuppliersComponent implements OnInit {
       centered: true,
       backdrop: 'static',
     });
-    // WICHTIG: Hier füllen wir das "Postfach" (Input) des Modals
+    // WICHTIG: Hier füllen wir das "Postfach" (Signal) des Modals
     // mit dem Lieferanten, den wir gerade bearbeiten wollen.
-    modalRef.componentInstance.supplier = supplier;
+    modalRef.componentInstance.supplier.set(supplier);
 
     // Wir warten darauf, dass der User im Modal auf "Speichern" klickt
     modalRef.result.then(
@@ -85,8 +85,11 @@ export class SuppliersComponent implements OnInit {
           this.updateExistingSupplier(supplier.id, result);
         }
       },
-      () => {
-        /* User hat abgebrochen (Dismiss) */
+      reason => {
+        // Handle modal dismissal or errors
+        if (reason !== 0 && reason !== 1) {
+          console.error('Modal error:', reason);
+        }
       }
     );
   }

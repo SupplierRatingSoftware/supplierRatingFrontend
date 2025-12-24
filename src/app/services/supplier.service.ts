@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { Supplier } from '../models/supplier.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
@@ -134,6 +134,8 @@ export class SupplierService {
         // Wir geben eine Kopie zurück, um wieder doppelte Einträge zu vermeiden
         return of({ ...this.mockSuppliers[index] });
       }
+      // Return an error Observable if supplier not found
+      return throwError(() => new Error(`Supplier with ID ${id} not found`));
     }
     // real backend API call
     return this.http.put<Supplier>(`${this.baseUrl}/${id}`, supplier);

@@ -1,5 +1,5 @@
-// 1. Wir müssen 'Input' und 'OnInit' von Angular importieren
-import { Component, inject, Input, OnInit } from '@angular/core';
+// 1. Wir müssen 'signal' und 'OnInit' von Angular importieren
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgbAccordionModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap'; // NgbActiveModal hinzugefügt
@@ -16,8 +16,8 @@ import { Supplier, SupplierMapper } from '../../models/supplier.model';
 export class ModalFormSupplierComponent implements OnInit {
   activeModal = inject(NgbActiveModal);
   // 4. Das "Postfach": Hier landet der Lieferant, wenn wir auf 'Edit' klicken.
-  // Das '?' bedeutet: Es kann ein Lieferant kommen, muss aber nicht (beim Neu-Erstellen kommt keiner).
-  @Input() supplier?: Supplier;
+  // Using a writable signal to allow setting via componentInstance (NgbModal pattern)
+  supplier = signal<Supplier | undefined>(undefined);
 
   supplierForm = new FormGroup({
     fullName: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
@@ -38,10 +38,11 @@ export class ModalFormSupplierComponent implements OnInit {
   // 5. Diese Funktion wird automatisch ausgeführt, sobald das Modal geöffnet wird
   ngOnInit() {
     // Wir prüfen: Liegt ein Lieferant im Postfach?
-    if (this.supplier) {
+    const currentSupplier = this.supplier();
+    if (currentSupplier) {
       // +++ GEÄNDERT: Wir nutzen jetzt den Mapper +++
       // Wir lassen den Mapper die Arbeit machen und erhalten fertige Daten fürs Formular
-      const formData = SupplierMapper.mapSupplierToForm(this.supplier);
+      const formData = SupplierMapper.mapSupplierToForm(currentSupplier);
 
       // Jetzt müssen wir nur noch diese fertigen Daten ins Formular "patchen"
       this.supplierForm.patchValue(formData);
