@@ -3,7 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ListSearch } from '../../components/list-search/list-search';
 import { AddBtn } from '../../components/add-btn/add-btn';
 import { ListItem } from '../../components/list-item/list-item';
-import { LucideAngularModule, User } from 'lucide-angular'; //LucideAngularModule importierenklkklll
+import { LucideAngularModule, User } from 'lucide-angular'; //LucideAngularModule importieren
 import { NgbAccordionModule, NgbModal } from '@ng-bootstrap/ng-bootstrap'; // NgbAccordionModule importiert
 import { SupplierService } from '../../services/supplier.service';
 import { Supplier, SupplierFormData, SupplierMapper } from '../../models/supplier.model';
