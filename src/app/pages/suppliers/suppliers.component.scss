@@ -3,12 +3,10 @@
   height: 100vh;
 }
 
-.selected-item {
-  ::ng-deep .list-card {
-    background-color: var(--bs-primary-light) !important;
-    border-color: var(--bs-primary) !important;
-    transition: all 0.2s ease-in-out;
-  }
+.selected-item .list-card {
+  background-color: var(--bs-primary-light) !important;
+  border-color: var(--bs-primary) !important;
+  transition: all 0.2s ease-in-out;
 }
 
 .form-control-plaintext {
