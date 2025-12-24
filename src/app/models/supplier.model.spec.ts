@@ -183,11 +183,7 @@ describe('SupplierMapper', () => {
       };
 
       const formData = SupplierMapper.mapSupplierToForm(originalSupplier);
-      const resultSupplier = SupplierMapper.mapFormToSupplier(
-        formData,
-        originalSupplier.id,
-        originalSupplier.code
-      );
+      const resultSupplier = SupplierMapper.mapFormToSupplier(formData, originalSupplier.id, originalSupplier.code);
 
       expect(resultSupplier).toEqual(originalSupplier);
     });

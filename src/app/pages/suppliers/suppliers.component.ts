@@ -85,7 +85,7 @@ export class SuppliersComponent implements OnInit {
           this.updateExistingSupplier(supplier.id, result);
         }
       },
-      (reason) => {
+      reason => {
         // Handle modal dismissal or errors
         if (reason !== 0 && reason !== 1) {
           console.error('Modal error:', reason);

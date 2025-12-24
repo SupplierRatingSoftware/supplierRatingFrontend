@@ -107,7 +107,7 @@ describe('ModalFormSupplierComponent', () => {
     it('should call activeModal.close with form value when form is submitted and valid', () => {
       component.supplier.set(mockSupplier);
       component.ngOnInit();
-      
+
       component.onSubmit();
 
       expect(mockActiveModal.close).toHaveBeenCalledWith(component.supplierForm.value);
@@ -116,7 +116,7 @@ describe('ModalFormSupplierComponent', () => {
     it('should not call activeModal.close when form is invalid', () => {
       // Create component with empty form (invalid because fullName is required)
       component.supplierForm.patchValue({ fullName: '' });
-      
+
       component.onSubmit();
 
       expect(mockActiveModal.close).not.toHaveBeenCalled();

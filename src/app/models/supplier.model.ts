@@ -74,7 +74,7 @@ export class SupplierMapper {
   /**
    * Erstellt aus den Formulardaten ein fertiges Supplier-Objekt.
    * Das 'static' erlaubt uns den Aufruf: SupplierMapper.mapFormToSupplier(...)
-   * 
+   *
    * @param formData - Die Daten aus dem Formular
    * @param id - Die ID des Suppliers (wird vom Backend vergeben beim Erstellen)
    * @param code - Der Code des Suppliers (wird vom Backend vergeben beim Erstellen)
