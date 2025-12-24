@@ -72,7 +72,7 @@ export class SupplierService {
     // if mock data is enabled, return mock data
     if (environment.useMockData) {
       console.log('⚠️ Using Mock Data for getSuppliers');
-      // ÄNDERUNG: Nutze den Spread-Operator [...], um eine KOPIE zu senden, weil sonst hatten ich doppelte einträge in der liste nach + button benutzung
+      // ÄNDERUNG: Nutze den Spread-Operator [...], um eine KOPIE zu senden, weil sonst hatte ich doppelte Einträge in der liste nach + button benutzung
       return of([...this.mockSuppliers]);
     }
     // real backend API call
