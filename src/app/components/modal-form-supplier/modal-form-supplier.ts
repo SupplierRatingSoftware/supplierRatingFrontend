@@ -1,25 +1,10 @@
-import { Component, inject } from '@angular/core'; // inject ist modern in Angular 21
+// 1. Wir müssen 'signal' und 'OnInit' von Angular importieren
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-// ReactiveFormsModule: Das "Gehirn" für moderne Angular-Formulare
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-// NgbAccordionModule: Das Werkzeug für das Auf- und Zuklappen
 import { NgbAccordionModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap'; // NgbActiveModal hinzugefügt
-
-export interface SupplierFormData {
-  fullName: string;
-  customerNumber: string;
-  street: string;
-  poBox: string;
-  zipCode: string;
-  city: string;
-  country: string;
-  email: string;
-  phoneNumber: string;
-  website: string;
-  vatNumber: string;
-  paymentConditions: string;
-  notes: string;
-}
+// Wir importieren jetzt alles gesammelt aus der Model-Datei
+import { Supplier, SupplierMapper } from '../../models/supplier.model';
 
 @Component({
   selector: 'app-modal-form-supplier',
@@ -27,42 +12,50 @@ export interface SupplierFormData {
   templateUrl: './modal-form-supplier.html',
   styleUrl: './modal-form-supplier.scss',
 })
-export class ModalFormSupplierComponent {
-  // Das hier ist wie die Fernbedienung für das Fenster selbst
+// 3. Wir sagen der Klasse, dass sie 'OnInit' (beim Starten) etwas tun soll
+export class ModalFormSupplierComponent implements OnInit {
   activeModal = inject(NgbActiveModal);
+  // 4. Das "Postfach": Hier landet der Lieferant, wenn wir auf 'Edit' klicken.
+  // Using a writable signal to allow setting via componentInstance (NgbModal pattern)
+  supplier = signal<Supplier | undefined>(undefined);
 
-  // Wir erstellen eine Gruppe (FormGroup), die alle Felder bündelt
   supplierForm = new FormGroup({
-    // Ein FormControl ist ein einzelnes Eingabefeld
-    // Validators.required = Pflichtfeld
     fullName: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     customerNumber: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    //Felder für den Abschnitt 2 Anschrift
     street: new FormControl('', { nonNullable: true }),
     poBox: new FormControl('', { nonNullable: true }),
     zipCode: new FormControl('', { nonNullable: true }),
     city: new FormControl('', { nonNullable: true }),
-    country: new FormControl('Schweiz', { nonNullable: true }), // Standardwert 'Schweiz'
-    // Abschnitt 3: Kontakt & Web
+    country: new FormControl('Schweiz', { nonNullable: true }),
     email: new FormControl('', { nonNullable: true, validators: [Validators.email] }),
     phoneNumber: new FormControl('', { nonNullable: true }),
     website: new FormControl('', { nonNullable: true }),
-    // Abschnitt 4: Kundeninformation
     vatNumber: new FormControl('', { nonNullable: true }),
     paymentConditions: new FormControl('', { nonNullable: true }),
     notes: new FormControl('', { nonNullable: true }),
   });
 
-  // Diese Funktion wird aufgerufen, wenn man auf "Speichern" klickt
+  // 5. Diese Funktion wird automatisch ausgeführt, sobald das Modal geöffnet wird
+  ngOnInit() {
+    // Wir prüfen: Liegt ein Lieferant im Postfach?
+    const currentSupplier = this.supplier();
+    if (currentSupplier) {
+      // +++ GEÄNDERT: Wir nutzen jetzt den Mapper +++
+      // Wir lassen den Mapper die Arbeit machen und erhalten fertige Daten fürs Formular
+      const formData = SupplierMapper.mapSupplierToForm(currentSupplier);
+
+      // Jetzt müssen wir nur noch diese fertigen Daten ins Formular "patchen"
+      this.supplierForm.patchValue(formData);
+    }
+  }
+
   onSubmit() {
     if (this.supplierForm.valid) {
-      // .close() schliesst das Fenster und schickt die Daten an die SuppliersComponent zurück
       this.activeModal.close(this.supplierForm.value);
     }
   }
-  //Diese Funktion schliesst das Fenster, ohne Daten zu speichern
+
   cancel() {
-    // .dismiss() bedeutet "Abbrechen". Es wird kein Ergebnis zurückgegeben.
     this.activeModal.dismiss();
   }
 }

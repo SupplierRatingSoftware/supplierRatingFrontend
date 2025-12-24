@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { Supplier } from '../models/supplier.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
@@ -72,7 +72,8 @@ export class SupplierService {
     // if mock data is enabled, return mock data
     if (environment.useMockData) {
       console.log('⚠️ Using Mock Data for getSuppliers');
-      return of(this.mockSuppliers);
+      // ÄNDERUNG: Nutze den Spread-Operator [...], um eine KOPIE zu senden, weil sonst hatte ich doppelte Einträge in der liste nach + button benutzung
+      return of([...this.mockSuppliers]);
     }
     // real backend API call
     return this.http.get<Supplier[]>(this.baseUrl, { headers: this.headers });
@@ -95,7 +96,7 @@ export class SupplierService {
       // push freshly created supplier to mockSuppliers array
       this.mockSuppliers.push(newMockSupplier);
 
-      return of(newMockSupplier);
+      return of({ ...newMockSupplier });
     }
     // real backend API call
     return this.http.post<Supplier>(this.baseUrl, supplier, { headers: this.headers });
@@ -125,8 +126,16 @@ export class SupplierService {
   updateSupplier(id: string, supplier: Supplier): Observable<Supplier> {
     // if mock data is enabled, return mock data
     if (environment.useMockData) {
+      const index = this.mockSuppliers.findIndex(s => s.id === id);
       console.log('⚠️ Mocking Data for updateSupplier with ID:', id);
-      return of({ ...supplier, id, code: `MOCK-${id}-${Date.now()}` } as Supplier);
+      if (index !== -1) {
+        // Wir überschreiben den alten Eintrag im Array
+        this.mockSuppliers[index] = { ...supplier, id };
+        // Wir geben eine Kopie zurück, um wieder doppelte Einträge zu vermeiden
+        return of({ ...this.mockSuppliers[index] });
+      }
+      // Return an error Observable if supplier not found
+      return throwError(() => new Error(`Supplier with ID ${id} not found`));
     }
     // real backend API call
     return this.http.put<Supplier>(`${this.baseUrl}/${id}`, supplier);
