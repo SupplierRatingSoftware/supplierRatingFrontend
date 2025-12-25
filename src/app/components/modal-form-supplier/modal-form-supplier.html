@@ -2,60 +2,72 @@
   <h4 class="mb-4">{{ supplier() ? 'Lieferanten bearbeiten' : 'Neuen Lieferanten erfassen' }}</h4>
 
   <form [formGroup]="supplierForm" (ngSubmit)="onSubmit()">
-    <div ngbAccordion [closeOthers]="true">
-      @for (section of config; track section.sectionTitle; let first = $first) {
-      <div ngbAccordionItem [collapsed]="!first">
-        <h2 ngbAccordionHeader>
-          <button ngbAccordionButton type="button">{{ section.sectionTitle }}</button>
-        </h2>
+    <div ngbAccordion [closeOthers]="false">
 
-        <div ngbAccordionCollapse>
-          <div ngbAccordionBody>
-            <ng-template>
-              <div class="row">
-                @for (field of section.fields; track field.key) {
-                <div [class]="field.gridClass || 'col-12'" class="mb-3">
-                  <label [for]="field.key" class="form-label">
-                    {{ field.label }} {{ field.required ? '*' : '' }}
-                  </label>
+      @for (section of config; track section.sectionTitle) {
+        <div ngbAccordionItem
+             [collapsed]="!expandedSections.has(section.sectionTitle)"
+             (shown)="expandedSections.add(section.sectionTitle)"
+             (hidden)="expandedSections.delete(section.sectionTitle)">
 
-                  @switch (field.type) { @case ('select') {
-                  <select [id]="field.key" class="form-select" [formControlName]="field.key">
-                    @for (opt of field.options; track opt.value) {
-                    <option [value]="opt.value">{{ opt.label }}</option>
-                    }
-                  </select>
-                  } @case ('textarea') {
-                  <textarea [id]="field.key" class="form-control" [formControlName]="field.key" rows="3"> </textarea>
-                  } @default {
-                  <input
-                    [type]="field.type"
-                    [id]="field.key"
-                    class="form-control"
-                    [formControlName]="field.key"
-                    [placeholder]="field.placeholder || ''" />
-                  } } @if (supplierForm.get(field.key)?.invalid && supplierForm.get(field.key)?.touched) {
-                  <div class="text-danger small mt-1">
-                    @if (supplierForm.get(field.key)?.hasError('required')) {
-                    <span>{{ field.label }} ist erforderlich.</span>
-                    } @if (supplierForm.get(field.key)?.hasError('email')) {
-                    <span>Bitte eine gültige E-Mail Adresse eingeben.</span>
-                    }
-                  </div>
+          <h2 ngbAccordionHeader>
+            <button ngbAccordionButton type="button">
+              {{ section.sectionTitle }}
+              @if (isSectionInvalid(section)) {
+                <span class="ms-2 badge bg-danger text-white">!</span>
+              }
+            </button>
+          </h2>
+
+          <div ngbAccordionCollapse>
+            <div ngbAccordionBody>
+              <ng-template>
+                <div class="row">
+                  @for (field of section.fields; track field.key) {
+                    <div [class]="field.gridClass || 'col-12'" class="mb-3">
+                      <label [for]="'modal-' + field.key" class="form-label">
+                        {{ field.label }} {{ field.required ? '*' : '' }}
+                      </label>
+
+                      @switch (field.type) {
+                        @case ('select') {
+                          <select [id]="'modal-' + field.key" class="form-select" [formControlName]="field.key">
+                            @for (opt of field.options; track opt.value) {
+                              <option [value]="opt.value">{{ opt.label }}</option>
+                            }
+                          </select>
+                        }
+                        @case ('textarea') {
+                          <textarea [id]="'modal-' + field.key" class="form-control" [formControlName]="field.key" rows="3"></textarea>
+                        }
+                        @default {
+                          <input
+                            [type]="field.type"
+                            [id]="'modal-' + field.key"
+                            class="form-control"
+                            [formControlName]="field.key"
+                            [placeholder]="field.placeholder || ''" />
+                        }
+                      }
+
+                      @if (supplierForm.get(field.key)?.invalid && supplierForm.get(field.key)?.touched) {
+                        <div class="text-danger small mt-1">
+                          {{ field.label }} ist erforderlich oder ungültig.
+                        </div>
+                      }
+                    </div>
                   }
                 </div>
-                }
-              </div>
-            </ng-template>
+              </ng-template>
+            </div>
           </div>
         </div>
-      </div>
       }
     </div>
 
     <div class="d-flex justify-content-end mt-4">
       <button type="button" class="btn btn-secondary me-2" (click)="cancel()">Abbrechen</button>
-      <button type="submit" class="btn btn-primary px-5" [disabled]="supplierForm.invalid">
+      <button type="submit" class="btn btn-primary px-5">
         {{ supplier() ? 'Änderungen speichern' : 'Lieferant erstellen' }}
       </button>
     </div>

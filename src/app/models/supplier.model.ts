@@ -39,8 +39,8 @@ export interface FormSection {
  * Interface für das Supplier-Ojekt: Verbunden mit Order-Objekt
  */
 export interface Supplier {
-  id: string; // OpenBIS PermID (Stable Identifier)
-  code: string; // OpenBIS Code (Business Identifier)
+  id?: string; // OpenBIS PermID (Stable Identifier)
+  code?: string; // OpenBIS Code (Business Identifier)
   orders?: Order[]; // Array von Orders, da ein Lieferant mehrere Bestellungen hat, Optional da evtl. keine Bestellung vorliegt
   stats?: RatingStats; // Optional, da evtl. keine Bewertungen vorliegen, wird via rating.service.ts berechnet
   name: string;

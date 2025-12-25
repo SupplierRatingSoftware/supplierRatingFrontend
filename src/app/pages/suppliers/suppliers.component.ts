@@ -4,15 +4,16 @@ import { ListSearch } from '../../components/list-search/list-search';
 import { AddBtn } from '../../components/add-btn/add-btn';
 import { ListItem } from '../../components/list-item/list-item';
 import { LucideAngularModule, User } from 'lucide-angular'; //LucideAngularModule importieren
-import { NgbAccordionModule, NgbModal } from '@ng-bootstrap/ng-bootstrap'; // NgbAccordionModule importiert
-import { SupplierService } from '../../services/supplier.service';
-import { Supplier } from '../../models/supplier.model';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap'; // NgbAccordionModule importiert
 import { ToastComponent } from '../../components/toast/toast.component';
 import { ModalFormSupplierComponent } from '../../components/modal-form-supplier/modal-form-supplier';
+import { SupplierService } from '../../services/supplier.service';
+import { Supplier } from '../../models/supplier.model';
+import { PanelFormSupplierComponent } from '../../components/panel-form-supplier/panel-form-supplier';
 
 @Component({
   selector: 'app-suppliers',
-  imports: [ListSearch, AddBtn, ListItem, ToastComponent, LucideAngularModule, NgbAccordionModule],
+  imports: [ListSearch, AddBtn, ListItem, ToastComponent, LucideAngularModule, PanelFormSupplierComponent],
   templateUrl: './suppliers.component.html',
   styleUrl: './suppliers.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,7 +23,7 @@ export class SuppliersComponent implements OnInit {
    * Lucide Icon
    * @protected
    */
-  protected readonly User = User;
+  protected readonly UserIcon = User;
 
   /**
    * Injected Modal
@@ -58,7 +59,26 @@ export class SuppliersComponent implements OnInit {
   }
 
   /**
-   * Neu: Setzt den aktuell ausgewählten Lieferanten
+   * Loads supplier-data from the service and updates the signal state
+   * If an error occurs, an error message should be displayed.
+   */
+  private loadSuppliers() {
+    this.errorMessage.set(null);
+    this.supplierService
+      .getSuppliers()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: data => {
+          this.suppliers.set(data);
+        },
+        error: () => {
+          this.errorMessage.set('Unable to load suppliers. Please check your connection and try again.');
+        },
+      });
+  }
+
+  /**
+   * Setzt den aktuell ausgewählten Lieferanten
    */
   selectSupplier(supplier: Supplier) {
     this.selectedSupplier.set(supplier);
@@ -80,7 +100,7 @@ export class SuppliersComponent implements OnInit {
     // Wir warten darauf, dass der User im Modal auf "Speichern" klickt
     modalRef.result.then(
       (result: Supplier) => {
-        if (result) {
+        if (result && supplier.id) {
           // Wenn Daten zurückkommen, rufen wir die Update-Funktion auf
           this.updateExistingSupplier(supplier.id, result);
         }
@@ -152,25 +172,6 @@ export class SuppliersComponent implements OnInit {
           this.selectSupplier(addedSupplier);
         },
         error: () => this.errorMessage.set('Fehler beim Speichern.'),
-      });
-  }
-
-  /**
-   * Loads supplier-data from the service and updates the signal state
-   * If an error occurs, an error message should be displayed.
-   */
-  private loadSuppliers() {
-    this.errorMessage.set(null);
-    this.supplierService
-      .getSuppliers()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: data => {
-          this.suppliers.set(data);
-        },
-        error: () => {
-          this.errorMessage.set('Unable to load suppliers. Please check your connection and try again.');
-        },
       });
   }
 
