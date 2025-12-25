@@ -118,18 +118,32 @@ export class SuppliersComponent implements OnInit {
    * 2. Diese Funktion speichert die Änderungen
    */
   private updateExistingSupplier(id: string, formData: Supplier) {
-    // NEU: Nur noch eine Zeile statt der langen Liste!
-    const updatedSupplier = { ...formData, id };
+    // 1. Wir holen uns den aktuellen Stand des Lieferanten (inkl. seiner Orders!)
+    const existingSupplier = this.suppliers().find(s => s.id === id);
+
+    // 2. Wir "mergen" die Daten:
+    // Alles vom alten Objekt behalten, aber die Felder aus dem Formular überschreiben.
+    const updatedSupplier = {
+      ...existingSupplier,
+      ...formData,
+      id, // Sicherstellen, dass die ID bleibt
+    };
 
     this.supplierService
       .updateSupplier(id, updatedSupplier) // Diese Methode muss in deinem Service existieren
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: res => {
-          // REAKTIVITÄT: Wir aktualisieren unsere Liste im Signal.
+          // REAKTIVITÄT: In der Liste ersetzen
           this.suppliers.update(current => current.map(s => (s.id === id ? res : s)));
 
-          // Auch die Detailansicht rechts soll sofort den neuen Namen zeigen
+          // WICHTIG: Wenn der Service die Orders nicht mitsendet,
+          // müssen wir sie hier eventuell manuell wieder an 'res' hängen
+          if (!res.orders && existingSupplier?.orders) {
+            res.orders = existingSupplier.orders;
+          }
+
+          // Detailansicht aktualisieren -> Computed Signal berechnet Stats neu
           this.selectSupplier(res);
         },
         error: () => this.errorMessage.set('Fehler beim Aktualisieren.'),
