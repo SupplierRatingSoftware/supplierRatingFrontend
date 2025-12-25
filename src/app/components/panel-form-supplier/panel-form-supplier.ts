@@ -40,7 +40,7 @@ export class PanelFormSupplierComponent {
 
     // Da RatingStats und Orders komplexe Objekte sind, geben wir hier nur primitive Werte zurück.
     // Die Stats werden separat im Template behandelt.
-    if (typeof value === 'string' || typeof value === 'number') {
+    if (typeof value === 'string') {
       return value;
     }
 
