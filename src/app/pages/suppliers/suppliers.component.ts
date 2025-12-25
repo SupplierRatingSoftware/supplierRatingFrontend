@@ -6,7 +6,7 @@ import { ListItem } from '../../components/list-item/list-item';
 import { LucideAngularModule, User } from 'lucide-angular'; //LucideAngularModule importieren
 import { NgbAccordionModule, NgbModal } from '@ng-bootstrap/ng-bootstrap'; // NgbAccordionModule importiert
 import { SupplierService } from '../../services/supplier.service';
-import { Supplier, SupplierFormData, SupplierMapper } from '../../models/supplier.model';
+import { Supplier } from '../../models/supplier.model';
 import { ToastComponent } from '../../components/toast/toast.component';
 import { ModalFormSupplierComponent } from '../../components/modal-form-supplier/modal-form-supplier';
 
@@ -79,7 +79,7 @@ export class SuppliersComponent implements OnInit {
 
     // Wir warten darauf, dass der User im Modal auf "Speichern" klickt
     modalRef.result.then(
-      (result: SupplierFormData) => {
+      (result: Supplier) => {
         if (result) {
           // Wenn Daten zurückkommen, rufen wir die Update-Funktion auf
           this.updateExistingSupplier(supplier.id, result);
@@ -97,9 +97,9 @@ export class SuppliersComponent implements OnInit {
   /**
    * 2. Diese Funktion speichert die Änderungen
    */
-  private updateExistingSupplier(id: string, formData: SupplierFormData) {
+  private updateExistingSupplier(id: string, formData: Supplier) {
     // NEU: Nur noch eine Zeile statt der langen Liste!
-    const updatedSupplier = SupplierMapper.mapFormToSupplier(formData, id);
+    const updatedSupplier = { ...formData, id };
 
     this.supplierService
       .updateSupplier(id, updatedSupplier) // Diese Methode muss in deinem Service existieren
@@ -107,8 +107,6 @@ export class SuppliersComponent implements OnInit {
       .subscribe({
         next: res => {
           // REAKTIVITÄT: Wir aktualisieren unsere Liste im Signal.
-          // Wir gehen die Liste durch (.map) und tauschen nur den einen
-          // Lieferanten mit der passenden ID gegen die neue Version (res) aus.
           this.suppliers.update(current => current.map(s => (s.id === id ? res : s)));
 
           // Auch die Detailansicht rechts soll sofort den neuen Namen zeigen
@@ -130,7 +128,7 @@ export class SuppliersComponent implements OnInit {
 
     // Hier warten wir darauf, was der User im Modal macht
     modalRef.result.then(
-      (result: SupplierFormData) => {
+      (result: Supplier) => {
         if (result) {
           // Wenn gespeichert wurde, rufen wir die Update-Logik auf
           this.createAndAddSupplier(result);
@@ -142,12 +140,11 @@ export class SuppliersComponent implements OnInit {
     );
   }
 
-  private createAndAddSupplier(formData: SupplierFormData) {
+  private createAndAddSupplier(formData: Supplier) {
     // NEU: Nur noch eine Zeile statt der langen Liste!
-    const newSupplierData = SupplierMapper.mapFormToSupplier(formData);
 
     this.supplierService
-      .addSupplier(newSupplierData)
+      .addSupplier(formData)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: addedSupplier => {

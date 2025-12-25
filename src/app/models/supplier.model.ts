@@ -3,121 +3,70 @@
  */
 
 /**
- * Interface für die Datenstruktur des Formulars
+ * Supplier Data-Model
  */
-export interface SupplierFormData {
-  fullName: string;
-  customerNumber: string;
-  street: string;
-  poBox: string;
-  zipCode: string;
-  city: string;
-  country: string;
-  email: string;
-  phoneNumber: string;
-  website: string;
-  vatNumber: string;
-  paymentConditions: string;
-  notes: string;
+import { Order } from './order.model';
+
+// Ergänze dieses Interface für die Optionen
+export interface SelectOption {
+  value: string;
+  label: string;
 }
 
 /**
- * RatingStats interface
+ * Interface für die Feld-Metadaten (Konfiguration)
  */
-export interface RatingStats {
-  avgQuality: number;
-  avgCost: number;
-  avgDeadline: number;
-  avgAvailability: number;
-  avgTotal: number;
-  totalRatingCount: number;
+export interface FieldMeta {
+  key: string; // Technischer Name im Supplier-Objekt
+  label: string; // Anzeige-Name im UI
+  required: boolean; // Pflichtfeld-Flag
+  type: 'text' | 'email' | 'url' | 'tel' | 'textarea' | 'number' | 'select';
+  options?: SelectOption[]; // Liste der Auswahlmöglichkeiten
+  gridClass?: string; // CSS-Klasse für die Spaltenbreite (z.B. 'col-12', 'col-md-6')
+  placeholder?: string;
+  validationRules?: ('email' | 'url' | 'phone')[]; // Zusätzliche Validierungsregeln
 }
 
 /**
- * SupplierBaseDTO interface
+ * Interface für eine Sektion im Formular/Panel
  */
-export interface SupplierBase {
+export interface FormSection {
+  sectionTitle: string;
+  fields: FieldMeta[];
+}
+
+/**
+ * Interface für das Supplier-Ojekt: Verbunden mit Order-Objekt
+ */
+export interface Supplier {
+  id: string; // OpenBIS PermID (Stable Identifier)
+  code: string; // OpenBIS Code (Business Identifier)
+  orders?: Order[]; // Array von Orders, da ein Lieferant mehrere Bestellungen hat, Optional da evtl. keine Bestellung vorliegt
+  stats?: RatingStats; // Optional, da evtl. keine Bewertungen vorliegen, wird via rating.service.ts berechnet
   name: string;
+  customerNumber: string;
+  addition?: string;
+  street: string;
+  poBox?: string;
   zipCode: string;
   city: string;
   country: string;
-
-  // Optional fields, not marked as "required"
-  customerNumber?: string;
-  addition?: string;
-  street?: string;
-  poBox?: string;
-  website?: string;
   email?: string;
   phoneNumber?: string;
-  vatId?: string;
-  conditions?: string;
+  website: string;
+  vatId: string;
+  conditions: string;
   customerInfo?: string;
 }
 
 /**
- * SupplierSummaryDTO interface
+ * Interface für das RatingStats Objekt
  */
-export interface Supplier extends SupplierBase {
-  id: string; // OpenBIS PermID (Stable Identifier)
-  code: string; // OpenBIS Code (Business Identifier)
-
-  // Optional fields, not marked as "required"
-  stats?: RatingStats;
-}
-
-/**
- * Der SupplierMapper ist unser "Übersetzungsbüro".
- * Er weiss genau, wie man Formulardaten in ein Supplier-Objekt umwandelt.
- */
-export class SupplierMapper {
-  /**
-   * Erstellt aus den Formulardaten ein fertiges Supplier-Objekt.
-   * Das 'static' erlaubt uns den Aufruf: SupplierMapper.mapFormToSupplier(...)
-   *
-   * @param formData - Die Daten aus dem Formular
-   * @param id - Die ID des Suppliers (wird vom Backend vergeben beim Erstellen)
-   * @param code - Der Code des Suppliers (wird vom Backend vergeben beim Erstellen)
-   */
-  static mapFormToSupplier(formData: SupplierFormData, id?: string, code?: string): Supplier {
-    return {
-      id: id || '',
-      code: code || '',
-      name: formData.fullName,
-      customerNumber: formData.customerNumber,
-      street: formData.street,
-      poBox: formData.poBox,
-      zipCode: formData.zipCode,
-      city: formData.city,
-      country: formData.country,
-      email: formData.email,
-      phoneNumber: formData.phoneNumber,
-      website: formData.website,
-      vatId: formData.vatNumber, // Hier passiert die Übersetzung
-      conditions: formData.paymentConditions,
-      customerInfo: formData.notes, // Hier passiert die Übersetzung
-    };
-  }
-
-  /**
-   * NEU: Erstellt aus einem Supplier-Objekt die passenden Daten für das Formular.
-   */
-  static mapSupplierToForm(supplier: Supplier): SupplierFormData {
-    return {
-      fullName: supplier.name,
-
-      customerNumber: supplier.customerNumber || '',
-      street: supplier.street || '',
-      poBox: supplier.poBox || '',
-      zipCode: supplier.zipCode || '',
-      city: supplier.city || '',
-      country: supplier.country || 'Schweiz',
-      email: supplier.email || '',
-      phoneNumber: supplier.phoneNumber || '',
-      website: supplier.website || '',
-      vatNumber: supplier.vatId || '', // Mapping zurück
-      paymentConditions: supplier.conditions || '',
-      notes: supplier.customerInfo || '', // Mapping zurück
-    };
-  }
+export interface RatingStats {
+  avgQuality?: number;
+  avgCost?: number;
+  avgDeadline?: number;
+  avgAvailability?: number;
+  avgTotal?: number;
+  totalRatingCount?: number; // Wichtig für die Glaubwürdigkeit: "Basierend auf X Bewertungen"
 }
