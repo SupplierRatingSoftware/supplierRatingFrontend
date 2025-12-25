@@ -1,9 +1,165 @@
 /* You can add global styles to this file, and also import other style files */
 @use 'bootstrap/scss/bootstrap';
 @use 'bootstrap-icons/font/bootstrap-icons.scss';
+@use 'sass:color';
 
 /* Wechselt das Logo basierend auf dem data-bs-theme Attribut */
 [data-bs-theme='dark'] .theme-aware-logo {
   /* Tauscht die Bildquelle aus, wenn das Theme dunkel ist */
   content: url('../public/brand-logo/empa_logo_dark.png');
+}
+
+/* Global Styles for Supplier Rating Software */
+
+// 2. Branding-Variablen
+$empa-red-matte: #b90511; // Mattes Hintergrund-Rot
+$empa-gray-soft: #f4f4f4; // Sehr helles Grau für Sektionen
+$text-main: #1a1a1a; // Fast Schwarz für maximalen Kontrast
+$text-muted: #666666; // Dunkelgrau für Labels
+$border-color: #e0e0e0;
+$border-radius: 8px;
+
+// Bootstrap & Icons importieren
+@import 'bootstrap/scss/bootstrap';
+
+// 3. Grundgerüst & Layout
+html,
+body {
+  height: 100%;
+  font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+  background-color: #ffffff;
+  color: $text-main; // Standardtextfarbe ist dunkel
+  -webkit-font-smoothing: antialiased;
+}
+
+// 4. Form-Modal Design (.form-modal)
+// Charakter: Weiss, strukturiert, roter Hintergrund für Buttons/Akzente
+.form-modal {
+  .modal-content {
+    border-radius: $border-radius;
+    border: 1px solid $border-color;
+    box-shadow: 0 10px 25px color.change(black, $alpha: 0.05);
+  }
+
+  h4 {
+    color: $text-main; // Überschrift jetzt Schwarz statt Rot
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 1.1rem;
+    letter-spacing: 0.02em;
+    border-bottom: 2px solid $empa-red-matte; // Roter Akzent als Linie unten
+    padding-bottom: 0.5rem;
+  }
+
+  .accordion-button {
+    font-weight: 600;
+    color: $text-main; // Text immer Dunkel
+    background-color: $empa-gray-soft;
+
+    &:not(.collapsed) {
+      background-color: color.change($empa-red-matte, $alpha: 0.05);
+      color: $text-main; // Text bleibt Dunkel auch wenn aufgeklappt
+      box-shadow: none;
+    }
+  }
+
+  .form-label {
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: $text-muted; // Labels in Dunkelgrau
+    text-transform: uppercase;
+    margin-bottom: 0.2rem;
+    letter-spacing: 0.08em;
+  }
+
+  .form-control,
+  .form-select {
+    border-radius: 4px;
+    border: 1px solid $border-color;
+    color: $text-main;
+
+    &:focus {
+      border-color: $empa-red-matte; // Fokus-Rahmen bleibt Rot
+      box-shadow: 0 0 0 0.2rem color.change($empa-red-matte, $alpha: 0.1);
+    }
+  }
+}
+
+// 5. Detail-Panel Design (.detail-panel)
+// Charakter: Schlichte Lesbarkeit, technische Eleganz
+.detail-panel {
+  background-color: #ffffff;
+
+  .section-header {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: $text-main; // Sektions-Titel in Schwarz
+    border-bottom: 1px solid $border-color;
+    padding-bottom: 0.4rem;
+    margin-bottom: 1.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .info-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: $text-muted; // Labels in Dunkelgrau
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 1px;
+  }
+
+  .info-value {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: $text-main; // Werte in Schwarz
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  // Stats-Bereich mit mattem rotem Hintergrund-Akzent
+  .stats-container {
+    background-color: $empa-gray-soft;
+    border-left: 4px solid $empa-red-matte; // Akzent-Balken bleibt Rot
+    padding: 1rem;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .progress-bar {
+    background-color: $empa-red-matte; // Balken bleiben Rot
+  }
+}
+
+// 6. Buttons (Hintergrund Rot, Text Weiss)
+.btn-primary {
+  background-color: $empa-red-matte;
+  border-color: $empa-red-matte;
+  color: #ffffff !important; // Text IMMER Weiss auf rotem Grund
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  padding: 0.6rem 1.5rem;
+  border-radius: 4px;
+
+  &:hover,
+  &:focus {
+    background-color: color.adjust($empa-red-matte, $lightness: -5%);
+    border-color: color.adjust($empa-red-matte, $lightness: -5%);
+    color: #ffffff !important;
+  }
+}
+
+.btn-secondary {
+  background-color: white;
+  color: $text-main;
+  border: 1px solid $border-color;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 600;
+
+  &:hover {
+    background-color: $empa-gray-soft;
+  }
 }

@@ -114,7 +114,7 @@ describe('ModalFormSupplierComponent', () => {
     });
 
     it('should not call activeModal.close when form is invalid', () => {
-      // Create component with empty form (invalid because fullName is required)
+      // Create component with empty form (invalid because name is required)
       component.supplierForm.patchValue({ fullName: '' });
 
       component.onSubmit();
