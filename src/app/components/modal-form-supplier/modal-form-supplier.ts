@@ -37,9 +37,9 @@ export class ModalFormSupplierComponent implements OnInit {
     email: new FormControl('', { validators: [Validators.email] }),
     phoneNumber: new FormControl(''),
     website: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    vatId: new FormControl(''), // Geändert von vatNumber
-    conditions: new FormControl(''), // Geändert von paymentConditions
-    customerInfo: new FormControl(''), // Geändert von notes
+    vatId: new FormControl(''),
+    conditions: new FormControl(''),
+    customerInfo: new FormControl(''),
   });
 
   // 5. Diese Funktion wird automatisch ausgeführt, sobald das Modal geöffnet wird
