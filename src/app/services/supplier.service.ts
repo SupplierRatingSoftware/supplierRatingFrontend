@@ -43,7 +43,7 @@ export class SupplierService {
       vatId: 'DE123456789',
       conditions: '30 Tage netto',
       customerInfo: 'Zuverlässiger Lieferant für Rohbau',
-      orders: [], // Leer initialisiert wie gewünscht
+      orders: [],
       stats: {
         avgQuality: 4.5,
         avgCost: 3.2,
@@ -67,7 +67,7 @@ export class SupplierService {
       vatId: 'CHE-123.456.789 MWST',
       conditions: '10 Tage 2% Skonto',
       customerInfo: 'Spezialist für Präzisionsteile',
-      orders: [], // Leer initialisiert wie gewünscht
+      orders: [],
       stats: {
         avgQuality: 5.0,
         avgCost: 2.5,

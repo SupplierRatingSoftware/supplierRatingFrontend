@@ -1,35 +1,70 @@
-// 1. Wir müssen 'signal' und 'OnInit' von Angular importieren
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NgbAccordionModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap'; // NgbActiveModal hinzugefügt
-// Wir importieren jetzt alles gesammelt aus der Model und Config-Datei
+import { NgbAccordionModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormSection, Supplier } from '../../models/supplier.model';
 import { SUPPLIER_FORM_CONFIG } from '../../models/supplier.config';
+import { LucideAngularModule, X } from 'lucide-angular';
 
 @Component({
   selector: 'app-modal-form-supplier',
-  imports: [CommonModule, ReactiveFormsModule, NgbAccordionModule],
+  imports: [CommonModule, ReactiveFormsModule, NgbAccordionModule, LucideAngularModule],
   templateUrl: './modal-form-supplier.html',
   styleUrl: './modal-form-supplier.scss',
 })
-// 3. Wir sagen der Klasse, dass sie 'OnInit' (beim Starten) etwas tun soll
 export class ModalFormSupplierComponent implements OnInit {
-  activeModal = inject(NgbActiveModal);
+  /**
+   * Lucide Icon
+   * @protected
+   */
+  protected readonly X = X;
 
   /**
-   * Wir deklarieren das Set, um die Titel der offenen Sektionen zu speichern.
+   * Injected NgbActiveModal
+   * @private
+   */
+  private activeModal = inject(NgbActiveModal);
+
+  /**
+   * We declare the Set to store the titles of the open sections.
+   * @protected
    */
   protected expandedSections = new Set<string>();
 
-  // 2. Konfiguration für das Template bereitstellen
+  /**
+   * Preconfigured form configuration of the modal
+   * @description A preconfigured form configuration of the modal form-fields and section-headers
+   * @protected
+   */
   protected readonly config = SUPPLIER_FORM_CONFIG;
 
-  // 4. Das "Postfach": Hier landet der Lieferant, wenn wir auf 'Edit' klicken.
-  // Using a writable signal to allow setting via componentInstance (NgbModal pattern)
+  /**
+   * State of the supplier
+   * @description The supplier state is used to store the currently edited supplier
+   */
   supplier = signal<Supplier | undefined>(undefined);
 
-  // 3. FormGroup Keys an das neue Model anpassen (name, vatId, etc.)
+  /**
+   * Represents a reactive form group for managing supplier information.
+   * This form group contains controls for various supplier-related fields,
+   * including their business and contact information.
+   *
+   * Fields:
+   * - `name`: A required field representing the supplier's name.
+   * - `customerNumber`: A required field for the unique customer number associated with the supplier.
+   * - `street`: A required field representing the street address of the supplier.
+   * - `addition`: An optional field for additional address information.
+   * - `poBox`: An optional field for the supplier's PO Box.
+   * - `zipCode`: A required field for the postal code of the supplier's address.
+   * - `city`: A required field representing the city of the supplier's address.
+   * - `country`: A required field for the country of the supplier, with a default value of 'CH'.
+   * - `email`: An optional field for the supplier's email address, with validation to ensure it is in a valid email format.
+   * - `phoneNumber`: An optional field for the supplier's phone number.
+   * - `website`: A required field for the supplier's website URL.
+   * - `vatId`: An optional field for the supplier's VAT (Value Added Tax) identification number.
+   * - `conditions`: An optional field for storing terms and conditions related to the supplier.
+   * - `customerInfo`: An optional field for storing additional customer information related to the supplier.
+   */
   supplierForm = new FormGroup({
     name: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     customerNumber: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
@@ -47,22 +82,23 @@ export class ModalFormSupplierComponent implements OnInit {
     customerInfo: new FormControl(''),
   });
 
-  // 5. Diese Funktion wird automatisch ausgeführt, sobald das Modal geöffnet wird
+  /**
+   * Lifecycle hook that is called after the component is initialized.
+   */
   ngOnInit() {
-    // Initial die erste Sektion öffnen
-    if (this.config.length > 0) {
-      this.expandedSections.add(this.config[0].sectionTitle);
-    }
-    // Wir prüfen: Liegt ein Lieferant im Postfach?
-    const currentSupplier = this.supplier();
-    if (currentSupplier) {
-      // Jetzt müssen wir nur noch diese fertigen Daten ins Formular "patchen"
-      this.supplierForm.patchValue(currentSupplier);
-    }
+    // if (this.config.length > 0) {
+    //   this.expandedSections.add(this.config[0].sectionTitle);
+    // }
+    // // Wir prüfen: Liegt ein Lieferant im Postfach?
+    // const currentSupplier = this.supplier();
+    // if (currentSupplier) {
+    //   // Jetzt müssen wir nur noch diese fertigen Daten ins Formular "patchen"
+    //   this.supplierForm.patchValue(currentSupplier);
+    // }
   }
 
   /**
-   * Prüft für das rote "!" Badge, ob Fehler vorliegen.
+   * Checks if errors exist in a form section.
    */
   isSectionInvalid(section: FormSection): boolean {
     return section.fields.some(field => {
@@ -71,14 +107,17 @@ export class ModalFormSupplierComponent implements OnInit {
     });
   }
 
+  /**
+   * Handles form submission and closes the modal with the form data if valid.
+   */
   onSubmit() {
     if (this.supplierForm.valid) {
       this.activeModal.close(this.supplierForm.value);
     } else {
-      // 1. Alle Fehler sichtbar machen
+      // Mark all fields as touched to display validation messages
       this.supplierForm.markAllAsTouched();
 
-      // 2. Alle Sektionen mit Fehlern zum Set hinzufügen -> Sie springen auf
+      // Push all invalid sections to the expandedSections set -> these sections will expand
       this.config.forEach(section => {
         if (this.isSectionInvalid(section)) {
           this.expandedSections.add(section.sectionTitle);
@@ -87,6 +126,9 @@ export class ModalFormSupplierComponent implements OnInit {
     }
   }
 
+  /**
+   * Cancels the modal and dismisses it.
+   */
   cancel() {
     this.activeModal.dismiss();
   }

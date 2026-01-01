@@ -1,7 +1,17 @@
 /**
  * Order Data-Model for Mocking
  */
-export type RatingStatus = 'RATED' | 'PENDING';
+
+/**
+ * OrderDTO interface
+ */
+export interface Order extends OrderBase {
+  id: string; // OpenBIS PermID (Stable Identifier)
+  code: string; // OpenBIS Code (Business Identifier)
+
+  // Optional fields, not marked as "required"
+  ratingStatus?: RatingStatus;
+}
 
 /**
  * OrderBaseDTO interface
@@ -26,10 +36,8 @@ export interface OrderBase {
 }
 
 /**
- * OrderDTO interface
+ * RatingStatus interface
+ * @description RatingStatus declares if an order is rated or not
+ * @description Possible values: 'RATED' | 'PENDING'
  */
-export interface Order extends OrderBase {
-  id: string; // OpenBIS PermID (Stable Identifier)
-  code: string; // OpenBIS Code (Business Identifier)
-  ratingStatus?: RatingStatus; // Unser eigener Typ von oben
-}
+export type RatingStatus = 'RATED' | 'PENDING';

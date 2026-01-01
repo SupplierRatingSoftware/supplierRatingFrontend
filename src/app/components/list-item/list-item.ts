@@ -16,31 +16,34 @@ export class ListItem {
   protected readonly Pencil = Pencil;
 
   /**
-   * Input properties for dynamically rendering the component
+   * Input: Properties for the list item.
+   * @description Label is for the displayed text of the list item.
+   * @description Icon is for the displayed icon of the list item.
    * @readonly
    */
   readonly label = input.required<string>();
   readonly icon = input.required<LucideIconData>();
-  // NEU: Definiere das Event (output) für den normalen Klick auf das List-Item
+
+  /**
+   * Output: Event emitted when the item or edit button is clicked
+   * @readonly
+   */
   readonly itemSelected = output<void>();
-  // 2. Output für den Edit-Klick definieren: 'void' bedeutet hier einfach: "Ich schicke nur ein Signal, keine extra Daten"
   readonly editSelected = output<void>();
 
   /**
-   * Click on List-Item
+   * Click on list-item
    * @protected
    */
   protected showContent() {
-    // Sende das Event nach oben an die SuppliersComponent
     this.itemSelected.emit();
   }
 
   /**
-   * Click on Edit-Button in List-Item
+   * Click on edit-button in list-item
    * @protected
    */
   protected editContent() {
-    // 3. Hier benutzen wir das Megafon: Wir rufen: "Jemand will mich bearbeiten!"
     this.editSelected.emit();
   }
 }
