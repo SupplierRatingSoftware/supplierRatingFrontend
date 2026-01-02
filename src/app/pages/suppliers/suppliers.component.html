@@ -1,40 +1,40 @@
-<div class="container-fluid h-100 p-0 overflow-hidden">
-  <div class="row g-0 h-100">
-    <div
-      [class]="selectedSupplier() ? 'col-md-4 border-end' : 'col-12'"
-      class="d-flex flex-column p-2 h-100 position-relative bg-light transition-all">
-      <app-toast [message]="errorMessage()" (exitToast)="closeToast()"></app-toast>
-      <app-list-search class="mb-3"></app-list-search>
+<!--<div class="container-fluid h-100 p-0 overflow-hidden">-->
+<!--  <div class="row g-0 h-100">-->
+<!--    <div class="d-flex flex-column p-2 h-100 position-relative transition-all">-->
+<!--      &lt;!&ndash;      [class]="selectedSupplier() ? 'col-md-4 border-end' : 'col-12'"&ndash;&gt;-->
+<!--      <app-toast [message]="errorMessage()" (exitToast)="closeToast()"></app-toast>-->
+<!--      <app-list-search class="mb-3"></app-list-search>-->
 
-      <ul class="list-unstyled overflow-auto flex-grow-1 px-2">
-        @for (item of suppliers(); track item.id) {
-          <app-list-item
-            [label]="item.name"
-            [icon]="UserIcon"
-            (itemSelected)="selectSupplier(item)"
-            (editSelected)="openEditSupplierModal(item)"
-            [class.selected-item]="selectedSupplier()?.id === item.id">
-          </app-list-item>
-        } @empty {
-          <li class="text-center mt-5 text-muted small">Keine Lieferanten gefunden.</li>
-        }
-      </ul>
+<!--      <app-add-btn (action)="openSupplierModal()"></app-add-btn>-->
+<!--    </div>-->
+<!--    <div-->
+<!--      [class.d-none]="!selectedSupplier()"-->
+<!--      class="col-md-8 h-100 overflow-auto bg-body border-start position-relative shadow-sm">-->
+<!--      @if (selectedSupplier()) {-->
+<!--        <button-->
+<!--          type="button"-->
+<!--          class="btn-close position-absolute top-0 end-0 m-4 z-3"-->
+<!--          aria-label="Schließen"-->
+<!--          (click)="closeDetail()"></button>-->
+<!--      }-->
 
-      <app-add-btn (action)="openSupplierModal()"></app-add-btn>
-    </div>
+<!--      <app-panel-form-supplier [supplier]="selectedSupplier()"></app-panel-form-supplier>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
 
-    <div
-      [class.d-none]="!selectedSupplier()"
-      class="col-md-8 h-100 overflow-auto bg-body border-start position-relative shadow-sm">
-      @if (selectedSupplier()) {
-        <button
-          type="button"
-          class="btn-close position-absolute top-0 end-0 m-4 z-3"
-          aria-label="Schließen"
-          (click)="closeDetail()"></button>
-      }
-
-      <app-panel-form-supplier [supplier]="selectedSupplier()"></app-panel-form-supplier>
-    </div>
-  </div>
+<div class="container-fluid d-flex flex-column p-2 h-100 position-relative">
+  <app-toast [message]="errorMessage()" (exitToast)="closeToast()"></app-toast>
+  <app-list-search class="mb-3"></app-list-search>
+  <ul class="list-unstyled ms-1 ms-md-3 me-1 me-md-3">
+    @for (item of suppliers(); track item.id) {
+      <app-list-item
+        [label]="item.name"
+        [icon]="UserIcon"
+        (itemSelected)="selectSupplier(item)"
+        (editSelected)="openEditSupplierModal(item)">
+      </app-list-item>
+    }
+  </ul>
 </div>
+<app-add-btn (action)="openSupplierModal()"></app-add-btn>

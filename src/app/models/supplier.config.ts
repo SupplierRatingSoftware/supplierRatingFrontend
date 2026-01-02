@@ -4,24 +4,24 @@ export const SUPPLIER_FORM_CONFIG: FormSection[] = [
   {
     sectionTitle: 'Lieferanten Details',
     fields: [
-      { key: 'name', label: 'Firmenname', required: true, type: 'text', gridClass: 'col-9' },
-      { key: 'customerNumber', label: 'Kundennummer', required: true, type: 'text', gridClass: 'col-md-3' },
+      { key: 'name', label: 'Firmenname', required: true, type: 'text', gridClass: 'col-md-7' },
+      { key: 'customerNumber', label: 'Kundennummer', required: true, type: 'text', gridClass: 'col-md-5' },
     ],
   },
   {
     sectionTitle: 'Adresse & Standort',
     fields: [
       { key: 'street', label: 'Strasse mit Hausnummer', required: true, type: 'text', gridClass: 'col-md-8' },
-      { key: 'addition', label: 'Zusatz', required: false, type: 'text', gridClass: 'col-md-2' },
-      { key: 'poBox', label: 'Postfach', required: false, type: 'text', gridClass: 'col-2' },
-      { key: 'zipCode', label: 'PLZ', required: true, type: 'text', gridClass: 'col-md-2' },
+      { key: 'addition', label: 'Zusatz', required: false, type: 'text', gridClass: 'col-md-4' },
+      { key: 'poBox', label: 'Postfach', required: false, type: 'text', gridClass: 'col-md-4' },
+      { key: 'zipCode', label: 'PLZ', required: true, type: 'text', gridClass: 'col-md-4' },
       { key: 'city', label: 'Ort', required: true, type: 'text', gridClass: 'col-md-6' },
       {
         key: 'country',
         label: 'Land',
         required: true,
         type: 'select', // Geändert von 'text' zu 'select'
-        gridClass: 'col-md-3',
+        gridClass: 'col-md-6',
         options: [
           { value: 'CH', label: 'Schweiz' },
           { value: 'DE', label: 'Deutschland' },
@@ -52,7 +52,7 @@ export const SUPPLIER_FORM_CONFIG: FormSection[] = [
     sectionTitle: 'Konditionen & Info',
     fields: [
       { key: 'vatId', label: 'MWST-Nummer (VAT)', required: false, type: 'text', gridClass: 'col-md-6' },
-      { key: 'conditions', label: 'Konditionen', required: false, type: 'textarea', gridClass: 'col-6' },
+      { key: 'conditions', label: 'Konditionen', required: false, type: 'textarea', gridClass: 'col-md-6' },
       { key: 'customerInfo', label: 'Interne Info', required: false, type: 'textarea', gridClass: 'col-12' },
     ],
   },
