@@ -1,58 +1,76 @@
-<!--<div class="detail-panel">-->
-<!--  @if (supplier(); as s) {-->
-<!--  <div class="p-4">-->
-<!--    @for (section of config; track section.sectionTitle) {-->
-<!--    <div class="mb-5">-->
-<!--      <h5 class="section-header">{{ section.sectionTitle }}</h5>-->
-<!--      <div class="row">-->
-<!--        @for (field of section.fields; track field.key) {-->
-<!--        <div [class]="field.gridClass || 'col-12'" class="mb-3">-->
-<!--          <span class="info-label">{{ field.label }}</span>-->
-<!--          <span class="info-value"> {{ getSupplierValue(s, field.key) || '-' }} </span>-->
-<!--        </div>-->
-<!--        }-->
-<!--      </div>-->
-<!--    </div>-->
-<!--    }-->
+<div class="d-flex flex-column p-2 h-100">
+  <div class="offcanvas-header border-bottom">
+    <h5 class="offcanvas-title">Lieferantendetails</h5>
+    <button
+      type="button"
+      class="btn cancel-btns ms-auto me-2 p-1"
+      aria-label="Close"
+      (click)="activeOffcanvas.dismiss()">
+      <i-lucide [img]="X" aria-hidden="true"></i-lucide>
+    </button>
+  </div>
 
-<!--    <div class="mb-5">-->
-<!--      <h5 class="section-header">Bewertungs-Übersicht</h5>-->
-<!--      @if (s.stats; as stats) {-->
-<!--      <div class="row stats-container">-->
-<!--        <div class="col-md-6 mb-4">-->
-<!--          <span class="info-label">Gesamtbewertung</span>-->
-<!--          <div class="d-flex align-items-center">-->
-<!--            <span class="info-value fw-bold fs-3 me-2"> {{ stats.avgTotal?.toFixed(1) || '0.0' }} </span>-->
-<!--            <span class="text-muted small"> (Basierend auf {{ stats.totalRatingCount || 0 }} Bewertungen) </span>-->
-<!--          </div>-->
-<!--        </div>-->
+  <div class="offcanvas-body p-0">
+    <div class="detail-panel">
+      @if (supplier(); as s) {
+      <div class="p-4">
+        @for (section of config; track section.sectionTitle) {
+        <div class="mb-4">
+          <h5 class="section-header text-body-primary fw-medium">{{ section.sectionTitle }}</h5>
+          <div class="row">
+            @for (field of section.fields; track field.key) {
+            <div [class]="field.gridClass || 'col-12'" class="mb-3">
+              <span class="info-label text-body-secondary fw-medium"> <i>{{ field.label + ": " }}</i></span>
+              <span class="info-value text-body-tertiary fw-light text-nowrap">
+                {{ getSupplierValue(s, field.key) || '-' }}
+              </span>
+            </div>
+            }
+          </div>
+        </div>
+        }
 
-<!--        <div class="col-12">-->
-<!--          <div class="row g-3">-->
-<!--            <div class="col-md-6">-->
-<!--              <span class="info-label">Qualität</span>-->
-<!--              <div class="progress" style="height: 8px">-->
-<!--                <div class="progress-bar bg-primary" [style.width.%]="(stats.avgQuality || 0) * 20"></div>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-6">-->
-<!--              <span class="info-label">Kosten</span>-->
-<!--              <div class="progress" style="height: 8px">-->
-<!--                <div class="progress-bar bg-primary" [style.width.%]="(stats.avgCost || 0) * 20"></div>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      } @else {-->
-<!--      <p class="info-value placeholder">Noch keine Bewertungen vorhanden.</p>-->
-<!--      }-->
-<!--    </div>-->
-<!--  </div>-->
-<!--  } @else {-->
-<!--  <div class="h-100 d-flex flex-column align-items-center justify-content-center text-muted opacity-50 p-5 text-center">-->
-<!--    <i-lucide [img]="UserIcon" [size]="64" class="mb-3" aria-hidden="true"></i-lucide>-->
-<!--    <p class="fs-5">Wählen Sie einen Lieferanten aus der Liste aus,<br />um die Details anzuzeigen.</p>-->
-<!--  </div>-->
-<!--  }-->
-<!--</div>-->
+        <div class="mb-5">
+          <h5 class="section-header fw-medium">Bewertungs-Übersicht</h5>
+          @if (s.stats; as stats) {
+          <div class="row stats-container">
+            <div class="col-md-6 mb-4">
+              <span class="info-label">Gesamtbewertung</span>
+              <div class="d-flex align-items-center">
+                <span class="info-value fw-bold fs-3 me-2"> {{ stats.avgTotal?.toFixed(1) || '0.0' }} </span>
+                <span class="text-muted small"> (Basierend auf {{ stats.totalRatingCount || 0 }} Bewertungen) </span>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <span class="info-label">Qualität</span>
+                  <div class="progress" style="height: 8px">
+                    <div class="progress-bar bg-primary" [style.width.%]="(stats.avgQuality || 0) * 20"></div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <span class="info-label">Kosten</span>
+                  <div class="progress" style="height: 8px">
+                    <div class="progress-bar bg-primary" [style.width.%]="(stats.avgCost || 0) * 20"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          } @else {
+          <p class="info-value placeholder">Noch keine Bewertungen vorhanden.</p>
+          }
+        </div>
+      </div>
+      } @else {
+      <div
+        class="h-100 d-flex flex-column align-items-center justify-content-center text-muted opacity-50 p-5 text-center">
+        <i-lucide [img]="UserIcon" [size]="64" class="mb-3" aria-hidden="true"></i-lucide>
+        <p class="fs-5">Keine Daten geladen.</p>
+      </div>
+      }
+    </div>
+  </div>
+</div>

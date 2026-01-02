@@ -84,6 +84,7 @@ export class ModalFormSupplierComponent implements OnInit {
 
   /**
    * Lifecycle hook that is called after the component is initialized.
+   * For handling form initialization and data pre-filling
    */
   ngOnInit() {
     // Expand the first section by default, if there are sections
