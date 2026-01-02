@@ -3,14 +3,27 @@
  */
 
 /**
- * OrderDTO interface
+ * OrderCreateDTO interface
+ */
+export interface OrderCreate extends OrderBase {
+  supplierId: string;
+
+  // Optional fields, not marked as "required"
+  code?: string;
+}
+
+/**
+ * OrderDetailDTO interface
  */
 export interface Order extends OrderBase {
-  id: string; // OpenBIS PermID (Stable Identifier)
-  code: string; // OpenBIS Code (Business Identifier)
+  id: string;
+  code: string;
 
   // Optional fields, not marked as "required"
   ratingStatus?: RatingStatus;
+  supplierId?: string;
+  supplierName?: string;
+  ratingId?: string | null;
 }
 
 /**
