@@ -1,5 +1,8 @@
 import { FormSection } from './supplier.model';
 
+/**
+ * Central configuration for displaying supplier-form sections
+ */
 export const SUPPLIER_FORM_CONFIG: FormSection[] = [
   {
     sectionTitle: 'Lieferanten Details',
