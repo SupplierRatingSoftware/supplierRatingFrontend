@@ -24,7 +24,8 @@ export class RatingService {
         code: `R-MOCK-${Date.now()}`,
         supplierId: `perm-${Date.now()}`,
 
-        totalScore: (rating.quality + rating.cost + rating.deadline + rating.availability) / 4,
+        totalScore:
+          ((rating.quality ?? 0) + (rating.cost ?? 0) + (rating.deadline ?? 0) + (rating.availability ?? 0)) / 4,
       } as Rating);
     }
     return this.http.post<Rating>(this.baseUrl, rating);
