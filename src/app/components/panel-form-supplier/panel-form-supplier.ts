@@ -15,9 +15,10 @@ import { SUPPLIER_FORM_CONFIG } from '../../models/supplier.config';
 })
 export class PanelFormSupplierComponent {
   /**
-   * Lucide Icon
+   * Lucide Icons
    */
   protected readonly UserIcon = User;
+  protected readonly X = X;
 
   /**
    * Input: Receives current supplier from parent
@@ -52,6 +53,4 @@ export class PanelFormSupplierComponent {
 
     return null;
   }
-
-  protected readonly X = X;
 }
