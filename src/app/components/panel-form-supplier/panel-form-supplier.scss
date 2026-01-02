@@ -1,0 +1,18 @@
+// Enable scrolling inside the offcanvas
+:host {
+  display: block;
+  height: 100%;
+}
+
+button {
+  background-color: var(--bs-secondary-bg);
+  transition:
+    transform 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
+}
+
+.cancel-btns {
+  &:hover {
+    background-color: var(--bs-danger);
+  }
+}

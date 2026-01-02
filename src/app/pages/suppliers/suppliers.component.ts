@@ -3,12 +3,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ListSearch } from '../../components/list-search/list-search';
 import { AddBtn } from '../../components/add-btn/add-btn';
 import { LucideAngularModule, User } from 'lucide-angular';
-import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalOptions, NgbOffcanvas, NgbOffcanvasOptions } from '@ng-bootstrap/ng-bootstrap';
 import { ToastComponent } from '../../components/toast/toast.component';
 import { SupplierService } from '../../services/supplier.service';
 import { Supplier } from '../../models/supplier.model';
 import { ListItem } from '../../components/list-item/list-item';
 import { ModalFormSupplierComponent } from '../../components/modal-form-supplier/modal-form-supplier';
+import { PanelFormSupplierComponent } from '../../components/panel-form-supplier/panel-form-supplier';
 
 @Component({
   selector: 'app-suppliers',
@@ -44,6 +45,24 @@ export class SuppliersComponent implements OnInit {
   };
 
   /**
+   * Injected NgbOffcanvas as our offcanvas service
+   * @private
+   */
+  private offCanvasService = inject(NgbOffcanvas);
+
+  /**
+   * Offcanvas Options
+   * @private
+   */
+  private readonly offCanvasOptions: NgbOffcanvasOptions = {
+    animation: true,
+    panelClass: 'w-sm-100 w-md-50',
+    position: 'end',
+    backdrop: true,
+    scroll: true,
+  };
+
+  /**
    * Injected SupplierService
    * @private
    */
@@ -54,11 +73,6 @@ export class SuppliersComponent implements OnInit {
    * State: Initial list of suppliers
    */
   readonly suppliers = signal<Supplier[]>([]);
-
-  /**
-   * State: Currently selected supplier for detail view
-   */
-  readonly selectedSupplier = signal<Supplier | null>(null);
 
   /**
    * State: Error message for UI to display
@@ -86,7 +100,9 @@ export class SuppliersComponent implements OnInit {
           this.suppliers.set(data);
         },
         error: () => {
-          this.errorMessage.set('Unable to load suppliers. Please check your connection and try again.');
+          this.errorMessage.set(
+            'Laden der Lieferanten fehlgeschlagen. Bitte überprüfe deine Verbindung und versuche erneut.'
+          );
         },
       });
   }
@@ -100,10 +116,13 @@ export class SuppliersComponent implements OnInit {
   }
 
   /**
-   * Select current Supplier
+   * Select Supplier and show Offcanvas with data-details
    */
   selectSupplier(supplier: Supplier) {
-    this.selectedSupplier.set(supplier);
+    const offcanvasRef = this.offCanvasService.open(PanelFormSupplierComponent, this.offCanvasOptions);
+
+    // Send data into Offcanvas Component
+    offcanvasRef.componentInstance.supplier.set(supplier);
   }
 
   /**
@@ -191,11 +210,4 @@ export class SuppliersComponent implements OnInit {
         error: () => this.errorMessage.set('Fehler beim Aktualisieren.'),
       });
   }
-
-  // /**
-  //  * Resets selection and closes the detail view
-  //  */
-  // protected closeDetail() {
-  //     this.selectedSupplier.set(null);
-  // }
 }
