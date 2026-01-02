@@ -4,16 +4,16 @@ export const SUPPLIER_FORM_CONFIG: FormSection[] = [
   {
     sectionTitle: 'Lieferanten Details',
     fields: [
-      { key: 'name', label: 'Firmenname', required: true, type: 'text', gridClass: 'col-md-7' },
+      { key: 'name', label: 'Firmenname', required: true, type: 'text', gridClass: 'col-md-6' },
       { key: 'customerNumber', label: 'Kundennummer', required: true, type: 'text', gridClass: 'col-md-5' },
     ],
   },
   {
     sectionTitle: 'Adresse & Standort',
     fields: [
-      { key: 'street', label: 'Strasse mit Hausnummer', required: true, type: 'text', gridClass: 'col-md-8' },
+      { key: 'street', label: 'Strasse & Nr.', required: true, type: 'text', gridClass: 'col-md-6' },
       { key: 'addition', label: 'Zusatz', required: false, type: 'text', gridClass: 'col-md-4' },
-      { key: 'poBox', label: 'Postfach', required: false, type: 'text', gridClass: 'col-md-4' },
+      { key: 'poBox', label: 'Postfach', required: false, type: 'text', gridClass: 'col-md-6' },
       { key: 'zipCode', label: 'PLZ', required: true, type: 'text', gridClass: 'col-md-4' },
       { key: 'city', label: 'Ort', required: true, type: 'text', gridClass: 'col-md-6' },
       {
