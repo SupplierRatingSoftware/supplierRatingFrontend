@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ListSearch } from '../../components/list-search/list-search';
 import { AddBtn } from '../../components/add-btn/add-btn';
@@ -70,9 +70,14 @@ export class SuppliersComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
 
   /**
-   * State: Initial list of suppliers
+   * State: List of all suppliers
    */
   readonly suppliers = signal<Supplier[]>([]);
+
+  /**
+   * State: The actual search term for filtering list-items
+   */
+  readonly searchTerm = signal<string>('');
 
   /**
    * State: Error message for UI to display
@@ -210,4 +215,43 @@ export class SuppliersComponent implements OnInit {
         error: () => this.errorMessage.set('Fehler beim Aktualisieren.'),
       });
   }
+
+  /**
+   * Filters the list of suppliers based on the current search term
+   * @description Computed Signal: Automatically recalculates the list, if the search term OR the list changes.
+   */
+  readonly filteredSuppliers = computed(() => {
+    const list = this.suppliers();
+    const term = this.searchTerm().toLowerCase();
+
+    // If no search term is provided, return the full list
+    if (!term) {
+      return list;
+    }
+
+    // Else filter the list based on the search term
+    return list.filter(
+      supplier =>
+        // Search by name
+        supplier.name.toLowerCase().includes(term) ||
+        // Or search by code
+        supplier.zipCode.toLowerCase().includes(term) ||
+        // Or search by city
+        supplier.city.toLowerCase().includes(term) ||
+        // Or search by customerNumber
+        supplier.customerNumber.toLowerCase().includes(term) ||
+        // Or search by street
+        supplier.street.toLowerCase().includes(term) ||
+        // Or search by website
+        supplier.website.toLowerCase().includes(term) ||
+        // Or search by vatId
+        supplier.vatId.toLowerCase().includes(term) ||
+        // Or search by poBox
+        supplier.poBox?.toLowerCase().includes(term) ||
+        // Or search by email
+        supplier.email?.toLowerCase().includes(term) ||
+        // Or search by phoneNumber
+        supplier.phoneNumber?.toLowerCase().includes(term)
+    );
+  });
 }
