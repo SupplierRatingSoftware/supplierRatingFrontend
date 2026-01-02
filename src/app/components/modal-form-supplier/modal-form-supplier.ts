@@ -86,15 +86,16 @@ export class ModalFormSupplierComponent implements OnInit {
    * Lifecycle hook that is called after the component is initialized.
    */
   ngOnInit() {
-    // if (this.config.length > 0) {
-    //   this.expandedSections.add(this.config[0].sectionTitle);
-    // }
-    // // Wir prüfen: Liegt ein Lieferant im Postfach?
-    // const currentSupplier = this.supplier();
-    // if (currentSupplier) {
-    //   // Jetzt müssen wir nur noch diese fertigen Daten ins Formular "patchen"
-    //   this.supplierForm.patchValue(currentSupplier);
-    // }
+    // Expand the first section by default, if there are sections
+    if (this.config.length > 0) {
+      this.expandedSections.add(this.config[0].sectionTitle);
+    }
+    // Check if a supplier is present
+    const currentSupplier = this.supplier();
+    if (currentSupplier) {
+      // Patching the data into the form
+      this.supplierForm.patchValue(currentSupplier);
+    }
   }
 
   /**
