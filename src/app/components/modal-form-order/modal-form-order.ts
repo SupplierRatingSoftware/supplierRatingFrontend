@@ -76,7 +76,7 @@ export class ModalFormOrderComponent implements OnInit {
     if (this.config.length > 0) {
       this.expandedSections.add(this.config[0].sectionTitle);
     }
-    // Check if a order is present
+    // Check if an order is present
     const currentOrder = this.order();
     if (currentOrder) {
       // Patching the data into the form
