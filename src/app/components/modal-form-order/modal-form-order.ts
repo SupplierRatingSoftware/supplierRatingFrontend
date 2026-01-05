@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgbAccordionModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -12,7 +12,7 @@ import { ORDER_FORM_CONFIG } from '../../models/order.config';
   templateUrl: './modal-form-order.html',
   styleUrl: './modal-form-order.scss',
 })
-export class ModalFormOrderComponent {
+export class ModalFormOrderComponent implements OnInit {
   /**
    * Lucide Icon
    * @protected
