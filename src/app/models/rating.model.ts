@@ -40,10 +40,33 @@ export interface RatingBase {
   qualityReason?: string;
   cost?: number;
   costReason?: string;
-  deadline?: number;
-  deadlineReason?: string;
+  reliability?: number;
+  reliabilityReason?: string;
   availability?: number;
   availabilityReason?: string;
   totalScore?: number;
-  comment?: string;
+  ratingComment?: string;
+}
+
+/**
+ * Interface for the form configuration
+ * @description This interface declares the configuration of a form section
+ */
+export interface FormSection {
+  sectionTitle: string;
+  fields: FieldMeta[];
+}
+
+/**
+ * Interface for the fields metadata of the form
+ * @description This interface declares the metadata of a form field in a form section
+ */
+export interface FieldMeta {
+  key: string; // Technical name
+  label: string; // Displayed name for the UI
+  required: boolean;
+  requiredIfContact?: boolean;
+  type: 'textarea' | 'number' | 'rating' | 'stat-total';
+  gridClass?: string; // CSS-Class for the col-width (e.g. 'col-12', 'col-md-6')
+  placeholder?: string;
 }
