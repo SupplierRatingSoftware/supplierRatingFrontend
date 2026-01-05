@@ -13,7 +13,7 @@ export const ORDER_FORM_CONFIG: FormSection[] = [
         key: 'mainCategory',
         label: 'Hauptkategorie',
         required: true,
-        type: 'select', // Geändert von 'text' zu 'select'
+        type: 'select',
         gridClass: 'col-md-4',
         options: [
           { value: 'BESCHAFFUNG', label: 'Beschaffung' },
@@ -23,8 +23,8 @@ export const ORDER_FORM_CONFIG: FormSection[] = [
       {
         key: 'subCategory',
         label: 'Unterkategorie',
-        required: false,
-        type: 'select', // Geändert von 'text' zu 'select'
+        required: true,
+        type: 'select',
         gridClass: 'col-md-4',
         options: [
           { value: 'BERATUNG', label: 'Beratung' },
