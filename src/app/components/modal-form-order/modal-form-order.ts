@@ -5,6 +5,7 @@ import { NgbAccordionModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { LucideAngularModule, X } from 'lucide-angular';
 import { FormSection, Order } from '../../models/order.model';
 import { ORDER_FORM_CONFIG } from '../../models/order.config';
+import { SupplierService } from '../../services/supplier.service';
 
 @Component({
   selector: 'app-modal-form-order',
@@ -24,6 +25,12 @@ export class ModalFormOrderComponent implements OnInit {
    * @private
    */
   private activeModal = inject(NgbActiveModal);
+
+  /**
+   * Injected supplier service for loading suppliers in the form
+   * @private
+   */
+  private supplierService = inject(SupplierService);
 
   /**
    * We declare the Set to store the titles of the open sections.
@@ -72,16 +79,50 @@ export class ModalFormOrderComponent implements OnInit {
    * For handling form initialization and data pre-filling
    */
   ngOnInit() {
+    this.loadSuppliers();
     // Expand the first section by default, if there are sections
     if (this.config.length > 0) {
       this.expandedSections.add(this.config[0].sectionTitle);
     }
+    // Load suppliers and map them to the form options
+    this.supplierService.getSuppliers().subscribe(suppliers => {
+      const supplierField = this.config
+        .find(s => s.sectionTitle === 'Lieferant & Ansprechperson')
+        ?.fields.find(f => f.key === 'supplier');
+      if (supplierField) {
+        supplierField.options = suppliers.map(s => ({ value: s.id || '', label: s.name }));
+      }
+    });
     // Check if an order is present
     const currentOrder = this.order();
     if (currentOrder) {
       // Patching the data into the form
       this.orderForm.patchValue(currentOrder);
+      // If the order is already rated, disable the form
+      if (currentOrder.ratingStatus === 'RATED') {
+        this.orderForm.disable();
+      }
     }
+  }
+
+  /**
+   * Loads suppliers from the SupplierService and maps them to the select options
+   * in the form configuration.
+   */
+  private loadSuppliers() {
+    this.supplierService.getSuppliers().subscribe(suppliers => {
+      // Find the section with the title "Lieferant & Ansprechperson"
+      const section = this.config.find(s => s.sectionTitle === 'Lieferant & Ansprechperson');
+      // Find the field with the key 'supplierId' in that section
+      const supplierField = section?.fields.find(f => f.key === 'supplierId');
+      // Map suppliers to the field options {value, label}
+      if (supplierField) {
+        supplierField.options = suppliers.map(s => ({
+          value: s.id || '', // Die technische ID
+          label: s.name, // Der Anzeigename für das Dropdown
+        }));
+      }
+    });
   }
 
   /**
