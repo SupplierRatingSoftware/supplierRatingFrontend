@@ -60,10 +60,17 @@ export const ORDER_FORM_CONFIG: FormSection[] = [
         required: true,
         type: 'select',
         gridClass: 'col-6',
-        options: [], // Wird dynamisch mit {value: id, label: name} befüllt
+        options: [], // options will be populated dynamically
       },
       { key: 'contactPerson', label: 'Name der Ansprechperson', required: false, type: 'text', gridClass: 'col-6' },
-      { key: 'contactEmail', label: 'E-Mail der Ansprechperson', required: false, type: 'email', gridClass: 'col-6' },
+      {
+        key: 'contactEmail',
+        label: 'E-Mail der Ansprechperson',
+        required: false,
+        type: 'email',
+        gridClass: 'col-6',
+        validationRules: ['email'], // validation rule defined centrally
+      },
       { key: 'contactPhone', label: 'Telefon der Ansprechperson', required: false, type: 'text', gridClass: 'col-6' },
       {
         key: 'orderComment',
