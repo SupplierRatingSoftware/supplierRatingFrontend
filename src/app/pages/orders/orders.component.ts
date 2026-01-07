@@ -3,12 +3,14 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ListSearch } from '../../components/list-search/list-search';
 import { AddBtn } from '../../components/add-btn/add-btn';
 import { LucideAngularModule, User } from 'lucide-angular';
-import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalOptions, NgbOffcanvas, NgbOffcanvasOptions } from '@ng-bootstrap/ng-bootstrap';
 import { ToastComponent } from '../../components/toast/toast.component';
 import { OrderService } from '../../services/order.service';
 import { Order } from '../../models/order.model';
 import { ListItem } from '../../components/list-item/list-item';
 import { ModalFormOrderComponent } from '../../components/modal-form-order/modal-form-order';
+import { RatingService } from '../../services/rating.service';
+import { PanelFormOrderComponent } from '../../components/panel-form-order/panel-form-order';
 
 @Component({
   selector: 'app-orders',
@@ -44,10 +46,29 @@ export class OrdersComponent implements OnInit {
   };
 
   /**
-   * Injected OrderService
+   * Injected NgbOffcanvas as our offcanvas service
+   * @private
+   */
+  private offCanvasService = inject(NgbOffcanvas);
+
+  /**
+   * Offcanvas Options
+   * @private
+   */
+  private readonly offCanvasOptions: NgbOffcanvasOptions = {
+    animation: true,
+    panelClass: 'w-sm-100 w-md-50',
+    position: 'end',
+    backdrop: true,
+    scroll: true,
+  };
+
+  /**
+   * Injected OrderService, ratingService and DestroyRef
    * @private
    */
   private orderService: OrderService = inject(OrderService);
+  private ratingService = inject(RatingService);
   private destroyRef = inject(DestroyRef);
 
   /**
@@ -99,6 +120,65 @@ export class OrdersComponent implements OnInit {
    */
   protected closeToast() {
     this.errorMessage.set(null);
+  }
+
+  /**
+   * Wird aufgerufen, wenn man auf ein Item klickt (nicht auf den Edit-Button).
+   * 1. Öffnet das Offcanvas.
+   * 2. Lädt Details (inkl. supplierName, ratingId).
+   * 3. Lädt Rating (falls vorhanden).
+   */
+  openDetailPanel(summaryOrder: Order) {
+    this.errorMessage.set(null);
+
+    // 1. Offcanvas öffnen (UI erscheint sofort, aber leer)
+    const offcanvasRef = this.offCanvasService.open(PanelFormOrderComponent, this.offCanvasOptions);
+
+    // Wir können direkt auf die Instanz zugreifen:
+    const panelInstance = offcanvasRef.componentInstance as PanelFormOrderComponent;
+
+    // Optional: Titel oder Loading State setzen, falls gewünscht.
+    // Das Panel zeigt "Keine Daten geladen" an, bis wir das Signal setzen.
+
+    // 2. Volle Order-Daten laden (GET /orders/{id})
+    this.orderService
+      .getOrderById(summaryOrder.id)
+      .pipe(takeUntilDestroyed(this.destroyRef)) // Wichtig: Stoppt Request wenn Component zerstört wird
+      .subscribe({
+        next: detailedOrder => {
+          // Daten an das Panel übergeben (Signal setzen)
+          panelInstance.order.set(detailedOrder);
+
+          // 3. Prüfen, ob eine Rating ID existiert, und falls ja: Rating laden
+          if (detailedOrder.ratingId) {
+            this.loadRatingForPanel(detailedOrder.ratingId, panelInstance);
+          }
+        },
+        error: () => {
+          this.errorMessage.set('Fehler beim Laden der Details.');
+          // Optional: Offcanvas wieder schließen bei Fehler
+          offcanvasRef.dismiss();
+        },
+      });
+  }
+
+  /**
+   * Hilfsmethode um das Rating zu laden und ins Panel zu schieben
+   */
+  private loadRatingForPanel(ratingId: string, panelInstance: PanelFormOrderComponent) {
+    this.ratingService
+      .getRatingById(ratingId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: ratingData => {
+          // Rating an das Panel übergeben
+          panelInstance.rating.set(ratingData);
+        },
+        error: () => {
+          // Wenn Rating laden fehlschlägt, ist das nicht kritisch, wir zeigen einfach keins an.
+          console.error('Rating konnte nicht geladen werden');
+        },
+      });
   }
 
   /**
@@ -159,8 +239,6 @@ export class OrdersComponent implements OnInit {
       .subscribe({
         next: addedOrder => {
           this.orders.update(current => [...current, addedOrder]);
-          //ToDo: Select the newly added order in the list
-          //this.selectOrder(addedOrder);
         },
         error: () => this.errorMessage.set(`Fehler beim Speichern: ${formData.name}`),
       });
@@ -182,8 +260,6 @@ export class OrdersComponent implements OnInit {
       .subscribe({
         next: updated => {
           this.orders.update(list => list.map(o => (o.id === id ? updated : o)));
-          //ToDo: Select the updated order in the list
-          //this.selectSupplier(updated);
         },
         error: () => this.errorMessage.set('Fehler beim Aktualisieren.'),
       });

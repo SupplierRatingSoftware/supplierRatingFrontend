@@ -3,7 +3,12 @@
   <app-list-search class="mb-3" (searchChange)="searchTerm.set($event)"></app-list-search>
   <ul class="list-unstyled ms-1 ms-md-3 me-1 me-md-3">
     @for (item of filteredOrders(); track item.id) {
-      <app-list-item [label]="item.name" [icon]="UserIcon" (editSelected)="openEditOrderModal(item)"> </app-list-item>
+      <app-list-item
+        [label]="item.name"
+        [icon]="UserIcon"
+        (click)="openDetailPanel(item)"
+        (editSelected)="openEditOrderModal(item)">
+      </app-list-item>
     }
   </ul>
 </div>
