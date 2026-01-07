@@ -1,13 +1,15 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LucideAngularModule, User, X } from 'lucide-angular';
-import { NgbActiveOffcanvas } from '@ng-bootstrap/ng-bootstrap';
-import { Order } from '../../models/order.model';
+import { NgbActiveOffcanvas, NgbRatingModule } from '@ng-bootstrap/ng-bootstrap';
+import { FieldMeta, Order } from '../../models/order.model';
 import { ORDER_FORM_CONFIG } from '../../models/order.config';
+import { RATING_FORM_CONFIG } from '../../models/rating.config';
+import { Rating } from '../../models/rating.model';
 
 @Component({
   selector: 'app-panel-form-order',
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, LucideAngularModule, NgbRatingModule],
   templateUrl: './panel-form-order.html',
   styleUrl: './panel-form-order.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,9 +22,10 @@ export class PanelFormOrderComponent {
   protected readonly X = X;
 
   /**
-   * Input: Receives current order from parent
+   * Input: Receives current order and rating from parent
    */
   readonly order = signal<Order | null>(null);
+  readonly rating = signal<Rating | null>(null);
 
   /**
    * Reference to the active Offcanvas, to control the offcanvas lifecycle
@@ -33,23 +36,51 @@ export class PanelFormOrderComponent {
    * Central configuration for displaying sections
    * @protected
    */
-  protected readonly config = ORDER_FORM_CONFIG;
+  protected readonly orderConfig = ORDER_FORM_CONFIG;
+  protected readonly ratingConfig = RATING_FORM_CONFIG;
 
   /**
    * Type secured help method for accessing order data without 'any'.
-   * We safely cast the string key to a Order interface key.
+   * We safely cast the string key to an Order interface key.
    * @param o The Order object
-   * @param key The technical key from the configuration
+   * @param field The field metadata containing the key
+   * @returns The value of the specified field in the Order object
    */
-  getOrderValue(o: Order, key: string): string | number | undefined | null {
+  getOrderValue(o: Order, field: FieldMeta): string | number | undefined | null {
+    // Special case for supplier name
+    if (field.key === 'supplierId') {
+      return o.supplierName;
+    }
     // Secured access via type-cast on Order index type
-    const value = o[key as keyof Order];
+    const value = o[field.key as keyof Order];
 
     // Since RatingStats and Orders are complex objects, we return only primitive values here.
     if (typeof value === 'string') {
       return value;
     }
-
     return null;
+  }
+
+  /**
+   * Type secured help method for accessing rating data without 'any'.
+   * We safely cast the string key to a Rating interface key.
+   * @param r
+   * @param key
+   */
+  getRatingValue(r: Rating, key: string): string | number | undefined | null {
+    // Secured access via type-cast on Rating index type
+    return r[key as keyof Rating];
+  }
+
+  /**
+   * Type secured help method for accessing rating numeric data without 'any'.
+   * We safely cast the string key to a Rating interface key.
+   * @param r
+   * @param key
+   */
+  getRatingNumber(r: Rating, key: string): number {
+    const val = r[key as keyof Rating];
+    // Wenn es eine Zahl ist, gib sie zurück, sonst 0
+    return typeof val === 'number' ? val : 0;
   }
 }
