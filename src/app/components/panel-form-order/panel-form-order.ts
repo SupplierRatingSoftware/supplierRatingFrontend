@@ -48,9 +48,19 @@ export class PanelFormOrderComponent {
    */
   getOrderValue(o: Order, field: FieldMeta): string | number | undefined | null {
     // Special case for supplier name
-    if (field.key === 'supplierId') {
-      return o.supplierName;
+    // Wir prüfen auf 'supplierId' (falls so in Config) ODER 'supplierName'
+    if (field.key === 'supplierId' || field.key === 'supplierName') {
+      // 1. Priorität: Der Name
+      if (o.supplierName) {
+        return o.supplierName;
+      }
+      // 2. Priorität: Die ID (damit man wenigstens etwas sieht)
+      if (o.supplierId) {
+        return `ID: ${o.supplierId} (Name wird geladen...)`;
+      }
+      return '-';
     }
+
     // Secured access via type-cast on Order index type
     const value = o[field.key as keyof Order];
 

@@ -3,7 +3,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ListSearch } from '../../components/list-search/list-search';
 import { AddBtn } from '../../components/add-btn/add-btn';
 import { LucideAngularModule, User } from 'lucide-angular';
-import { NgbModal, NgbModalOptions, NgbOffcanvas, NgbOffcanvasOptions } from '@ng-bootstrap/ng-bootstrap';
+import {
+  NgbModal,
+  NgbModalOptions,
+  NgbOffcanvas,
+  NgbOffcanvasOptions,
+  NgbOffcanvasRef,
+} from '@ng-bootstrap/ng-bootstrap';
 import { ToastComponent } from '../../components/toast/toast.component';
 import { OrderService } from '../../services/order.service';
 import { Order } from '../../models/order.model';
@@ -25,6 +31,9 @@ export class OrdersComponent implements OnInit {
    * @protected
    */
   protected readonly UserIcon = User;
+
+  // NEU: Hier speichern wir den Zugriff auf das Panel
+  private activePanelRef?: NgbOffcanvasRef;
 
   /**
    * Injected NgbModal as our modal service
@@ -131,11 +140,14 @@ export class OrdersComponent implements OnInit {
   openDetailPanel(summaryOrder: Order) {
     this.errorMessage.set(null);
 
-    // 1. Offcanvas öffnen (UI erscheint sofort, aber leer)
-    const offcanvasRef = this.offCanvasService.open(PanelFormOrderComponent, this.offCanvasOptions);
+    // 1. Offcanvas öffnen und Referenz speichern
+    this.activePanelRef = this.offCanvasService.open(PanelFormOrderComponent, this.offCanvasOptions);
 
-    // Wir können direkt auf die Instanz zugreifen:
-    const panelInstance = offcanvasRef.componentInstance as PanelFormOrderComponent;
+    // Ab hier nutzen wir this.activePanelRef statt der lokalen const offcanvasRef
+    const panelInstance = this.activePanelRef.componentInstance as PanelFormOrderComponent;
+
+    // Setze vorläufige Daten (Name fehlt hier evtl. wenn aus Liste geladen)
+    panelInstance.order.set(summaryOrder);
 
     // Optional: Titel oder Loading State setzen, falls gewünscht.
     // Das Panel zeigt "Keine Daten geladen" an, bis wir das Signal setzen.
@@ -156,8 +168,6 @@ export class OrdersComponent implements OnInit {
         },
         error: () => {
           this.errorMessage.set('Fehler beim Laden der Details.');
-          // Optional: Offcanvas wieder schließen bei Fehler
-          offcanvasRef.dismiss();
         },
       });
   }
@@ -239,6 +249,8 @@ export class OrdersComponent implements OnInit {
       .subscribe({
         next: addedOrder => {
           this.orders.update(current => [...current, addedOrder]);
+          // TODO: Optional: Toast anzeigen
+          //this.toastService.show('Bestellung erfolgreich angelegt');
         },
         error: () => this.errorMessage.set(`Fehler beim Speichern: ${formData.name}`),
       });
@@ -251,15 +263,51 @@ export class OrdersComponent implements OnInit {
    * @private
    */
   private updateExistingOrder(id: string, formData: Order) {
+    // 1. Optimistisches Update oder Backend Call
+    // Wir nehmen die existierenden Daten und überschreiben sie mit dem Formular
+    // WICHTIG: Das Formular hat keinen supplierName, das alte Objekt vielleicht schon.
+    // Aber wenn der User den Lieferanten ändert, stimmt der alte Name nicht mehr.
     const existing = this.orders().find(s => s.id === id);
+    if (!existing) return;
+
+    // Wir bauen das Payload
     const updatedPayload = { ...existing, ...formData, id };
 
     this.orderService
       .updateOrder(id, updatedPayload)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: updated => {
-          this.orders.update(list => list.map(o => (o.id === id ? updated : o)));
+        next: updatedFromBackend => {
+          // A) Liste aktualisieren
+          // Problem: updatedFromBackend hat evtl. keinen supplierName (abhängig vom Mock/Backend implementation).
+          // Trick: Wenn sich der Supplier NICHT geändert hat, behalten wir den alten Namen.
+          if (updatedFromBackend.supplierId === existing.supplierId) {
+            updatedFromBackend.supplierName = existing.supplierName;
+          } else {
+            // Wenn sich der Supplier geändert hat, müssten wir eigentlich neu laden.
+            // Für jetzt lassen wir es so, oder du rufst hier this.loadOrders() auf.
+          }
+
+          this.orders.update(list => list.map(o => (o.id === id ? updatedFromBackend : o)));
+
+          // B) PANEL LIVE UPDATE (Die Lösung für dein Problem 1)
+          // Wir prüfen: Gibt es ein Panel? Und zeigt es die ID, die wir gerade geupdated haben?
+          if (this.activePanelRef && this.activePanelRef.componentInstance) {
+            const panelInstance = this.activePanelRef.componentInstance as PanelFormOrderComponent;
+
+            // Wir lesen den aktuellen Wert des Signals im Panel
+            const currentPanelOrder = panelInstance.order();
+
+            if (currentPanelOrder && currentPanelOrder.id === id) {
+              // Treffer! Wir aktualisieren das Panel sofort.
+              // Wir müssen sicherstellen, dass ratingId etc. erhalten bleiben,
+              // da formData diese evtl. nicht hatte.
+              panelInstance.order.set({
+                ...currentPanelOrder, // alte Panel Daten (inkl. Rating Status etc)
+                ...updatedFromBackend, // neue Form Daten überschreiben
+              });
+            }
+          }
         },
         error: () => this.errorMessage.set('Fehler beim Aktualisieren.'),
       });

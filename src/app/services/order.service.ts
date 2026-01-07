@@ -25,6 +25,16 @@ export class OrderService {
   private headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
   /**
+   * MOCK DATABASE: Mapping SupplierID -> SupplierName
+   * Das simuliert die Beziehung in der echten Datenbank.
+   */
+  private readonly mockSupplierNames: Record<string, string> = {
+    'perm-1': 'Müller Baustoffe GmbH',
+    'perm-2': 'Swiss Tech AG',
+    'perm-3': 'Logistik Express AG', // Beispiel für weitere
+  };
+
+  /**
    * Mocked order data
    * @private
    */
@@ -32,7 +42,7 @@ export class OrderService {
     {
       id: 'ord-1',
       code: 'ORD-2023-001',
-      supplierId: 'perm-1', // Müller Baustoffe GmbH
+      supplierId: 'perm-1',
       supplierName: 'Müller Baustoffe GmbH',
       name: 'Zementlieferung Mai',
       mainCategory: 'BESCHAFFUNG',
@@ -48,7 +58,7 @@ export class OrderService {
     {
       id: 'ord-2',
       code: 'ORD-2023-002',
-      supplierId: 'perm-1', // Müller Baustoffe GmbH
+      supplierId: 'perm-1',
       supplierName: 'Müller Baustoffe GmbH',
       name: 'Ziegelsteine Q3',
       mainCategory: 'BESCHAFFUNG',
@@ -61,7 +71,7 @@ export class OrderService {
     {
       id: 'ord-3',
       code: 'ORD-2023-003',
-      supplierId: 'perm-2', // Swiss Tech AG
+      supplierId: 'perm-2',
       supplierName: 'Swiss Tech AG',
       name: 'Präzisionsfräsen Prototyp',
       mainCategory: 'DIENSTLEISTUNG',
@@ -74,7 +84,7 @@ export class OrderService {
     {
       id: 'ord-4',
       code: 'ORD-2023-004',
-      supplierId: 'perm-2', // Swiss Tech AG
+      supplierId: 'perm-2',
       supplierName: 'Swiss Tech AG',
       name: 'Wartung Messgeräte',
       mainCategory: 'DIENSTLEISTUNG',
@@ -109,11 +119,20 @@ export class OrderService {
     // if mock data is enabled, return mock data
     if (environment.useMockData) {
       console.log('⚠️ Using Mock Data for createOrder');
+
+      // FIX: Wir stellen sicher, dass wir einen String haben (Fallback auf leeren String)
+      const safeSupplierId = order.supplierId ?? '';
+      // 1. Simuliere das Verhalten des Backends: Namen zur ID suchen
+      const foundSupplierName = this.mockSupplierNames[safeSupplierId] ?? 'Unbekannter Lieferant';
+
       // we simulate a new object to be returned with an ID
       const newMockOrder: Order = {
         ...order,
         id: `mock-id-${Date.now()}`,
         code: `MOCK-${Date.now()}`,
+        // 2. Das Backend fügt den Namen hinzu (siehe OrderDetailDTO in YAML)
+        supplierName: foundSupplierName,
+        ratingStatus: 'PENDING', // Neue Orders sind meist unbewertet
       };
       // push freshly created order to mockOrders array
       this.mockOrders.push(newMockOrder);
@@ -151,8 +170,19 @@ export class OrderService {
       const index = this.mockOrders.findIndex(o => o.id === id);
       console.log('⚠️ Mocking Data for updateSupplier with ID:', id);
       if (index !== -1) {
+        // FIX: Wir stellen sicher, dass wir einen String haben (Fallback auf leeren String)
+        const safeSupplierId = order.supplierId ?? '';
+        // Name neu ermitteln (falls SupplierID geändert wurde), sonst alten Namen behalten
+        const foundSupplierName =
+          this.mockSupplierNames[safeSupplierId] ?? this.mockOrders[index].supplierName ?? 'Unbekannter Lieferant';
+
         // Wir überschreiben den alten Eintrag im Array
-        this.mockOrders[index] = { ...order, id };
+        this.mockOrders[index] = {
+          ...this.mockOrders[index], // alte Werte behalten
+          ...order, // neue Werte überschreiben
+          supplierName: foundSupplierName, // Namen sicherstellen
+          id,
+        };
         // Wir geben eine Kopie zurück, um wieder doppelte Einträge zu vermeiden
         return of({ ...this.mockOrders[index] });
       }
