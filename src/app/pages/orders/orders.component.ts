@@ -331,9 +331,9 @@ export class OrdersComponent implements OnInit {
     return list.filter(
       order =>
         // Search by name
-        order.name.toLowerCase().includes(term) ||
+        (order.name || '').toLowerCase().includes(term) ||
         // Or search by orderedBy
-        order.orderedBy.toLowerCase().includes(term)
+        (order.orderedBy || '').toLowerCase().includes(term)
     );
   });
 }
