@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgbAccordionModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormSection, Supplier } from '../../models/supplier.model';
 import { SUPPLIER_FORM_CONFIG } from '../../models/supplier.config';
@@ -48,39 +48,24 @@ export class ModalFormSupplierComponent implements OnInit {
    * Represents a reactive form group for managing supplier information.
    * This form group contains controls for various supplier-related fields,
    * including their business and contact information.
-   *
-   * Fields:
-   * - `name`: A required field representing the supplier's name.
-   * - `customerNumber`: A required field for the unique customer number associated with the supplier.
-   * - `street`: A required field representing the street address of the supplier.
-   * - `addition`: An optional field for additional address information.
-   * - `poBox`: An optional field for the supplier's PO Box.
-   * - `zipCode`: A required field for the postal code of the supplier's address.
-   * - `city`: A required field representing the city of the supplier's address.
-   * - `country`: A required field for the country of the supplier, with a default value of 'CH'.
-   * - `email`: An optional field for the supplier's email address, with validation to ensure it is in a valid email format.
-   * - `phoneNumber`: An optional field for the supplier's phone number.
-   * - `website`: A required field for the supplier's website URL.
-   * - `vatId`: An optional field for the supplier's VAT (Value Added Tax) identification number.
-   * - `conditions`: An optional field for storing terms and conditions related to the supplier.
-   * - `customerInfo`: An optional field for storing additional customer information related to the supplier.
    */
-  supplierForm = new FormGroup({
-    name: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    customerNumber: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    street: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    addition: new FormControl(''),
-    poBox: new FormControl(''),
-    zipCode: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    city: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    country: new FormControl('CH', { nonNullable: true, validators: [Validators.required] }),
-    email: new FormControl('', { validators: [Validators.email] }),
-    phoneNumber: new FormControl(''),
-    website: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    vatId: new FormControl(''),
-    conditions: new FormControl(''),
-    customerInfo: new FormControl(''),
-  });
+  protected supplierForm: FormGroup = new FormGroup(this.buildFormControls());
+
+  private buildFormControls(): Record<string, AbstractControl> {
+    const group: Record<string, AbstractControl> = {};
+    this.config.forEach(section => {
+      section.fields.forEach(field => {
+        const validators = field.required ? [Validators.required] : [];
+        if (field.validationRules?.includes('email')) validators.push(Validators.email);
+
+        group[field.key] = new FormControl('', {
+          nonNullable: field.required,
+          validators: validators,
+        });
+      });
+    });
+    return group;
+  }
 
   /**
    * Lifecycle hook that is called after the component is initialized.

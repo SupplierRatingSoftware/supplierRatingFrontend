@@ -27,11 +27,10 @@ export const SUPPLIER_FORM_CONFIG: FormSection[] = [
         gridClass: 'col-md-6',
         options: [
           { value: 'CH', label: 'Schweiz' },
-          { value: 'DE', label: 'Deutschland' },
-          { value: 'AT', label: 'Österreich' },
-          { value: 'LI', label: 'Liechtenstein' },
-          { value: 'FR', label: 'Frankreich' },
-          { value: 'IT', label: 'Italien' },
+          { value: 'D', label: 'Deutschland' },
+          { value: 'F', label: 'Frankreich' },
+          { value: 'NL', label: 'Niederlande' },
+          { value: 'FL', label: 'Liechtenstein' },
         ],
       },
     ],
@@ -48,14 +47,14 @@ export const SUPPLIER_FORM_CONFIG: FormSection[] = [
         validationRules: ['email'], // Hier definieren wir die Regel zentral
       },
       { key: 'phoneNumber', label: 'Telefon', required: false, type: 'tel', gridClass: 'col-md-6' },
-      { key: 'website', label: 'Website', required: true, type: 'url', gridClass: 'col-12' },
+      { key: 'website', label: 'Website', required: false, type: 'url', gridClass: 'col-12' },
     ],
   },
   {
     sectionTitle: 'Konditionen & Info',
     fields: [
-      { key: 'vatId', label: 'MWST-Nummer (VAT)', required: false, type: 'text', gridClass: 'col-md-6' },
-      { key: 'conditions', label: 'Konditionen', required: false, type: 'textarea', gridClass: 'col-md-6' },
+      { key: 'vatId', label: 'MWST-Nummer (VAT)', required: true, type: 'text', gridClass: 'col-md-6' },
+      { key: 'conditions', label: 'Konditionen', required: true, type: 'textarea', gridClass: 'col-md-6' },
       { key: 'customerInfo', label: 'Interne Info', required: false, type: 'textarea', gridClass: 'col-12' },
     ],
   },

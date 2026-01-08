@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Order } from '../models/order.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment.prod';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 /**
  * Service for providing mocked, async order-data.
@@ -23,16 +23,6 @@ export class OrderService {
    */
   private baseUrl = `${environment.apiUrl}/orders`;
   private headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-
-  /**
-   * MOCK DATABASE: Mapping SupplierID -> SupplierName
-   * Das simuliert die Beziehung in der echten Datenbank.
-   */
-  private readonly mockSupplierNames: Record<string, string> = {
-    'perm-1': 'Müller Baustoffe GmbH',
-    'perm-2': 'Swiss Tech AG',
-    'perm-3': 'Logistik Express AG', // Beispiel für weitere
-  };
 
   /**
    * Mocked order data
@@ -119,20 +109,11 @@ export class OrderService {
     // if mock data is enabled, return mock data
     if (environment.useMockData) {
       console.log('⚠️ Using Mock Data for createOrder');
-
-      // FIX: Wir stellen sicher, dass wir einen String haben (Fallback auf leeren String)
-      const safeSupplierId = order.supplierId ?? '';
-      // 1. Simuliere das Verhalten des Backends: Namen zur ID suchen
-      const foundSupplierName = this.mockSupplierNames[safeSupplierId] ?? 'Unbekannter Lieferant';
-
       // we simulate a new object to be returned with an ID
       const newMockOrder: Order = {
         ...order,
         id: `mock-id-${Date.now()}`,
         code: `MOCK-${Date.now()}`,
-        // 2. Das Backend fügt den Namen hinzu (siehe OrderDetailDTO in YAML)
-        supplierName: foundSupplierName,
-        ratingStatus: 'PENDING', // Neue Orders sind meist unbewertet
       };
       // push freshly created order to mockOrders array
       this.mockOrders.push(newMockOrder);
@@ -167,27 +148,8 @@ export class OrderService {
   updateOrder(id: string, order: Order): Observable<Order> {
     // if mock data is enabled, return mock data
     if (environment.useMockData) {
-      const index = this.mockOrders.findIndex(o => o.id === id);
-      console.log('⚠️ Mocking Data for updateSupplier with ID:', id);
-      if (index !== -1) {
-        // FIX: Wir stellen sicher, dass wir einen String haben (Fallback auf leeren String)
-        const safeSupplierId = order.supplierId ?? '';
-        // Name neu ermitteln (falls SupplierID geändert wurde), sonst alten Namen behalten
-        const foundSupplierName =
-          this.mockSupplierNames[safeSupplierId] ?? this.mockOrders[index].supplierName ?? 'Unbekannter Lieferant';
-
-        // Wir überschreiben den alten Eintrag im Array
-        this.mockOrders[index] = {
-          ...this.mockOrders[index], // alte Werte behalten
-          ...order, // neue Werte überschreiben
-          supplierName: foundSupplierName, // Namen sicherstellen
-          id,
-        };
-        // Wir geben eine Kopie zurück, um wieder doppelte Einträge zu vermeiden
-        return of({ ...this.mockOrders[index] });
-      }
-      // Return an error Observable if supplier not found
-      return throwError(() => new Error(`Supplier with ID ${id} not found`));
+      console.log('⚠️ Mocking Data for updateOrder with ID:', id);
+      return of({ ...order, id, code: `MOCK-${id}-${Date.now()}` } as Order);
     }
     // real backend API call
     return this.http.put<Order>(`${this.baseUrl}/${id}`, order);
