@@ -263,51 +263,15 @@ export class OrdersComponent implements OnInit {
    * @private
    */
   private updateExistingOrder(id: string, formData: Order) {
-    // 1. Optimistisches Update oder Backend Call
-    // Wir nehmen die existierenden Daten und überschreiben sie mit dem Formular
-    // WICHTIG: Das Formular hat keinen supplierName, das alte Objekt vielleicht schon.
-    // Aber wenn der User den Lieferanten ändert, stimmt der alte Name nicht mehr.
     const existing = this.orders().find(s => s.id === id);
-    if (!existing) return;
-
-    // Wir bauen das Payload
     const updatedPayload = { ...existing, ...formData, id };
 
     this.orderService
       .updateOrder(id, updatedPayload)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: updatedFromBackend => {
-          // A) Liste aktualisieren
-          // Problem: updatedFromBackend hat evtl. keinen supplierName (abhängig vom Mock/Backend implementation).
-          // Trick: Wenn sich der Supplier NICHT geändert hat, behalten wir den alten Namen.
-          if (updatedFromBackend.supplierId === existing.supplierId) {
-            updatedFromBackend.supplierName = existing.supplierName;
-          } else {
-            // Wenn sich der Supplier geändert hat, müssten wir eigentlich neu laden.
-            // Für jetzt lassen wir es so, oder du rufst hier this.loadOrders() auf.
-          }
-
-          this.orders.update(list => list.map(o => (o.id === id ? updatedFromBackend : o)));
-
-          // B) PANEL LIVE UPDATE (Die Lösung für dein Problem 1)
-          // Wir prüfen: Gibt es ein Panel? Und zeigt es die ID, die wir gerade geupdated haben?
-          if (this.activePanelRef && this.activePanelRef.componentInstance) {
-            const panelInstance = this.activePanelRef.componentInstance as PanelFormOrderComponent;
-
-            // Wir lesen den aktuellen Wert des Signals im Panel
-            const currentPanelOrder = panelInstance.order();
-
-            if (currentPanelOrder && currentPanelOrder.id === id) {
-              // Treffer! Wir aktualisieren das Panel sofort.
-              // Wir müssen sicherstellen, dass ratingId etc. erhalten bleiben,
-              // da formData diese evtl. nicht hatte.
-              panelInstance.order.set({
-                ...currentPanelOrder, // alte Panel Daten (inkl. Rating Status etc)
-                ...updatedFromBackend, // neue Form Daten überschreiben
-              });
-            }
-          }
+        next: updated => {
+          this.orders.update(list => list.map(s => (s.id === id ? updated : s)));
         },
         error: () => this.errorMessage.set('Fehler beim Aktualisieren.'),
       });
