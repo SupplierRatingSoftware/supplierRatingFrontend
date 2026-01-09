@@ -2,15 +2,23 @@ import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@ang
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { NgbAccordionModule, NgbActiveModal, NgbRatingModule } from '@ng-bootstrap/ng-bootstrap';
-import { X } from 'lucide-angular';
+import { LucideAngularModule, X } from 'lucide-angular';
 import { FormSection } from '../../models/rating.model';
 import { RATING_FORM_CONFIG } from '../../models/rating.config';
 import { RatingService } from '../../services/rating.service';
 import { Order } from '../../models/order.model';
+import { ToastComponent } from '../toast/toast.component';
 
 @Component({
   selector: 'app-modal-rating',
-  imports: [CommonModule, ReactiveFormsModule, NgbRatingModule, NgbAccordionModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    NgbRatingModule,
+    NgbAccordionModule,
+    LucideAngularModule,
+    ToastComponent,
+  ],
   templateUrl: './modal-rating.html',
   styleUrl: './modal-rating.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

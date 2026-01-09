@@ -75,6 +75,18 @@ export class ModalFormOrderComponent implements OnInit {
   }
 
   /**
+   * AKTION: "Bestellung bewerten"
+   * Schließt das Modal und signalisiert der Page, dass das Rating-Modal folgen soll.
+   */
+  onRate() {
+    if (this.orderForm.valid) {
+      this.activeModal.close({ action: 'RATE', data: this.orderForm.value });
+    } else {
+      this.orderForm.markAllAsTouched();
+    }
+  }
+
+  /**
    * Lifecycle hook that is called after the component is initialized.
    * For handling form initialization and data pre-filling
    */
