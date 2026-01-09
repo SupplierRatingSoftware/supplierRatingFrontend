@@ -87,7 +87,7 @@ export class ModalRatingComponent implements OnInit {
     // 1. Zuerst die konditionale Sperrung (basierend auf Kontaktperson) anwenden
     this.applyConditionalValidators();
     // 2. Bestehende Bewertungen laden (falls vorhanden)
-    const currentRating = this.order()?.orderRating;
+    const currentRating = this.order(); //?.orderRating;
     if (currentRating) {
       this.ratingForm.patchValue(currentRating);
     }
