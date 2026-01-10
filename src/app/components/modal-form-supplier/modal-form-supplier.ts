@@ -2,9 +2,9 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgbAccordionModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { FormSection, Supplier } from '../../models/supplier.model';
-import { SUPPLIER_FORM_CONFIG } from '../../models/supplier.config';
+import { FormSection, SUPPLIER_FORM_CONFIG } from '../../models/supplier.config';
 import { LucideAngularModule, X } from 'lucide-angular';
+import { SupplierSummaryDTO } from '../../openapi-gen';
 
 @Component({
   selector: 'app-modal-form-supplier',
@@ -42,7 +42,7 @@ export class ModalFormSupplierComponent implements OnInit {
    * State of the supplier
    * @description The supplier state is used to store the currently edited supplier
    */
-  supplier = signal<Supplier | undefined>(undefined);
+  supplier = signal<SupplierSummaryDTO | undefined>(undefined);
 
   /**
    * Represents a reactive form group for managing supplier information.

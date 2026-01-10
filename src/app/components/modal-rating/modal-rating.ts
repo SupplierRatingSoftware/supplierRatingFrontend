@@ -3,11 +3,10 @@ import { CommonModule } from '@angular/common';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { NgbAccordionModule, NgbActiveModal, NgbRatingModule } from '@ng-bootstrap/ng-bootstrap';
 import { LucideAngularModule, X } from 'lucide-angular';
-import { FormSection } from '../../models/rating.model';
-import { RATING_FORM_CONFIG } from '../../models/rating.config';
-import { RatingService } from '../../services/rating.service';
+import { FormSection, RATING_FORM_CONFIG } from '../../models/rating.config';
 import { Order } from '../../models/order.model';
 import { ToastComponent } from '../toast/toast.component';
+import { DefaultService } from '../../openapi-gen';
 
 @Component({
   selector: 'app-modal-rating',
@@ -40,7 +39,7 @@ export class ModalRatingComponent implements OnInit {
    * Injected rating service for loading ratings in the form
    * @private
    */
-  private ratingService = inject(RatingService);
+  private ratingService = inject(DefaultService);
 
   /**
    * We declare the Set to store the titles of the open sections.

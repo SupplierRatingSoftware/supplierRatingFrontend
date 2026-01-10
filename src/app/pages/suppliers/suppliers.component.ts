@@ -5,11 +5,10 @@ import { AddBtn } from '../../components/add-btn/add-btn';
 import { LucideAngularModule, User } from 'lucide-angular';
 import { NgbModal, NgbModalOptions, NgbOffcanvas, NgbOffcanvasOptions } from '@ng-bootstrap/ng-bootstrap';
 import { ToastComponent } from '../../components/toast/toast.component';
-import { SupplierService } from '../../services/supplier.service';
-import { Supplier } from '../../models/supplier.model';
 import { ListItem } from '../../components/list-item/list-item';
 import { ModalFormSupplierComponent } from '../../components/modal-form-supplier/modal-form-supplier';
 import { PanelFormSupplierComponent } from '../../components/panel-form-supplier/panel-form-supplier';
+import { DefaultService, SupplierCreateDTO, SupplierSummaryDTO, SupplierUpdateDTO } from '../../openapi-gen';
 
 @Component({
   selector: 'app-suppliers',
@@ -66,13 +65,13 @@ export class SuppliersComponent implements OnInit {
    * Injected SupplierService
    * @private
    */
-  private supplierService: SupplierService = inject(SupplierService);
+  private supplierService: DefaultService = inject(DefaultService);
   private destroyRef = inject(DestroyRef);
 
   /**
    * State: List of all suppliers
    */
-  readonly suppliers = signal<Supplier[]>([]);
+  readonly suppliers = signal<SupplierSummaryDTO[]>([]);
 
   /**
    * State: The actual search term for filtering list-items
@@ -98,7 +97,7 @@ export class SuppliersComponent implements OnInit {
   private loadSuppliers() {
     this.errorMessage.set(null);
     this.supplierService
-      .getSuppliers()
+      .getAllSuppliers()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: data => {
@@ -123,7 +122,7 @@ export class SuppliersComponent implements OnInit {
   /**
    * Select Supplier and show Offcanvas with data-details
    */
-  selectSupplier(supplier: Supplier) {
+  selectSupplier(supplier: SupplierSummaryDTO) {
     const offcanvasRef = this.offCanvasService.open(PanelFormSupplierComponent, this.offCanvasOptions);
 
     // Send data into Offcanvas Component
@@ -141,7 +140,7 @@ export class SuppliersComponent implements OnInit {
    * Opens the modal in edit mode for an existing supplier
    * @param supplier The supplier to edit
    */
-  openEditSupplierModal(supplier: Supplier) {
+  openEditSupplierModal(supplier: SupplierSummaryDTO) {
     this.handleSupplierModal(supplier);
   }
 
@@ -150,7 +149,7 @@ export class SuppliersComponent implements OnInit {
    * @param supplier Optional supplier for edit mode
    * @private
    */
-  private handleSupplierModal(supplier?: Supplier) {
+  private handleSupplierModal(supplier?: SupplierSummaryDTO) {
     const modalRef = this.modalService.open(ModalFormSupplierComponent, this.modalOptions);
 
     if (supplier) {
@@ -158,7 +157,7 @@ export class SuppliersComponent implements OnInit {
     }
 
     modalRef.result.then(
-      (result: Supplier) => {
+      (result: SupplierCreateDTO) => {
         if (!result) return;
 
         if (supplier?.id) {
@@ -181,9 +180,9 @@ export class SuppliersComponent implements OnInit {
    * @param formData
    * @private
    */
-  private createAndAddSupplier(formData: Supplier) {
+  private createAndAddSupplier(formData: SupplierCreateDTO) {
     this.supplierService
-      .addSupplier(formData)
+      .createSupplier(formData)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: addedSupplier => {
@@ -200,7 +199,7 @@ export class SuppliersComponent implements OnInit {
    * @param formData The updated data from the form
    * @private
    */
-  private updateExistingSupplier(id: string, formData: Supplier) {
+  private updateExistingSupplier(id: string, formData: SupplierUpdateDTO) {
     const existing = this.suppliers().find(s => s.id === id);
     const updatedPayload = { ...existing, ...formData, id };
 

@@ -1,4 +1,25 @@
-import { FormSection } from './rating.model';
+/**
+ * Interface for the form configuration
+ * @description This interface declares the configuration of a form section
+ */
+export interface FormSection {
+  sectionTitle: string;
+  fields: FieldMeta[];
+}
+
+/**
+ * Interface for the fields metadata of the form
+ * @description This interface declares the metadata of a form field in a form section
+ */
+export interface FieldMeta {
+  key: string; // Technical name
+  label: string; // Displayed name for the UI
+  required: boolean;
+  requiredIfContact?: boolean;
+  type: 'textarea' | 'number' | 'rating' | 'stat-total';
+  gridClass?: string; // CSS-Class for the col-width (e.g. 'col-12', 'col-md-6')
+  placeholder?: string;
+}
 
 /**
  * Central configuration for displaying order-form sections

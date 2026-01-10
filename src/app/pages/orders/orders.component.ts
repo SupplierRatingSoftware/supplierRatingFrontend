@@ -15,8 +15,8 @@ import { OrderService } from '../../services/order.service';
 import { Order } from '../../models/order.model';
 import { ListItem } from '../../components/list-item/list-item';
 import { ModalFormOrderComponent } from '../../components/modal-form-order/modal-form-order';
-import { RatingService } from '../../services/rating.service';
 import { PanelFormOrderComponent } from '../../components/panel-form-order/panel-form-order';
+import { DefaultService } from '../../openapi-gen';
 
 @Component({
   selector: 'app-orders',
@@ -77,7 +77,7 @@ export class OrdersComponent implements OnInit {
    * @private
    */
   private orderService: OrderService = inject(OrderService);
-  private ratingService = inject(RatingService);
+  private ratingService = inject(DefaultService);
   private destroyRef = inject(DestroyRef);
 
   /**
