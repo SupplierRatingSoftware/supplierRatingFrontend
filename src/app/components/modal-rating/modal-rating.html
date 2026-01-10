@@ -1,11 +1,11 @@
 <div class="modal-header">
-  <h4 class="modal-title">{{ order() ? 'Bestellung bearbeiten' : 'Neue Bestellung erfassen' }}</h4>
+  <h4 class="modal-title">{{ order()?.name || 'Bewertung abgeben' }}</h4>
   <button type="button" class="btn cancel-btns ms-auto me-2 p-1" aria-label="Close" (click)="cancel()">
     <i-lucide [img]="X" aria-hidden="true"></i-lucide>
   </button>
 </div>
 <div class="modal-body">
-  <form [formGroup]="orderForm" (ngSubmit)="onSubmit()" id="orderForm" class="container-fluid">
+  <form [formGroup]="ratingForm" (ngSubmit)="onSubmit()" id="ratingForm" class="container-fluid">
     <div ngbAccordion [closeOthers]="false">
       @for (section of config; track section.sectionTitle) {
       <div
@@ -31,13 +31,7 @@
                     {{ field.label }} {{ field.required ? '*' : '' }}
                   </label>
 
-                  @switch (field.type) { @case ('select') {
-                  <select [id]="'modal-' + field.key" class="form-select" [formControlName]="field.key">
-                    @for (opt of field.options; track opt.value) {
-                    <option [value]="opt.value">{{ opt.label }}</option>
-                    }
-                  </select>
-                  } @case ('textarea') {
+                  @switch (field.type) { @case ('textarea') {
                   <textarea
                     [id]="'modal-' + field.key"
                     class="form-control"
@@ -50,7 +44,7 @@
                     class="form-control"
                     [formControlName]="field.key"
                     [placeholder]="field.placeholder || ''" />
-                  } } @if (orderForm.get(field.key)?.invalid && orderForm.get(field.key)?.touched) {
+                  } } @if (ratingForm.get(field.key)?.invalid && ratingForm.get(field.key)?.touched) {
                   <div class="text-danger small mt-1">{{ field.label }} ist erforderlich oder ungültig.</div>
                   }
                 </div>
@@ -65,23 +59,10 @@
   </form>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-secondary" (click)="cancel()">Abbrechen</button>
-
-  <div
-    class="d-flex align-items-center small fw-bold"
-    [class.text-warning]="order()?.ratingStatus !== 'RATED'"
-    [class.text-success]="order()?.ratingStatus === 'RATED'">
-    <i
-      class="bi me-1"
-      [class.bi-exclamation-triangle-fill]="order()?.ratingStatus !== 'RATED'"
-      [class.bi-check-circle-fill]="order()?.ratingStatus === 'RATED'">
-    </i>
-    {{ order()?.ratingStatus === 'RATED' ? 'Bereits bewertet und daher nicht mehr änderbar' : 'Bewertung ausstehend' }}
-  </div>
-  @if (order()?.ratingStatus !== 'RATED') {
-  <button type="button" class="btn btn-outline-primary me-2" (click)="onRate()">Bestellung bewerten</button>
-  <button type="submit" class="btn btn-primary px-5">
-    {{ order() ? 'Änderungen speichern' : 'Bestellung erstellen' }}
+  <button type="reset" class="btn cancel-btns me-2" (click)="cancel()">Abbrechen</button>
+  <button type="submit" form="ratingForm" id="submitBtn" class="btn" [disabled]="ratingForm.invalid || !!message()">
+    {{ 'Bewertung absenden' }}
   </button>
-  }
 </div>
+
+<app-toast [message]="message()" (exitToast)="onToastClosed()"></app-toast>

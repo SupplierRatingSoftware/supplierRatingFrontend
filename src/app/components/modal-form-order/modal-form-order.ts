@@ -1,95 +1,174 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NgbAccordionModule, NgbActiveModal, NgbRatingModule } from '@ng-bootstrap/ng-bootstrap';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { startWith } from 'rxjs';
-
-// Interface bleibt gleich
-export interface OrderFormData {
-  shortName: string;
-  details: string;
-  mainCategory: string;
-  subCategory: string;
-  rhythm: string;
-  reason: string;
-  orderer: string;
-  orderType: string;
-  orderDate: string;
-  deliveryDate: string;
-  contactName: string;
-  contactEmail: string;
-  contactPhone: string;
-  contactComment: string;
-  ratingQuality: number;
-  commentQuality: string;
-  ratingCost: number;
-  commentCost: string;
-  ratingDeadline: number;
-  commentDeadline: string;
-  ratingAvailability: number;
-  commentAvailability: string;
-  totalComment: string;
-}
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { NgbAccordionModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { LucideAngularModule, X } from 'lucide-angular';
+import { FormSection, Order } from '../../models/order.model';
+import { ORDER_FORM_CONFIG } from '../../models/order.config';
+import { SupplierService } from '../../services/supplier.service';
 
 @Component({
   selector: 'app-modal-form-order',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NgbAccordionModule, NgbRatingModule],
+  imports: [CommonModule, ReactiveFormsModule, NgbAccordionModule, LucideAngularModule],
   templateUrl: './modal-form-order.html',
   styleUrl: './modal-form-order.scss',
 })
-export class ModalFormOrderComponent {
-  activeModal = inject(NgbActiveModal);
+export class ModalFormOrderComponent implements OnInit {
+  /**
+   * Lucide Icon
+   * @protected
+   */
+  protected readonly X = X;
 
-  orderForm = new FormGroup({
-    shortName: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    details: new FormControl('', { nonNullable: true }),
-    mainCategory: new FormControl('', { nonNullable: true }),
-    subCategory: new FormControl('', { nonNullable: true }),
-    rhythm: new FormControl('', { nonNullable: true }),
-    reason: new FormControl('', { nonNullable: true }),
-    orderer: new FormControl('', { nonNullable: true }),
-    orderType: new FormControl('', { nonNullable: true }),
-    orderDate: new FormControl('', { nonNullable: true }),
-    deliveryDate: new FormControl('', { nonNullable: true }),
-    contactName: new FormControl('', { nonNullable: true }),
-    contactEmail: new FormControl('', { nonNullable: true, validators: [Validators.email] }),
-    contactPhone: new FormControl('', { nonNullable: true }),
-    contactComment: new FormControl('', { nonNullable: true }),
-    ratingQuality: new FormControl(0, { nonNullable: true }),
-    commentQuality: new FormControl('', { nonNullable: true }),
-    ratingCost: new FormControl(0, { nonNullable: true }),
-    commentCost: new FormControl('', { nonNullable: true }),
-    ratingDeadline: new FormControl(0, { nonNullable: true }),
-    commentDeadline: new FormControl('', { nonNullable: true }),
-    ratingAvailability: new FormControl(0, { nonNullable: true }),
-    commentAvailability: new FormControl('', { nonNullable: true }),
-    totalComment: new FormControl('', { nonNullable: true }),
-  });
+  /**
+   * Injected NgbActiveModal
+   * @private
+   */
+  private activeModal = inject(NgbActiveModal);
 
-  protected formValues = toSignal(this.orderForm.valueChanges.pipe(startWith(this.orderForm.getRawValue())));
+  /**
+   * Injected supplier service for loading suppliers in the form
+   * @private
+   */
+  private supplierService = inject(SupplierService);
 
-  totalRating = computed(() => {
-    const val = this.formValues();
-    if (!val) return '0.0/5';
-    const ratings = [val.ratingQuality, val.ratingCost, val.ratingDeadline, val.ratingAvailability].filter(
-      (v): v is number => v !== undefined && v > 0
-    );
-    if (ratings.length === 0) return '0.0/5';
-    const sum = ratings.reduce((acc, curr) => acc + curr, 0);
-    return `${(sum / ratings.length).toFixed(1)}/5`;
-  });
+  /**
+   * We declare the Set to store the titles of the open sections.
+   * @protected
+   */
+  protected expandedSections = new Set<string>();
 
-  onSubmit() {
+  /**
+   * Preconfigured form configuration of the modal
+   * @description A preconfigured form configuration of the modal form-fields and section-headers
+   * @protected
+   */
+  protected readonly config = ORDER_FORM_CONFIG;
+
+  /**
+   * State of the order
+   * @description The order state is used to store the currently edited order
+   */
+  order = signal<Order | undefined>(undefined);
+
+  /**
+   * Represents a reactive form group for managing order information.
+   * This form group contains controls for various order-related fields,
+   * including their business and contact information. It is based on the order configuration.
+   */
+  protected orderForm: FormGroup = new FormGroup(this.buildFormControls());
+
+  private buildFormControls(): Record<string, AbstractControl> {
+    const group: Record<string, AbstractControl> = {};
+    this.config.forEach(section => {
+      section.fields.forEach(field => {
+        const validators = field.required ? [Validators.required] : [];
+        if (field.validationRules?.includes('email')) validators.push(Validators.email);
+
+        group[field.key] = new FormControl('', {
+          nonNullable: field.required,
+          validators: validators,
+        });
+      });
+    });
+    return group;
+  }
+
+  /**
+   * AKTION: "Bestellung bewerten"
+   * Schließt das Modal und signalisiert der Page, dass das Rating-Modal folgen soll.
+   */
+  onRate() {
     if (this.orderForm.valid) {
-      this.activeModal.close(this.orderForm.value);
+      this.activeModal.close({ action: 'RATE', data: this.orderForm.value });
     } else {
-      // WICHTIG: Markiert alle Felder, damit die roten Fehlermeldungen erscheinen
       this.orderForm.markAllAsTouched();
     }
   }
 
+  /**
+   * Lifecycle hook that is called after the component is initialized.
+   * For handling form initialization and data pre-filling
+   */
+  ngOnInit() {
+    this.loadSuppliers();
+    // Expand the first section by default, if there are sections
+    if (this.config.length > 0) {
+      this.expandedSections.add(this.config[0].sectionTitle);
+    }
+    // Load suppliers and map them to the form options
+    this.supplierService.getSuppliers().subscribe(suppliers => {
+      const supplierField = this.config
+        .find(s => s.sectionTitle === 'Lieferant & Ansprechperson')
+        ?.fields.find(f => f.key === 'supplier');
+      if (supplierField) {
+        supplierField.options = suppliers.map(s => ({ value: s.id || '', label: s.name }));
+      }
+    });
+    // Check if an order is present
+    const currentOrder = this.order();
+    if (currentOrder) {
+      // Patching the data into the form
+      this.orderForm.patchValue(currentOrder);
+      // If the order is already rated, disable the form
+      if (currentOrder.ratingStatus === 'RATED') {
+        this.orderForm.disable();
+      }
+    }
+  }
+
+  /**
+   * Loads suppliers from the SupplierService and maps them to the select options
+   * in the form configuration.
+   */
+  private loadSuppliers() {
+    this.supplierService.getSuppliers().subscribe(suppliers => {
+      // Find the section with the title "Lieferant & Ansprechperson"
+      const section = this.config.find(s => s.sectionTitle === 'Lieferant & Ansprechperson');
+      // Find the field with the key 'supplierId' in that section
+      const supplierField = section?.fields.find(f => f.key === 'supplierId');
+      // Map suppliers to the field options {value, label}
+      if (supplierField) {
+        supplierField.options = suppliers.map(s => ({
+          value: s.id || '', // Die technische ID
+          label: s.name, // Der Anzeigename für das Dropdown
+        }));
+      }
+    });
+  }
+
+  /**
+   * Checks if errors exist in a form section.
+   */
+  isSectionInvalid(section: FormSection): boolean {
+    return section.fields.some(field => {
+      const control = this.orderForm.get(field.key);
+      return control?.invalid && (control.touched || control.dirty);
+    });
+  }
+
+  /**
+   * Handles form submission and closes the modal with the form data if valid.
+   */
+  onSubmit() {
+    if (this.orderForm.valid) {
+      this.activeModal.close(this.orderForm.value);
+    } else {
+      // Mark all fields as touched to display validation messages
+      this.orderForm.markAllAsTouched();
+
+      // Push all invalid sections to the expandedSections set -> these sections will expand
+      this.config.forEach(section => {
+        if (this.isSectionInvalid(section)) {
+          this.expandedSections.add(section.sectionTitle);
+        }
+      });
+    }
+  }
+
+  /**
+   * Cancels the modal and dismisses it.
+   */
   cancel() {
     this.activeModal.dismiss();
   }

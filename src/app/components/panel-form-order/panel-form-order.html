@@ -1,0 +1,82 @@
+<div class="d-flex flex-column p-2 h-100">
+  <div class="offcanvas-header border-bottom">
+    <h5 class="offcanvas-title">Bestelldetails</h5>
+    <button
+      type="button"
+      class="btn cancel-btns ms-auto me-2 p-1"
+      aria-label="Close"
+      (click)="activeOffcanvas.dismiss()">
+      <i-lucide [img]="X" aria-hidden="true"></i-lucide>
+    </button>
+  </div>
+
+  <div class="offcanvas-body p-0">
+    <div class="detail-panel">
+      @if (order(); as s) {
+      <div class="p-4">
+        @for (section of orderConfig; track section.sectionTitle) {
+        <div class="mb-4">
+          <h5 class="section-header text-body-primary fw-medium">{{ section.sectionTitle }}</h5>
+          <div class="row">
+            @for (field of section.fields; track field.key) {
+            <div [class]="field.gridClass || 'col-12'" class="mb-3">
+              <span class="info-label text-body-secondary fw-medium">
+                <i>{{ field.label }}: </i>
+              </span>
+              <span class="info-value text-body-tertiary fw-light text-nowrap">
+                {{ getOrderValue(s, field) || '-' }}
+              </span>
+            </div>
+            }
+          </div>
+        </div>
+        }
+
+        <div class="mb-5">
+          <h5 class="section-header fw-medium border-bottom pb-2 mb-3">Bewertungs-Übersicht</h5>
+
+          @if (rating(); as r) { @for (section of ratingConfig; track section.sectionTitle) {
+          <div class="row g-3">
+            @for (field of section.fields; track field.key) {
+            <div [class]="field.gridClass || 'col-12'">
+              @if (field.type === 'rating') {
+              <div class="d-flex align-items-center justify-content-between">
+                <span>{{ field.label }}</span>
+                <div class="d-flex align-items-center gap-2">
+                  <ngb-rating
+                    [rate]="getRatingNumber(r, field.key) || 0"
+                    [max]="5"
+                    [readonly]="true"
+                    class="text-warning fs-5">
+                  </ngb-rating>
+                  <span class="fw-bold">{{ getRatingValue(r, field.key) }}/5</span>
+                </div>
+              </div>
+              } @else if (field.type === 'stat-total') {
+              <div class="alert alert-info d-flex justify-content-between align-items-center mt-3">
+                <span class="fw-bold">{{ field.label }}</span>
+                <span class="fs-2 fw-bold">{{ r.totalScore | number:'1.1-1' }}</span>
+              </div>
+              } @else {
+              <small class="text-muted d-block mt-2">{{ field.label }}</small>
+              <p class="mb-0">{{ getRatingValue(r, field.key) || '-' }}</p>
+              }
+            </div>
+            }
+          </div>
+          } } @else {
+          <div class="alert alert-secondary mt-3">Noch keine Bewertungen für diese Bestellung vorhanden.</div>
+          }
+        </div>
+      </div>
+
+      } @else {
+      <div
+        class="h-100 d-flex flex-column align-items-center justify-content-center text-muted opacity-50 p-5 text-center">
+        <i-lucide [img]="UserIcon" [size]="64" class="mb-3" aria-hidden="true"></i-lucide>
+        <p class="fs-5">Keine Daten geladen.</p>
+      </div>
+      }
+    </div>
+  </div>
+</div>

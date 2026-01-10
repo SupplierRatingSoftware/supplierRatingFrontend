@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Order } from '../models/order.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from '../../environments/environment';
+import { environment } from '../../environments/environment.prod';
 import { Observable, of } from 'rxjs';
 
 /**
@@ -32,29 +32,60 @@ export class OrderService {
     {
       id: 'ord-1',
       code: 'ORD-2023-001',
-      name: 'Laborausrüstung Q1',
-      orderDate: '2023-11-15',
-      ratingStatus: 'PENDING',
+      supplierId: 'perm-1',
+      supplierName: 'Müller Baustoffe GmbH',
+      name: 'Zementlieferung Mai',
       mainCategory: 'BESCHAFFUNG',
-      orderedBy: 'Max Mustermann',
+      subCategory: 'GERAET_WERKZEUG',
+      reason: 'Bauprojekt Schulhaus Windisch',
+      orderedBy: 'Hans Muster',
+      orderDate: '2023-05-10',
+      contactPerson: 'Anna Becker',
+      contactEmail: 'anna.becker@gmx.ch',
+      contactPhone: '+41 79 123 45 67',
+      ratingStatus: 'RATED',
     },
     {
       id: 'ord-2',
       code: 'ORD-2023-002',
-      name: 'Chemikalien Jahresbedarf',
-      orderDate: '2023-10-01',
-      ratingStatus: 'RATED',
-      mainCategory: 'VERBRAUCHSMATERIAL',
-      orderedBy: 'Julia Sommer',
+      supplierId: 'perm-1',
+      supplierName: 'Müller Baustoffe GmbH',
+      name: 'Ziegelsteine Q3',
+      mainCategory: 'BESCHAFFUNG',
+      subCategory: 'GERAET_WERKZEUG',
+      reason: 'Lagerauffüllung',
+      orderedBy: 'Hans Muster',
+      orderDate: '2023-09-01',
+      ratingStatus: 'PENDING',
     },
     {
       id: 'ord-3',
       code: 'ORD-2023-003',
-      name: 'IT-Hardware Laptops',
-      orderDate: '2023-12-05',
+      supplierId: 'perm-2',
+      supplierName: 'Swiss Tech AG',
+      name: 'Präzisionsfräsen Prototyp',
+      mainCategory: 'DIENSTLEISTUNG',
+      subCategory: 'BERATUNG',
+      reason: 'Entwicklung neuer Messkopf',
+      orderedBy: 'Julia Sommer',
+      orderDate: '2023-11-15',
+      ratingStatus: 'RATED',
+    },
+    {
+      id: 'ord-4',
+      code: 'ORD-2023-004',
+      supplierId: 'perm-2',
+      supplierName: 'Swiss Tech AG',
+      name: 'Wartung Messgeräte',
+      mainCategory: 'DIENSTLEISTUNG',
+      subCategory: 'MESSGERAETE',
+      reason: 'Jährliche Kalibrierung',
+      orderedBy: 'Max Tech',
+      orderDate: '2023-12-10',
+      contactPerson: 'Anna Becker',
+      contactEmail: 'anna.becker@gmx.ch',
+      contactPhone: '+41 79 123 45 67',
       ratingStatus: 'PENDING',
-      mainCategory: 'IT',
-      orderedBy: 'Admin',
     },
   ];
 
@@ -114,13 +145,13 @@ export class OrderService {
    * PUT /orders/{id}
    * @description Updates an existing supplier
    */
-  updateOrder(id: string, supplier: Order): Observable<Order> {
+  updateOrder(id: string, order: Order): Observable<Order> {
     // if mock data is enabled, return mock data
     if (environment.useMockData) {
       console.log('⚠️ Mocking Data for updateOrder with ID:', id);
-      return of({ ...supplier, id, code: `MOCK-${id}-${Date.now()}` } as Order);
+      return of({ ...order, id, code: `MOCK-${id}-${Date.now()}` } as Order);
     }
     // real backend API call
-    return this.http.put<Order>(`${this.baseUrl}/${id}`, supplier);
+    return this.http.put<Order>(`${this.baseUrl}/${id}`, order);
   }
 }

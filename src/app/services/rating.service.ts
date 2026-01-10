@@ -25,7 +25,7 @@ export class RatingService {
         supplierId: `perm-${Date.now()}`,
 
         totalScore:
-          ((rating.quality ?? 0) + (rating.cost ?? 0) + (rating.deadline ?? 0) + (rating.availability ?? 0)) / 4,
+          ((rating.quality ?? 0) + (rating.cost ?? 0) + (rating.reliability ?? 0) + (rating.availability ?? 0)) / 4,
       } as Rating);
     }
     return this.http.post<Rating>(this.baseUrl, rating);
@@ -45,7 +45,7 @@ export class RatingService {
         supplierId: `perm-${Date.now()}`,
         quality: Math.floor(Math.random() * 5) + 1,
         cost: Math.floor(Math.random() * 5) + 1,
-        deadline: Math.floor(Math.random() * 5) + 1,
+        reliability: Math.floor(Math.random() * 5) + 1,
         availability: Math.floor(Math.random() * 5) + 1,
         totalScore: 4,
         comment: 'Gute Lieferung, aber etwas teuer.',

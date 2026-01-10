@@ -233,25 +233,25 @@ export class SuppliersComponent implements OnInit {
     return list.filter(
       supplier =>
         // Search by name
-        supplier.name.toLowerCase().includes(term) ||
+        (supplier.name || '').toLowerCase().includes(term) ||
         // Or search by code
-        supplier.zipCode.toLowerCase().includes(term) ||
+        (supplier.zipCode || '').toLowerCase().includes(term) ||
         // Or search by city
-        supplier.city.toLowerCase().includes(term) ||
+        (supplier.city || '').toLowerCase().includes(term) ||
         // Or search by customerNumber
-        supplier.customerNumber.toLowerCase().includes(term) ||
+        (supplier.customerNumber || '').toLowerCase().includes(term) ||
         // Or search by street
-        supplier.street.toLowerCase().includes(term) ||
+        (supplier.street || '').toLowerCase().includes(term) ||
         // Or search by website
-        supplier.website.toLowerCase().includes(term) ||
+        (supplier.website || '').toLowerCase().includes(term) ||
         // Or search by vatId
-        supplier.vatId.toLowerCase().includes(term) ||
+        (supplier.vatId || '').toLowerCase().includes(term) ||
         // Or search by poBox
-        supplier.poBox?.toLowerCase().includes(term) ||
+        (supplier.poBox || '').toLowerCase().includes(term) ||
         // Or search by email
-        supplier.email?.toLowerCase().includes(term) ||
+        (supplier.email || '').toLowerCase().includes(term) ||
         // Or search by phoneNumber
-        supplier.phoneNumber?.toLowerCase().includes(term)
+        (supplier.phoneNumber || '').toLowerCase().includes(term)
     );
   });
 }
