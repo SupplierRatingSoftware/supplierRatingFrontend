@@ -1,4 +1,35 @@
-import { FormSection } from './supplier.model';
+/**
+ * Interface for the form configuration
+ * @description This interface declares the configuration of a form section
+ */
+export interface FormSection {
+  sectionTitle: string;
+  fields: FieldMeta[];
+}
+
+/**
+ * Interface for the fields metadata of the form
+ * @description This interface declares the metadata of a form field in a form section
+ */
+export interface FieldMeta {
+  key: string; // Technical name
+  label: string; // Displayed name for the UI
+  required: boolean;
+  type: 'text' | 'email' | 'url' | 'tel' | 'textarea' | 'number' | 'select';
+  options?: SelectOption[]; // List of selectable options
+  gridClass?: string; // CSS-Class for the col-width (e.g. 'col-12', 'col-md-6')
+  placeholder?: string;
+  validationRules?: ('email' | 'url' | 'phone')[]; // Additional validation rules
+}
+
+/**
+ * Interface for the select options in the fields metadata
+ * @description This interface declares the options of a select field in a form section
+ */
+export interface SelectOption {
+  value: string; // Technical name
+  label: string; // Displayed name for the UI
+}
 
 /**
  * Central configuration for displaying supplier-form sections

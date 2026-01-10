@@ -5,7 +5,7 @@ import { NgbAccordionModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { LucideAngularModule, X } from 'lucide-angular';
 import { FormSection, Order } from '../../models/order.model';
 import { ORDER_FORM_CONFIG } from '../../models/order.config';
-import { SupplierService } from '../../services/supplier.service';
+import { DefaultService } from '../../openapi-gen';
 
 @Component({
   selector: 'app-modal-form-order',
@@ -30,7 +30,7 @@ export class ModalFormOrderComponent implements OnInit {
    * Injected supplier service for loading suppliers in the form
    * @private
    */
-  private supplierService = inject(SupplierService);
+  private supplierService = inject(DefaultService);
 
   /**
    * We declare the Set to store the titles of the open sections.
@@ -97,7 +97,7 @@ export class ModalFormOrderComponent implements OnInit {
       this.expandedSections.add(this.config[0].sectionTitle);
     }
     // Load suppliers and map them to the form options
-    this.supplierService.getSuppliers().subscribe(suppliers => {
+    this.supplierService.getAllSuppliers().subscribe(suppliers => {
       const supplierField = this.config
         .find(s => s.sectionTitle === 'Lieferant & Ansprechperson')
         ?.fields.find(f => f.key === 'supplier');
@@ -122,7 +122,7 @@ export class ModalFormOrderComponent implements OnInit {
    * in the form configuration.
    */
   private loadSuppliers() {
-    this.supplierService.getSuppliers().subscribe(suppliers => {
+    this.supplierService.getAllSuppliers().subscribe(suppliers => {
       // Find the section with the title "Lieferant & Ansprechperson"
       const section = this.config.find(s => s.sectionTitle === 'Lieferant & Ansprechperson');
       // Find the field with the key 'supplierId' in that section

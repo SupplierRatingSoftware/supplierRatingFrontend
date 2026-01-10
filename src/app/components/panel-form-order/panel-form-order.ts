@@ -5,7 +5,7 @@ import { NgbActiveOffcanvas, NgbRatingModule } from '@ng-bootstrap/ng-bootstrap'
 import { FieldMeta, Order } from '../../models/order.model';
 import { ORDER_FORM_CONFIG } from '../../models/order.config';
 import { RATING_FORM_CONFIG } from '../../models/rating.config';
-import { Rating } from '../../models/rating.model';
+import { RatingDetailDTO } from '../../openapi-gen';
 
 @Component({
   selector: 'app-panel-form-order',
@@ -25,7 +25,7 @@ export class PanelFormOrderComponent {
    * Input: Receives current order and rating from parent
    */
   readonly order = signal<Order | null>(null);
-  readonly rating = signal<Rating | null>(null);
+  readonly rating = signal<RatingDetailDTO | null>(null);
 
   /**
    * Reference to the active Offcanvas, to control the offcanvas lifecycle
@@ -77,9 +77,9 @@ export class PanelFormOrderComponent {
    * @param r
    * @param key
    */
-  getRatingValue(r: Rating, key: string): string | number | undefined | null {
+  getRatingValue(r: RatingDetailDTO, key: string): string | number | undefined | null {
     // Secured access via type-cast on Rating index type
-    return r[key as keyof Rating];
+    return r[key as keyof RatingDetailDTO];
   }
 
   /**
@@ -88,8 +88,8 @@ export class PanelFormOrderComponent {
    * @param r
    * @param key
    */
-  getRatingNumber(r: Rating, key: string): number {
-    const val = r[key as keyof Rating];
+  getRatingNumber(r: RatingDetailDTO, key: string): number {
+    const val = r[key as keyof RatingDetailDTO];
     // Wenn es eine Zahl ist, gib sie zurück, sonst 0
     return typeof val === 'number' ? val : 0;
   }

@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { LucideAngularModule, User, X } from 'lucide-angular';
 import { NgbActiveOffcanvas } from '@ng-bootstrap/ng-bootstrap';
-import { Supplier } from '../../models/supplier.model';
 import { SUPPLIER_FORM_CONFIG } from '../../models/supplier.config';
+import { SupplierSummaryDTO } from '../../openapi-gen';
 
 @Component({
   selector: 'app-panel-form-supplier',
@@ -23,7 +23,7 @@ export class PanelFormSupplierComponent {
   /**
    * Input: Receives current supplier from parent
    */
-  readonly supplier = signal<Supplier | null>(null);
+  readonly supplier = signal<SupplierSummaryDTO | null>(null);
 
   /**
    * Reference to the active Offcanvas, to control the offcanvas lifecycle
@@ -42,9 +42,9 @@ export class PanelFormSupplierComponent {
    * @param s The Supplier object
    * @param key The technical key from the configuration
    */
-  getSupplierValue(s: Supplier, key: string): string | number | undefined | null {
+  getSupplierValue(s: SupplierSummaryDTO, key: string): string | number | undefined | null {
     // Secured access via type-cast on Supplier index type
-    const value = s[key as keyof Supplier];
+    const value = s[key as keyof SupplierSummaryDTO];
 
     // Since RatingStats and Orders are complex objects, we return only primitive values here.
     if (typeof value === 'string') {

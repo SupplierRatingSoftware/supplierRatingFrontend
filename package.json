@@ -10,7 +10,8 @@
     "lint:check": "ng lint",
     "lint:fix": "ng lint --fix",
     "prettier:write": "prettier --config .prettierrc.json --write .",
-    "prettier:check": "prettier --config .prettierrc.json --check ."
+    "prettier:check": "prettier --config .prettierrc.json --check .",
+    "generate:api": "openapi-generator-cli generate -g typescript-angular -i src/app/openapi/openapi.yaml -o src/app/openapi-gen"
   },
   "private": true,
   "packageManager": "npm@11.6.2",
@@ -34,6 +35,7 @@
     "@angular/cli": "^21.0.3",
     "@angular/compiler-cli": "^21.0.0",
     "@angular/localize": "^21.0.0",
+    "@openapitools/openapi-generator-cli": "^2.27.0",
     "angular-eslint": "21.1.0",
     "eslint": "^9.39.1",
     "jsdom": "^27.1.0",
