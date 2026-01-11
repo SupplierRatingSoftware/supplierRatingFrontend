@@ -3,9 +3,8 @@ import { CommonModule } from '@angular/common';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgbAccordionModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { LucideAngularModule, X } from 'lucide-angular';
-import { FormSection, Order } from '../../models/order.model';
-import { ORDER_FORM_CONFIG } from '../../models/order.config';
-import { DefaultService } from '../../openapi-gen';
+import { FormSection, ORDER_FORM_CONFIG } from '../../models/order.config';
+import { DefaultService, OrderSummaryDTO } from '../../openapi-gen';
 
 @Component({
   selector: 'app-modal-form-order',
@@ -49,7 +48,7 @@ export class ModalFormOrderComponent implements OnInit {
    * State of the order
    * @description The order state is used to store the currently edited order
    */
-  order = signal<Order | undefined>(undefined);
+  order = signal<OrderSummaryDTO | undefined>(undefined);
 
   /**
    * Represents a reactive form group for managing order information.

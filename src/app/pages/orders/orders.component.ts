@@ -11,12 +11,10 @@ import {
   NgbOffcanvasRef,
 } from '@ng-bootstrap/ng-bootstrap';
 import { ToastComponent } from '../../components/toast/toast.component';
-import { OrderService } from '../../services/order.service';
-import { Order } from '../../models/order.model';
 import { ListItem } from '../../components/list-item/list-item';
 import { ModalFormOrderComponent } from '../../components/modal-form-order/modal-form-order';
 import { PanelFormOrderComponent } from '../../components/panel-form-order/panel-form-order';
-import { DefaultService } from '../../openapi-gen';
+import { DefaultService, OrderCreateDTO, OrderSummaryDTO, OrderUpdateDTO } from '../../openapi-gen';
 
 @Component({
   selector: 'app-orders',
@@ -76,14 +74,14 @@ export class OrdersComponent implements OnInit {
    * Injected OrderService, ratingService and DestroyRef
    * @private
    */
-  private orderService: OrderService = inject(OrderService);
+  private orderService: DefaultService = inject(DefaultService);
   private ratingService = inject(DefaultService);
   private destroyRef = inject(DestroyRef);
 
   /**
    * State: List of all orders
    */
-  readonly orders = signal<Order[]>([]);
+  readonly orders = signal<OrderSummaryDTO[]>([]);
 
   /**
    * State: The actual search term for filtering list-items
@@ -137,7 +135,7 @@ export class OrdersComponent implements OnInit {
    * 2. Lädt Details (inkl. supplierName, ratingId).
    * 3. Lädt Rating (falls vorhanden).
    */
-  openDetailPanel(summaryOrder: Order) {
+  openDetailPanel(summaryOrder: OrderSummaryDTO) {
     this.errorMessage.set(null);
 
     // 1. Offcanvas öffnen und Referenz speichern
@@ -202,7 +200,7 @@ export class OrdersComponent implements OnInit {
    * Opens the modal in edit mode for an existing order
    * @param order The order to edit
    */
-  openEditOrderModal(order: Order) {
+  openEditOrderModal(order: OrderSummaryDTO) {
     this.handleOrderModal(order);
   }
 
@@ -211,7 +209,7 @@ export class OrdersComponent implements OnInit {
    * @param order Optional order for edit mode
    * @private
    */
-  private handleOrderModal(order?: Order) {
+  private handleOrderModal(order?: OrderSummaryDTO) {
     const modalRef = this.modalService.open(ModalFormOrderComponent, this.modalOptions);
 
     if (order) {
@@ -219,7 +217,7 @@ export class OrdersComponent implements OnInit {
     }
 
     modalRef.result.then(
-      (result: Order) => {
+      (result: OrderCreateDTO) => {
         if (!result) return;
 
         if (order?.id) {
@@ -242,9 +240,9 @@ export class OrdersComponent implements OnInit {
    * @param formData
    * @private
    */
-  private createAndAddOrder(formData: Order) {
+  private createAndAddOrder(formData: OrderCreateDTO) {
     this.orderService
-      .addOrder(formData)
+      .createOrder(formData)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: addedOrder => {
@@ -262,7 +260,7 @@ export class OrdersComponent implements OnInit {
    * @param formData The updated data from the form
    * @private
    */
-  private updateExistingOrder(id: string, formData: Order) {
+  private updateExistingOrder(id: string, formData: OrderUpdateDTO) {
     const existing = this.orders().find(s => s.id === id);
     const updatedPayload = { ...existing, ...formData, id };
 
