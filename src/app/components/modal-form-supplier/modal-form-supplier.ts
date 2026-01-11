@@ -33,10 +33,10 @@ export class ModalFormSupplierComponent implements OnInit {
 
   /**
    * Preconfigured form configuration of the modal
-   * @description A preconfigured form configuration of the modal form-fields and section-headers
+   * @description A preconfigured form configuration of the modal form-fields and section-headers (without the rating statistics section)
    * @protected
    */
-  protected readonly config = SUPPLIER_FORM_CONFIG;
+  protected readonly config = SUPPLIER_FORM_CONFIG.filter(s => s.sectionTitle !== 'Bewertungs-Übersicht');
 
   /**
    * State of the supplier
