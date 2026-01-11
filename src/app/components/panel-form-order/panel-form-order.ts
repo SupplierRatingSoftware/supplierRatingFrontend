@@ -2,10 +2,9 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { LucideAngularModule, User, X } from 'lucide-angular';
 import { NgbActiveOffcanvas, NgbRatingModule } from '@ng-bootstrap/ng-bootstrap';
-import { FieldMeta, Order } from '../../models/order.model';
-import { ORDER_FORM_CONFIG } from '../../models/order.config';
+import { FieldMeta, ORDER_FORM_CONFIG } from '../../models/order.config';
 import { RATING_FORM_CONFIG } from '../../models/rating.config';
-import { RatingDetailDTO } from '../../openapi-gen';
+import { OrderDetailDTO, RatingDetailDTO } from '../../openapi-gen';
 
 @Component({
   selector: 'app-panel-form-order',
@@ -24,7 +23,7 @@ export class PanelFormOrderComponent {
   /**
    * Input: Receives current order and rating from parent
    */
-  readonly order = signal<Order | null>(null);
+  readonly order = signal<OrderDetailDTO | null>(null);
   readonly rating = signal<RatingDetailDTO | null>(null);
 
   /**
@@ -46,7 +45,7 @@ export class PanelFormOrderComponent {
    * @param field The field metadata containing the key
    * @returns The value of the specified field in the Order object
    */
-  getOrderValue(o: Order, field: FieldMeta): string | number | undefined | null {
+  getOrderValue(o: OrderDetailDTO, field: FieldMeta): string | number | undefined | null {
     // Special case for supplier name
     // Wir prüfen auf 'supplierId' (falls so in Config) ODER 'supplierName'
     if (field.key === 'supplierId' || field.key === 'supplierName') {
@@ -62,7 +61,7 @@ export class PanelFormOrderComponent {
     }
 
     // Secured access via type-cast on Order index type
-    const value = o[field.key as keyof Order];
+    const value = o[field.key as keyof OrderDetailDTO];
 
     // Since RatingStats and Orders are complex objects, we return only primitive values here.
     if (typeof value === 'string') {

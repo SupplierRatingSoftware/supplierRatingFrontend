@@ -4,9 +4,8 @@ import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validator
 import { NgbAccordionModule, NgbActiveModal, NgbRatingModule } from '@ng-bootstrap/ng-bootstrap';
 import { LucideAngularModule, X } from 'lucide-angular';
 import { FormSection, RATING_FORM_CONFIG } from '../../models/rating.config';
-import { Order } from '../../models/order.model';
 import { ToastComponent } from '../toast/toast.component';
-import { DefaultService } from '../../openapi-gen';
+import { OrderDetailDTO } from '../../openapi-gen';
 
 @Component({
   selector: 'app-modal-rating',
@@ -36,12 +35,6 @@ export class ModalRatingComponent implements OnInit {
   private activeModal = inject(NgbActiveModal);
 
   /**
-   * Injected rating service for loading ratings in the form
-   * @private
-   */
-  private ratingService = inject(DefaultService);
-
-  /**
    * We declare the Set to store the titles of the open sections.
    * @protected
    */
@@ -58,7 +51,7 @@ export class ModalRatingComponent implements OnInit {
    * State of the order
    * @description The order state is used to store the currently edited order
    */
-  order = signal<Order | undefined>(undefined);
+  order = signal<OrderDetailDTO | undefined>(undefined);
 
   // Toast message state
   message = signal<string | null>(null);
