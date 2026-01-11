@@ -15,7 +15,7 @@ export interface FieldMeta {
   key: string; // Technical name
   label: string; // Displayed name for the UI
   required: boolean;
-  type: 'text' | 'email' | 'url' | 'tel' | 'textarea' | 'number' | 'select';
+  type: 'text' | 'email' | 'url' | 'tel' | 'textarea' | 'number' | 'select' | 'rating' | 'stat-total';
   options?: SelectOption[]; // List of selectable options
   gridClass?: string; // CSS-Class for the col-width (e.g. 'col-12', 'col-md-6')
   placeholder?: string;
@@ -87,6 +87,35 @@ export const SUPPLIER_FORM_CONFIG: FormSection[] = [
       { key: 'vatId', label: 'MWST-Nummer (VAT)', required: true, type: 'text', gridClass: 'col-md-6' },
       { key: 'conditions', label: 'Konditionen', required: true, type: 'textarea', gridClass: 'col-md-6' },
       { key: 'customerInfo', label: 'Interne Info', required: false, type: 'textarea', gridClass: 'col-12' },
+    ],
+  },
+  {
+    sectionTitle: 'Bewertungs-Übersicht',
+    fields: [
+      { key: 'avgQuality', label: 'Qualität', required: false, type: 'rating', gridClass: 'col-md-6' },
+      { key: 'avgCost', label: 'Kosten', required: false, type: 'rating', gridClass: 'col-md-6' },
+      { key: 'avgReliability', label: 'Termintreue', required: false, type: 'rating', gridClass: 'col-md-6' },
+      {
+        key: 'avgAvailability',
+        label: 'Verfügbarkeit Ansprechperson',
+        required: false,
+        type: 'rating',
+        gridClass: 'col-md-6',
+      },
+      {
+        key: 'avgTotal',
+        label: 'Ergebnis Gesamtbewertung',
+        required: false,
+        type: 'stat-total',
+        gridClass: 'col-md-6',
+      },
+      {
+        key: 'totalRatingCount',
+        label: 'Anzahl Bewertungen',
+        required: false,
+        type: 'number',
+        gridClass: 'col-12',
+      },
     ],
   },
 ];
