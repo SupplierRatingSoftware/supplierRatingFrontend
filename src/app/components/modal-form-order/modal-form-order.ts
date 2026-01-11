@@ -74,18 +74,6 @@ export class ModalFormOrderComponent implements OnInit {
   }
 
   /**
-   * AKTION: "Bestellung bewerten"
-   * Schließt das Modal und signalisiert der Page, dass das Rating-Modal folgen soll.
-   */
-  onRate() {
-    if (this.orderForm.valid) {
-      this.activeModal.close({ action: 'RATE', data: this.orderForm.value });
-    } else {
-      this.orderForm.markAllAsTouched();
-    }
-  }
-
-  /**
    * Lifecycle hook that is called after the component is initialized.
    * For handling form initialization and data pre-filling
    */
@@ -147,22 +135,41 @@ export class ModalFormOrderComponent implements OnInit {
   }
 
   /**
-   * Handles form submission and closes the modal with the form data if valid.
+   * Submits the form data if valid, otherwise marks fields as touched to show validation errors.
    */
   onSubmit() {
     if (this.orderForm.valid) {
-      this.activeModal.close(this.orderForm.value);
-    } else {
-      // Mark all fields as touched to display validation messages
-      this.orderForm.markAllAsTouched();
-
-      // Push all invalid sections to the expandedSections set -> these sections will expand
-      this.config.forEach(section => {
-        if (this.isSectionInvalid(section)) {
-          this.expandedSections.add(section.sectionTitle);
-        }
+      this.activeModal.close({
+        action: 'SAVE',
+        data: this.orderForm.value,
       });
+    } else {
+      this.handleInvalidForm();
     }
+  }
+
+  /**
+   * Submits the rating data if valid, otherwise marks fields as touched to show validation errors.
+   */
+  onRate() {
+    if (this.orderForm.valid) {
+      this.activeModal.close({ action: 'RATE', data: this.orderForm.value });
+    } else {
+      this.handleInvalidForm();
+    }
+  }
+
+  /**
+   * Handles invalid form submission by marking all fields as touched
+   * and expanding sections with errors.
+   */
+  private handleInvalidForm() {
+    this.orderForm.markAllAsTouched();
+    this.config.forEach(section => {
+      if (this.isSectionInvalid(section)) {
+        this.expandedSections.add(section.sectionTitle);
+      }
+    });
   }
 
   /**

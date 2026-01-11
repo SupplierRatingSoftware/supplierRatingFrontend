@@ -1,0 +1,33 @@
+button {
+  background-color: var(--bs-secondary-bg);
+  transition:
+    transform 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
+}
+
+.cancel-btns {
+  &:hover {
+    background-color: var(--bs-danger);
+  }
+}
+
+#submitBtn {
+  &:hover {
+    background-color: var(--bs-success);
+  }
+}
+
+.accordion-button {
+  background-color: var(--bs-secondary-bg);
+  color: var(--bs-body-color);
+  box-shadow: none;
+}
+
+.form-control,
+.form-select {
+  &:focus {
+    background-color: var(--bs-tertiary-bg);
+    border-color: var(--bs-secondary);
+    box-shadow: none;
+  }
+}

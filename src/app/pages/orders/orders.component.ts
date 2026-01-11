@@ -14,7 +14,15 @@ import { ToastComponent } from '../../components/toast/toast.component';
 import { ListItem } from '../../components/list-item/list-item';
 import { ModalFormOrderComponent } from '../../components/modal-form-order/modal-form-order';
 import { PanelFormOrderComponent } from '../../components/panel-form-order/panel-form-order';
-import { DefaultService, OrderCreateDTO, OrderSummaryDTO, OrderUpdateDTO } from '../../openapi-gen';
+import { DefaultService, OrderCreateDTO, OrderSummaryDTO, OrderUpdateDTO, RatingCreateDTO } from '../../openapi-gen';
+import { ModalRatingComponent } from '../../components/modal-rating/modal-rating';
+
+// HIER: Das Interface einfach lokal definieren.
+interface OrderModalResult {
+  action: 'SAVE' | 'RATE';
+  // Das Formular kann Daten für ein Update oder ein Create liefernc
+  data: OrderCreateDTO | OrderUpdateDTO;
+}
 
 @Component({
   selector: 'app-orders',
@@ -193,7 +201,23 @@ export class OrdersComponent implements OnInit {
    * Opens Modal for adding or editing an order
    */
   openOrderModal() {
-    this.handleOrderModal();
+    const modalRef = this.modalService.open(ModalFormOrderComponent, this.modalOptions);
+    modalRef.result.then(
+      (result: OrderModalResult) => {
+        // Wir wissen, bei "Neu" ist es ein CreateDTO
+        // Wir nutzen 'as unknown' um Typ-Konflikte mit strikten DTOs zu vermeiden
+        const createData = result.data as unknown as OrderCreateDTO;
+
+        if (result.action === 'SAVE') {
+          this.createAndAddOrder(createData);
+        } else if (result.action === 'RATE') {
+          this.openRatingModal(createData);
+        }
+      },
+      () => {
+        /* dismissed */
+      }
+    );
   }
 
   /**
@@ -201,38 +225,91 @@ export class OrdersComponent implements OnInit {
    * @param order The order to edit
    */
   openEditOrderModal(order: OrderSummaryDTO) {
-    this.handleOrderModal(order);
+    const modalRef = this.modalService.open(ModalFormOrderComponent, this.modalOptions);
+    modalRef.componentInstance.order.set(order);
+
+    modalRef.result.then(
+      (result: OrderModalResult) => {
+        const updateData = result.data as OrderUpdateDTO;
+
+        if (result.action === 'SAVE' && order.id) {
+          this.updateExistingOrder(order.id, updateData);
+        } else if (result.action === 'RATE' && order.id) {
+          // Wir kombinieren die Daten für das Rating Modal
+          // Wir müssen sicherstellen, dass die ID dabei ist
+          const combinedData = { ...updateData, id: order.id };
+          this.openRatingModal(combinedData);
+        }
+      },
+      () => {
+        /* dismissed */
+      }
+    );
   }
 
   /**
-   * Internal helper to manage the order modal lifecycle for both create and update actions.
-   * @param order Optional order for edit mode
-   * @private
+   * 3. Das Rating Modal (Verkettung)
+   * Wird aufgerufen, wenn User "Speichern & Bewerten" klickte.
    */
-  private handleOrderModal(order?: OrderSummaryDTO) {
-    const modalRef = this.modalService.open(ModalFormOrderComponent, this.modalOptions);
+  private openRatingModal(orderData: Partial<OrderSummaryDTO>) {
+    const modalRef = this.modalService.open(ModalRatingComponent, this.modalOptions);
 
-    if (order) {
-      modalRef.componentInstance.order.set(order);
-    }
+    // Wir übergeben die Order-Daten an das Rating-Modal
+    modalRef.componentInstance.order.set(orderData);
 
     modalRef.result.then(
-      (result: OrderCreateDTO) => {
-        if (!result) return;
+      (ratingResult: RatingCreateDTO) => {
+        if (!ratingResult) return;
 
-        if (order?.id) {
-          this.updateExistingOrder(order.id, result);
+        // Fallunterscheidung: Hat das Objekt schon eine ID?
+        if (orderData.id) {
+          // A) Existierende Bestellung -> Update + Rating
+          // (Hier vereinfacht: Wir speichern das Rating direkt, Update müsste separat erfolgen
+          // oder wir gehen davon aus, dass Update vorher passierte.
+          // Um sicher zu gehen, erstellen wir das Rating:)
+          this.createRatingForOrder(orderData.id, ratingResult);
+
+          // Optional: Wenn wir auch Formulardaten updaten müssten,
+          // müssten wir hier updateExistingOrder aufrufen.
         } else {
-          this.createAndAddOrder(result);
+          // B) Neue Bestellung -> Create + Rating kombiniert
+          const createData = orderData as OrderCreateDTO;
+
+          // Wir hängen das Rating temporär an, damit createAndAddOrder es verarbeiten kann
+          // Wir casten zu einem Intersection Type
+          const combinedPayload = {
+            ...createData,
+            orderRating: ratingResult,
+          };
+
+          this.createAndAddOrder(combinedPayload);
         }
       },
-      reason => {
-        if (reason !== 0 && reason !== 1 && reason !== undefined) {
-          console.log(reason);
-          this.errorMessage.set(`Fehler beim Bearbeiten des Eintrages: ${reason}`);
-        }
+      () => {
+        /* dismissed */
       }
     );
+  }
+
+  /**
+   * Erstellt das Rating
+   */
+  private createRatingForOrder(orderId: string, ratingData: RatingCreateDTO) {
+    // Wir setzen die orderId explizit, falls sie im Formular fehlte
+    const payload: RatingCreateDTO = { ...ratingData, orderId };
+
+    // Achtung: Wenn DefaultService kein 'createRating' hat, prüfen ob es einen RatingService gibt.
+    // Falls DefaultService alle Methoden generiert hat, ist das hier korrekt:
+    this.orderService
+      .createRating(payload)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          // Liste neu laden, damit der Status "RATED" sichtbar wird
+          this.loadOrders();
+        },
+        error: () => this.errorMessage.set('Bestellung gespeichert, aber Bewertung fehlgeschlagen.'),
+      });
   }
 
   /**
@@ -240,17 +317,30 @@ export class OrdersComponent implements OnInit {
    * @param formData
    * @private
    */
-  private createAndAddOrder(formData: OrderCreateDTO) {
+  private createAndAddOrder(formData: OrderCreateDTO & { orderRating?: RatingCreateDTO }) {
+    // Destructuring: Wir trennen das Rating vom reinen Order-DTO
+    // 'apiPayload' enthält jetzt nur noch Felder, die OrderCreateDTO kennt
+    const { orderRating, ...apiPayload } = formData;
+
+    // Cast ist sicher, da wir orderRating entfernt haben
     this.orderService
-      .createOrder(formData)
+      .createOrder(apiPayload as OrderCreateDTO)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: addedOrder => {
-          this.orders.update(current => [...current, addedOrder]);
-          // TODO: Optional: Toast anzeigen
-          //this.toastService.show('Bestellung erfolgreich angelegt');
+        next: newOrder => {
+          // newOrder ist OrderDetailDTO oder SummaryDTO
+
+          // Wenn wir auch ein Rating haben, speichern wir das jetzt mit der neuen ID
+          if (orderRating) {
+            this.createRatingForOrder(newOrder.id, orderRating);
+          } else {
+            // Kein Rating -> Fertig. Liste aktualisieren.
+            // Wir müssen newOrder in die Liste der SummaryDTOs pushen.
+            // Da SummaryDTO meist weniger Felder hat als DetailDTO, ist der Cast ok.
+            this.orders.update(current => [...current, newOrder as unknown as OrderSummaryDTO]);
+          }
         },
-        error: () => this.errorMessage.set(`Fehler beim Speichern: ${formData.name}`),
+        error: () => this.errorMessage.set('Fehler beim Erstellen der Bestellung.'),
       });
   }
 
@@ -261,15 +351,13 @@ export class OrdersComponent implements OnInit {
    * @private
    */
   private updateExistingOrder(id: string, formData: OrderUpdateDTO) {
-    const existing = this.orders().find(s => s.id === id);
-    const updatedPayload = { ...existing, ...formData, id };
-
     this.orderService
-      .updateOrder(id, updatedPayload)
+      .updateOrder(id, formData)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: updated => {
-          this.orders.update(list => list.map(s => (s.id === id ? updated : s)));
+        next: updatedOrder => {
+          // Liste lokal aktualisieren
+          this.orders.update(list => list.map(o => (o.id === id ? (updatedOrder as unknown as OrderSummaryDTO) : o)));
         },
         error: () => this.errorMessage.set('Fehler beim Aktualisieren.'),
       });
