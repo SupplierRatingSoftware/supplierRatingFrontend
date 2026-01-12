@@ -78,36 +78,45 @@ export class ModalFormOrderComponent implements OnInit {
    * For handling form initialization and data pre-filling
    */
   ngOnInit() {
-    this.loadSuppliers();
-    // Expand the first section by default, if there are sections
+    // 1. Config laden (Default Section öffnen)
     if (this.config.length > 0) {
       this.expandedSections.add(this.config[0].sectionTitle);
     }
-    // Load suppliers and map them to the form options
+
+    // 2. Lieferanten laden und Dropdown-Optionen befüllen
     this.supplierService.getAllSuppliers().subscribe(suppliers => {
-      const supplierField = this.config
-        .find(s => s.sectionTitle === 'Lieferant & Ansprechperson')
-        ?.fields.find(f => f.key === 'supplier');
+      // Wir suchen die Sektion und das Feld für 'supplierId'
+      const section = this.config.find(s => s.sectionTitle === 'Lieferant & Ansprechperson');
+      const supplierField = section?.fields.find(f => f.key === 'supplierId');
+
       if (supplierField) {
-        supplierField.options = suppliers.map(s => ({ value: s.id || '', label: s.name }));
+        // Mapping: Backend Supplier -> Frontend Dropdown Option
+        supplierField.options = suppliers.map(s => ({
+          value: s.id || '', // WICHTIG: Hier wird die supplierId als Wert gesetzt
+          label: s.name, // Der Name wird angezeigt
+        }));
+
+        // 3. Wenn wir hier sind, ist das Dropdown bereit.
+        // Falls wir eine Bestellung bearbeiten, füllen wir JETZT die Werte nach.
+        // Das garantiert, dass die supplierId auch im Dropdown "selected" wird.
+        const orderToEdit = this.order();
+        if (orderToEdit) {
+          this.orderForm.patchValue(orderToEdit);
+
+          // Zusatz-Check: Falls Status RATED ist, sperren
+          if (orderToEdit.ratingStatus === 'RATED') {
+            this.orderForm.disable();
+          }
+        }
       }
     });
-    // Check if an order is present
-    const currentOrder = this.order();
-    if (currentOrder) {
-      // Patching the data into the form
-      this.orderForm.patchValue(currentOrder);
-      // If the order is already rated, disable the form
-      if (currentOrder.ratingStatus === 'RATED') {
-        this.orderForm.disable();
-      }
-    }
   }
 
   /**
    * Loads suppliers from the SupplierService and maps them to the select options
    * in the form configuration.
    */
+  /*
   private loadSuppliers() {
     this.supplierService.getAllSuppliers().subscribe(suppliers => {
       // Find the section with the title "Lieferant & Ansprechperson"
@@ -123,6 +132,7 @@ export class ModalFormOrderComponent implements OnInit {
       }
     });
   }
+  */
 
   /**
    * Checks if errors exist in a form section.
@@ -135,13 +145,19 @@ export class ModalFormOrderComponent implements OnInit {
   }
 
   /**
-   * Submits the form data if valid, otherwise marks fields as touched to show validation errors.
+   * Submits the form data if valid.
+   * Uses getRawValue() to ensure disabled fields (like ID or pre-set Supplier) are included.
    */
   onSubmit() {
     if (this.orderForm.valid) {
+      // WICHTIG: getRawValue() statt value nutzen!
+      const formData = this.orderForm.getRawValue();
+
+      console.log('Modal sendet SAVE mit Daten:', formData); // Debugging
+
       this.activeModal.close({
         action: 'SAVE',
-        data: this.orderForm.value,
+        data: formData,
       });
     } else {
       this.handleInvalidForm();
@@ -149,11 +165,19 @@ export class ModalFormOrderComponent implements OnInit {
   }
 
   /**
-   * Submits the rating data if valid, otherwise marks fields as touched to show validation errors.
+   * Submits the rating data if valid.
    */
   onRate() {
     if (this.orderForm.valid) {
-      this.activeModal.close({ action: 'RATE', data: this.orderForm.value });
+      // WICHTIG: getRawValue() statt value nutzen!
+      const formData = this.orderForm.getRawValue();
+
+      console.log('Modal sendet RATE mit Daten:', formData); // Debugging
+
+      this.activeModal.close({
+        action: 'RATE',
+        data: formData,
+      });
     } else {
       this.handleInvalidForm();
     }

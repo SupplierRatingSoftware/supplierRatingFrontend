@@ -200,7 +200,7 @@ export class OrdersComponent implements OnInit {
   /**
    * Opens Modal for adding or editing an order
    */
-  openOrderModal() {
+  openAddOrderModal() {
     const modalRef = this.modalService.open(ModalFormOrderComponent, this.modalOptions);
     modalRef.result.then(
       (result: OrderModalResult) => {
@@ -222,29 +222,44 @@ export class OrdersComponent implements OnInit {
 
   /**
    * Opens the modal in edit mode for an existing order
-   * @param order The order to edit
+   * @param summaryOrder The order to edit
+   * Öffnet das Modal im Bearbeitungs-Modus.
+   * WICHTIG: Wir laden zuerst die vollen Details, damit 'supplierId' vorhanden ist.
+   *
    */
-  openEditOrderModal(order: OrderSummaryDTO) {
-    const modalRef = this.modalService.open(ModalFormOrderComponent, this.modalOptions);
-    modalRef.componentInstance.order.set(order);
+  openEditOrderModal(summaryOrder: OrderSummaryDTO) {
+    // 1. Lade-Indikator oder Fehlerbehandlung könnte hier sinnvoll sein
+    // 2. Wir holen das volle 'OrderDetailDTO' vom Backend
+    this.orderService
+      .getOrderById(summaryOrder.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: fullOrder => {
+          // 3. Erst wenn Daten da sind, Modal öffnen
+          const modalRef = this.modalService.open(ModalFormOrderComponent, this.modalOptions);
 
-    modalRef.result.then(
-      (result: OrderModalResult) => {
-        const updateData = result.data as OrderUpdateDTO;
+          // 4. Das volle Objekt (mit supplierId!) an das Modal übergeben
+          modalRef.componentInstance.order.set(fullOrder);
 
-        if (result.action === 'SAVE' && order.id) {
-          this.updateExistingOrder(order.id, updateData);
-        } else if (result.action === 'RATE' && order.id) {
-          // Wir kombinieren die Daten für das Rating Modal
-          // Wir müssen sicherstellen, dass die ID dabei ist
-          const combinedData = { ...updateData, id: order.id };
-          this.openRatingModal(combinedData);
-        }
-      },
-      () => {
-        /* dismissed */
-      }
-    );
+          // 5. Ergebnis verarbeiten (wie bisher)
+          modalRef.result.then(
+            (result: OrderModalResult) => {
+              const updateData = result.data as OrderUpdateDTO;
+
+              if (result.action === 'SAVE') {
+                this.updateExistingOrder(summaryOrder.id, updateData);
+              } else if (result.action === 'RATE') {
+                const combinedData = { ...updateData, id: summaryOrder.id };
+                this.openRatingModal(combinedData);
+              }
+            },
+            () => {
+              /* Modal abgebrochen */
+            }
+          );
+        },
+        error: () => this.errorMessage.set('Fehler beim Laden der Bestelldetails.'),
+      });
   }
 
   /**
