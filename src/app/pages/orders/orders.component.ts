@@ -317,7 +317,7 @@ export class OrdersComponent implements OnInit {
 
     // Cast ist sicher, da wir orderRating entfernt haben
     this.orderService
-      .createOrder(apiPayload as OrderCreateDTO)
+      .createOrder(apiPayload)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: newOrder => {
