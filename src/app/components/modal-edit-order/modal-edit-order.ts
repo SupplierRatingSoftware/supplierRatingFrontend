@@ -90,6 +90,7 @@ export class ModalEditOrderComponent implements OnInit {
     }
     // Falls wir eine Bestellung bearbeiten, füllen wir JETZT die Werte nach.
     const orderToEdit = this.order();
+    console.log('Modal lädt orderToEdit:', orderToEdit); // Debugging
     if (orderToEdit) {
       this.orderForm.patchValue(orderToEdit);
 
