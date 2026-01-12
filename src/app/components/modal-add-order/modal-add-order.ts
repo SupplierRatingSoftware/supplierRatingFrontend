@@ -6,6 +6,15 @@ import { LucideAngularModule, X } from 'lucide-angular';
 import { FormSection, ORDER_FORM_CONFIG } from '../../models/order.config';
 import { DefaultService, OrderCreateDTO } from '../../openapi-gen';
 
+/**
+ * Wir exportieren das Interface, damit orders.component.ts es findet.
+ * Wir definieren es so, dass es das Ergebnis der Modal-Aktion beschreibt.
+ */
+export interface OrderModalResult {
+  action: 'SAVE' | 'RATE';
+  data: OrderCreateDTO;
+}
+
 @Component({
   selector: 'app-modal-add-order',
   imports: [CommonModule, ReactiveFormsModule, NgbAccordionModule, LucideAngularModule],
@@ -108,28 +117,6 @@ export class ModalAddOrderComponent implements OnInit {
   }
 
   /**
-   * Loads suppliers from the SupplierService and maps them to the select options
-   * in the form configuration.
-   */
-  /*
-  private loadSuppliers() {
-    this.supplierService.getAllSuppliers().subscribe(suppliers => {
-      // Find the section with the title "Lieferant & Ansprechperson"
-      const section = this.config.find(s => s.sectionTitle === 'Lieferant & Ansprechperson');
-      // Find the field with the key 'supplierId' in that section
-      const supplierField = section?.fields.find(f => f.key === 'supplierId');
-      // Map suppliers to the field options {value, label}
-      if (supplierField) {
-        supplierField.options = suppliers.map(s => ({
-          value: s.id || '', // Die technische ID
-          label: s.name, // Der Anzeigename für das Dropdown
-        }));
-      }
-    });
-  }
-  */
-
-  /**
    * Checks if errors exist in a form section.
    */
   isSectionInvalid(section: FormSection): boolean {
@@ -139,11 +126,20 @@ export class ModalAddOrderComponent implements OnInit {
     });
   }
 
+  onSubmit() {
+    if (this.orderForm.valid) {
+      console.log('Modal sendet SAVE mit Daten:', this.orderForm.value); // Debugging
+      this.activeModal.close({ action: 'SAVE', data: this.orderForm.value });
+    } else {
+      this.handleInvalidForm();
+    }
+  }
+
   /**
    * Submits the form data if valid.
    * Uses getRawValue() to ensure disabled fields (like ID or pre-set Supplier) are included.
    */
-  onSubmit() {
+  /*onSubmit() {
     if (this.orderForm.valid) {
       // WICHTIG: getRawValue() statt value nutzen!
       const formData = this.orderForm.getRawValue();
@@ -157,22 +153,14 @@ export class ModalAddOrderComponent implements OnInit {
     } else {
       this.handleInvalidForm();
     }
-  }
+  }*/
 
   /**
    * Submits the rating data if valid.
    */
   onRate() {
     if (this.orderForm.valid) {
-      // WICHTIG: getRawValue() statt value nutzen!
-      const formData = this.orderForm.getRawValue();
-
-      console.log('Modal sendet RATE mit Daten:', formData); // Debugging
-
-      this.activeModal.close({
-        action: 'RATE',
-        data: formData,
-      });
+      this.activeModal.close({ action: 'RATE', data: this.orderForm.value });
     } else {
       this.handleInvalidForm();
     }
