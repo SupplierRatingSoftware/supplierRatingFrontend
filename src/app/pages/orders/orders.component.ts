@@ -326,17 +326,15 @@ export class OrdersComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: newOrder => {
-          // newOrder ist OrderDetailDTO oder SummaryDTO
-
           // Wenn wir auch ein Rating haben, speichern wir das jetzt mit der neuen ID
           if (orderRating) {
             this.createRatingForOrder(newOrder.id, orderRating);
-          } /*else {
+          } else {
             // Kein Rating -> Fertig. Liste aktualisieren.
             // Wir müssen newOrder in die Liste der SummaryDTOs pushen.
             // Da SummaryDTO meist weniger Felder hat als DetailDTO, ist der Cast ok.
-            this.orders.update(current => [...current, newOrder as unknown as OrderSummaryDTO]);
-          }*/
+            this.orders.update(current => [...current, newOrder as OrderSummaryDTO]);
+          }
         },
         error: () => this.errorMessage.set('Fehler beim Erstellen der Bestellung.'),
       });
@@ -353,10 +351,14 @@ export class OrdersComponent implements OnInit {
       .updateOrder(id, formData)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: updatedOrder => {
+        next: () => {
+          // load whole list new to see the edited order
+          this.loadOrders();
+        },
+        /*next: updatedOrder => {
           // Liste lokal aktualisieren
           this.orders.update(list => list.map(o => (o.id === id ? (updatedOrder as unknown as OrderSummaryDTO) : o)));
-        },
+        },*/
         error: () => this.errorMessage.set('Fehler beim Aktualisieren.'),
       });
   }
