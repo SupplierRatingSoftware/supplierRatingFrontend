@@ -198,8 +198,6 @@ export class OrdersComponent implements OnInit {
     const modalRef = this.modalService.open(ModalAddOrderComponent, this.modalOptions);
     modalRef.result.then(
       (result: OrderAddResult) => {
-        // Wir wissen, bei "Neu" ist es ein CreateDTO
-        // Wir nutzen 'as unknown' um Typ-Konflikte mit strikten DTOs zu vermeiden
         const createData = result.data;
 
         if (result.action === 'SAVE') {
@@ -217,9 +215,6 @@ export class OrdersComponent implements OnInit {
   /** this.createAndAddOrder(createData);
    * Opens the modal in edit mode for an existing order
    * @param summaryOrder The order to edit
-   * Öffnet das Modal im Bearbeitungs-Modus.
-   * WICHTIG: Wir laden zuerst die vollen Details, damit 'supplierId' vorhanden ist.
-   *
    */
   openEditOrderModal(summaryOrder: OrderSummaryDTO) {
     const modalRef = this.modalService.open(ModalEditOrderComponent, this.modalOptions);
