@@ -10,7 +10,7 @@ import { DefaultService, OrderCreateDTO } from '../../openapi-gen';
  * Wir exportieren das Interface, damit orders.component.ts es findet.
  * Wir definieren es so, dass es das Ergebnis der Modal-Aktion beschreibt.
  */
-export interface OrderModalResult {
+export interface OrderAddResult {
   action: 'SAVE' | 'RATE';
   data: OrderCreateDTO;
 }

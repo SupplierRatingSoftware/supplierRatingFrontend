@@ -4,7 +4,16 @@ import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validator
 import { NgbAccordionModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { LucideAngularModule, X } from 'lucide-angular';
 import { FormSection, ORDER_FORM_CONFIG } from '../../models/order.config';
-import { OrderSummaryDTO } from '../../openapi-gen';
+import { OrderSummaryDTO, OrderUpdateDTO } from '../../openapi-gen';
+
+/**
+ * Wir exportieren das Interface, damit orders.component.ts es findet.
+ * Wir definieren es so, dass es das Ergebnis der Modal-Aktion beschreibt.
+ */
+export interface OrderEditResult {
+  action: 'SAVE' | 'RATE';
+  data: OrderUpdateDTO;
+}
 
 @Component({
   selector: 'app-modal-form-order',
@@ -77,7 +86,6 @@ export class ModalEditOrderComponent implements OnInit {
       this.expandedSections.add(this.config[0].sectionTitle);
     }
     // Falls wir eine Bestellung bearbeiten, füllen wir JETZT die Werte nach.
-    // Das garantiert, dass die supplierId auch im Dropdown "selected" wird.
     const orderToEdit = this.order();
     if (orderToEdit) {
       this.orderForm.patchValue(orderToEdit);
@@ -105,15 +113,8 @@ export class ModalEditOrderComponent implements OnInit {
    */
   onSubmit() {
     if (this.orderForm.valid) {
-      // WICHTIG: getRawValue() statt value nutzen!
-      const formData = this.orderForm.getRawValue();
-
-      console.log('Modal sendet SAVE mit Daten:', formData); // Debugging
-
-      this.activeModal.close({
-        action: 'SAVE',
-        data: formData,
-      });
+      console.log('Modal sendet SAVE mit Daten:', this.orderForm.value); // Debugging
+      this.activeModal.close({ action: 'SAVE', data: this.orderForm.value });
     } else {
       this.handleInvalidForm();
     }
@@ -124,15 +125,7 @@ export class ModalEditOrderComponent implements OnInit {
    */
   onRate() {
     if (this.orderForm.valid) {
-      // WICHTIG: getRawValue() statt value nutzen!
-      const formData = this.orderForm.getRawValue();
-
-      console.log('Modal sendet RATE mit Daten:', formData); // Debugging
-
-      this.activeModal.close({
-        action: 'RATE',
-        data: formData,
-      });
+      this.activeModal.close({ action: 'RATE', data: this.orderForm.value });
     } else {
       this.handleInvalidForm();
     }

@@ -12,18 +12,11 @@ import {
 } from '@ng-bootstrap/ng-bootstrap';
 import { ToastComponent } from '../../components/toast/toast.component';
 import { ListItem } from '../../components/list-item/list-item';
-import { ModalEditOrderComponent } from '../../components/modal-edit-order/modal-edit-order';
+import { ModalEditOrderComponent, OrderEditResult } from '../../components/modal-edit-order/modal-edit-order';
 import { PanelFormOrderComponent } from '../../components/panel-form-order/panel-form-order';
 import { DefaultService, OrderCreateDTO, OrderSummaryDTO, OrderUpdateDTO, RatingCreateDTO } from '../../openapi-gen';
 import { ModalRatingComponent } from '../../components/modal-rating/modal-rating';
-import { ModalAddOrderComponent } from '../../components/modal-add-order/modal-add-order';
-
-// HIER: Das Interface einfach lokal definieren.
-interface OrderModalResult {
-  action: 'SAVE' | 'RATE';
-  // Das Formular kann Daten für ein Update oder ein Create liefern
-  data: OrderCreateDTO | OrderUpdateDTO;
-}
+import { ModalAddOrderComponent, OrderAddResult } from '../../components/modal-add-order/modal-add-order';
 
 @Component({
   selector: 'app-orders',
@@ -204,10 +197,10 @@ export class OrdersComponent implements OnInit {
   openAddOrderModal() {
     const modalRef = this.modalService.open(ModalAddOrderComponent, this.modalOptions);
     modalRef.result.then(
-      (result: OrderModalResult) => {
+      (result: OrderAddResult) => {
         // Wir wissen, bei "Neu" ist es ein CreateDTO
         // Wir nutzen 'as unknown' um Typ-Konflikte mit strikten DTOs zu vermeiden
-        const createData = result.data as unknown as OrderCreateDTO;
+        const createData = result.data;
 
         if (result.action === 'SAVE') {
           this.createAndAddOrder(createData);
@@ -236,7 +229,7 @@ export class OrdersComponent implements OnInit {
 
     // 5. Ergebnis verarbeiten (wie bisher)
     modalRef.result.then(
-      (result: OrderModalResult) => {
+      (result: OrderEditResult) => {
         const updateData = result.data;
 
         if (result.action === 'SAVE') {
