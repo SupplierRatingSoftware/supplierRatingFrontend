@@ -114,6 +114,7 @@ export class OrdersComponent implements OnInit {
       .subscribe({
         next: data => {
           this.orders.set(data);
+          console.log('Bestellungen geladen:', data);
         },
         error: () => {
           this.errorMessage.set(
@@ -139,18 +140,8 @@ export class OrdersComponent implements OnInit {
    */
   openDetailPanel(summaryOrder: OrderSummaryDTO) {
     this.errorMessage.set(null);
-
-    // 1. Offcanvas öffnen und Referenz speichern
-    this.activePanelRef = this.offCanvasService.open(PanelFormOrderComponent, this.offCanvasOptions);
-
-    // Ab hier nutzen wir this.activePanelRef statt der lokalen const offcanvasRef
-    const panelInstance = this.activePanelRef.componentInstance as PanelFormOrderComponent;
-
-    // Setze vorläufige Daten (Name fehlt hier evtl. wenn aus Liste geladen)
-    panelInstance.order.set(summaryOrder);
-
-    // Optional: Titel oder Loading State setzen, falls gewünscht.
-    // Das Panel zeigt "Keine Daten geladen" an, bis wir das Signal setzen.
+    // 1. Offcanvas öffnen
+    const panelInstance = this.offCanvasService.open(PanelFormOrderComponent, this.offCanvasOptions);
 
     // 2. Volle Order-Daten laden (GET /orders/{id})
     this.orderService
@@ -159,11 +150,11 @@ export class OrdersComponent implements OnInit {
       .subscribe({
         next: detailedOrder => {
           // Daten an das Panel übergeben (Signal setzen)
-          panelInstance.order.set(detailedOrder);
+          panelInstance.componentInstance.order.set(detailedOrder);
 
           // 3. Prüfen, ob eine Rating ID existiert, und falls ja: Rating laden
           if (detailedOrder.ratingId) {
-            this.loadRatingForPanel(detailedOrder.ratingId, panelInstance);
+            this.loadRatingForPanel(detailedOrder.ratingId, panelInstance.componentInstance);
           }
         },
         error: () => {
@@ -220,6 +211,7 @@ export class OrdersComponent implements OnInit {
     const modalRef = this.modalService.open(ModalEditOrderComponent, this.modalOptions);
 
     // Das summaryOrder an das Modal übergeben
+    console.log('Öffne Edit Modal für Bestellung:', summaryOrder);
     modalRef.componentInstance.order.set(summaryOrder);
 
     // 5. Ergebnis verarbeiten (wie bisher)

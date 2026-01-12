@@ -6,7 +6,7 @@
       <app-list-item
         [label]="item.name"
         [icon]="UserIcon"
-        (click)="openDetailPanel(item)"
+        (itemSelected)="openDetailPanel(item)"
         (editSelected)="openEditOrderModal(item)">
       </app-list-item>
     }
