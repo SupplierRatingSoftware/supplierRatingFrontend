@@ -84,6 +84,11 @@ export class OrdersComponent implements OnInit {
   readonly orders = signal<OrderSummaryDTO[]>([]);
 
   /**
+   * State: Selected order ID
+   */
+  readonly selectedOrderId = signal<string | null>(null);
+
+  /**
    * State: The actual search term for filtering list-items
    */
   readonly searchTerm = signal<string>('');
@@ -137,6 +142,9 @@ export class OrdersComponent implements OnInit {
    */
   openDetailPanel(summaryOrder: OrderSummaryDTO) {
     this.errorMessage.set(null);
+
+    // Set selected order ID (for changing active state of list-item)
+    this.selectedOrderId.set(summaryOrder.id);
 
     // 1. Offcanvas öffnen und Referenz speichern
     this.activePanelRef = this.offCanvasService.open(PanelFormOrderComponent, this.offCanvasOptions);
