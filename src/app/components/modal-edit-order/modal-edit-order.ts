@@ -113,8 +113,8 @@ export class ModalEditOrderComponent implements OnInit {
    */
   onSubmit() {
     if (this.orderForm.valid) {
-      console.log('Modal sendet SAVE mit Daten:', this.orderForm.value); // Debugging
-      this.activeModal.close({ action: 'SAVE', data: this.orderForm.value });
+      console.log('Modal sendet SAVE mit Daten:', this.orderForm.getRawValue()); // Debugging
+      this.activeModal.close({ action: 'SAVE', data: this.orderForm.getRawValue() });
     } else {
       this.handleInvalidForm();
     }

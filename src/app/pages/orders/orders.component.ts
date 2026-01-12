@@ -315,23 +315,31 @@ export class OrdersComponent implements OnInit {
     // 'apiPayload' enthält jetzt nur noch Felder, die OrderCreateDTO kennt
     const { orderRating, ...apiPayload } = formData;
 
+    // Debugging: Damit du in der Konsole (F12) siehst, was wirklich gesendet wird
+    console.log('Sende Create-Payload:', apiPayload);
+
     // Cast ist sicher, da wir orderRating entfernt haben
     this.orderService
       .createOrder(apiPayload)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: newOrder => {
-          // Wenn wir auch ein Rating haben, speichern wir das jetzt mit der neuen ID
+          // 2. Rating speichern (falls vorhanden)
           if (orderRating) {
             this.createRatingForOrder(newOrder.id, orderRating);
           } else {
-            // Kein Rating -> Fertig. Liste aktualisieren.
-            // Wir müssen newOrder in die Liste der SummaryDTOs pushen.
-            // Da SummaryDTO meist weniger Felder hat als DetailDTO, ist der Cast ok.
-            this.orders.update(current => [...current, newOrder as OrderSummaryDTO]);
+            // Fall: Nur speichern (ohne Rating)
+            // Liste neu laden, um die neue Bestellung inkl. generierter ID/Code zu sehen
+            this.loadOrders();
+            // Optional: Erfolgsmeldung für das UI, falls gewünscht (über errorMessage als Info missbraucht oder separaten Toast)
+            // this.errorMessage.set('Bestellung erfolgreich erstellt!');
+            // setTimeout(() => this.errorMessage.set(null), 3000);
           }
         },
-        error: () => this.errorMessage.set('Fehler beim Erstellen der Bestellung.'),
+        error: err => {
+          console.error('Fehler beim Erstellen:', err); // Zeigt dir den genauen Fehler im Browser
+          this.errorMessage.set('Fehler beim Erstellen der Bestellung. Bitte prüfen Sie die Eingaben.');
+        },
       });
   }
 
