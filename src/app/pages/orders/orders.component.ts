@@ -21,7 +21,7 @@ import { ModalAddOrderComponent } from '../../components/modal-add-order/modal-a
 // HIER: Das Interface einfach lokal definieren.
 interface OrderModalResult {
   action: 'SAVE' | 'RATE';
-  // Das Formular kann Daten für ein Update oder ein Create liefernc
+  // Das Formular kann Daten für ein Update oder ein Create liefern
   data: OrderCreateDTO | OrderUpdateDTO;
 }
 
