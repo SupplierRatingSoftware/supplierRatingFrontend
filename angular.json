@@ -70,7 +70,7 @@
               "sourceMap": true
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular/build:dev-server",
@@ -82,7 +82,7 @@
               "buildTarget": "supplierRatingFrontend:build:development"
             }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": "development"
         },
         "test": {
           "builder": "@angular/build:unit-test"
