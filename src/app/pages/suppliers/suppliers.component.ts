@@ -74,6 +74,11 @@ export class SuppliersComponent implements OnInit {
   readonly suppliers = signal<SupplierSummaryDTO[]>([]);
 
   /**
+   * State: Selected supplier ID
+   */
+  readonly selectedSupplierId = signal<string | null>(null);
+
+  /**
    * State: The actual search term for filtering list-items
    */
   readonly searchTerm = signal<string>('');
@@ -123,10 +128,17 @@ export class SuppliersComponent implements OnInit {
    * Select Supplier and show Offcanvas with data-details
    */
   selectSupplier(supplier: SupplierSummaryDTO) {
+    // Set selected supplier ID (for changing active state of list-item)
+    this.selectedSupplierId.set(supplier.id);
+
+    // Open Offcanvas
     const offcanvasRef = this.offCanvasService.open(PanelFormSupplierComponent, this.offCanvasOptions);
 
     // Send data into Offcanvas Component
     offcanvasRef.componentInstance.supplier.set(supplier);
+
+    // Reset selection when offcanvas is closed
+    offcanvasRef.result.then(() => this.selectedSupplierId.set(null));
   }
 
   /**
@@ -153,11 +165,14 @@ export class SuppliersComponent implements OnInit {
     const modalRef = this.modalService.open(ModalFormSupplierComponent, this.modalOptions);
 
     if (supplier) {
+      // Highlight item while editing
+      this.selectedSupplierId.set(supplier.id);
       modalRef.componentInstance.supplier.set(supplier);
     }
 
     modalRef.result.then(
       (result: SupplierCreateDTO) => {
+        this.selectedSupplierId.set(null); // Reset highlight
         if (!result) return;
 
         if (supplier?.id) {
@@ -167,6 +182,7 @@ export class SuppliersComponent implements OnInit {
         }
       },
       reason => {
+        this.selectedSupplierId.set(null); // Reset highlight
         if (reason !== 0 && reason !== 1 && reason !== undefined) {
           console.log(reason);
           this.errorMessage.set(`Fehler beim Bearbeiten des Eintrages: ${reason}`);

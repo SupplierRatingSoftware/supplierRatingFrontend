@@ -6,6 +6,7 @@
       <app-list-item
         [label]="item.name"
         [icon]="UserIcon"
+        [isActive]="item.id === selectedSupplierId()"
         (itemSelected)="selectSupplier(item)"
         (editSelected)="openEditSupplierModal(item)">
       </app-list-item>

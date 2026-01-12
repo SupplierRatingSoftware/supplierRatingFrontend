@@ -25,6 +25,12 @@ export class ListItem {
   readonly icon = input.required<LucideIconData>();
 
   /**
+   * Input (optional): This input indicating the active status.
+   * The default value is `false`, signifying an inactive state.
+   */
+  readonly isActive = input(false);
+
+  /**
    * Output: Event emitted when the item or edit button is clicked
    * @readonly
    */

@@ -469,7 +469,7 @@ export class DefaultService extends BaseService {
     localVarQueryParameters = this.addToHttpParams(
       localVarQueryParameters,
       'supplierId',
-      (supplierId as any),
+      supplierId as any,
       QueryParamStyle.Form,
       true
     );
