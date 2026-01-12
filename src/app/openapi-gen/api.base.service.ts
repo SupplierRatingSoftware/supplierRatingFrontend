@@ -11,7 +11,7 @@ import { HttpHeaders, HttpParameterCodec } from '@angular/common/http';
 import { CustomHttpParameterCodec } from './encoder';
 import { Configuration } from './configuration';
 import { concatHttpParamsObject, OpenApiHttpParams, QueryParamStyle } from './query.params';
-import { environment } from '../../environments/environment.prod';
+import { environment } from '../../environments/environment';
 
 export class BaseService {
   protected basePath = environment.apiUrl;

@@ -41,11 +41,14 @@ export class ModalEditOrderComponent implements OnInit {
   protected expandedSections = new Set<string>();
 
   /**
-   * Preconfigured form configuration of the modal
-   * @description A preconfigured form configuration of the modal form-fields and section-headers
+   * Preconfigured form configuration of the modal without supplierId field
+   * @description A preconfigured form configuration of the modal form-fields and section-headers without supplierId field
    * @protected
    */
-  protected readonly config = ORDER_FORM_CONFIG;
+  protected readonly config = ORDER_FORM_CONFIG.map(section => ({
+    ...section,
+    fields: section.fields.filter(field => field.key !== 'supplierId'),
+  }));
 
   /**
    * State of the order
