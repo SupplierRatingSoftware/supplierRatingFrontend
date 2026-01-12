@@ -225,12 +225,23 @@ export class OrdersComponent implements OnInit {
     // 5. Ergebnis verarbeiten (wie bisher)
     modalRef.result.then(
       (result: OrderEditResult) => {
-        const updateData = result.data;
+        //const updateData = result.data;
+
+        // 1. Wir holen die Rohdaten aus dem Formular
+        const rawData = result.data;
+
+        // 2. Wir filtern Felder heraus, die NICHT ins Update-DTO gehören.
+        // Wir nutzen Destructuring: Wir ziehen 'id', 'code' etc. heraus und ignorieren sie.
+        // Der "Rest" (...) landet in 'updatePayload'.
+        const { id, code, ratingStatus, orderRating, supplierId, ...updatePayload } = rawData as any;
+
+        // 3. Jetzt haben wir ein sauberes Objekt für die API
+        const cleanUpdateDto = updatePayload as OrderUpdateDTO;
 
         if (result.action === 'SAVE') {
-          this.updateExistingOrder(summaryOrder.id, updateData);
+          this.updateExistingOrder(summaryOrder.id, cleanUpdateDto);
         } else if (result.action === 'RATE') {
-          const combinedData = { ...updateData, id: summaryOrder.id };
+          const combinedData = { ...cleanUpdateDto, id: summaryOrder.id };
           this.openRatingModal(combinedData);
         }
       },

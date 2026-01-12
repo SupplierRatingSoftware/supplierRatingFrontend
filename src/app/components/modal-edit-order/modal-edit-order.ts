@@ -4,7 +4,7 @@ import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validator
 import { NgbAccordionModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { LucideAngularModule, X } from 'lucide-angular';
 import { FormSection, ORDER_FORM_CONFIG } from '../../models/order.config';
-import { OrderSummaryDTO, OrderUpdateDTO } from '../../openapi-gen';
+import { OrderSummaryDTO } from '../../openapi-gen';
 
 /**
  * Wir exportieren das Interface, damit orders.component.ts es findet.
@@ -12,7 +12,7 @@ import { OrderSummaryDTO, OrderUpdateDTO } from '../../openapi-gen';
  */
 export interface OrderEditResult {
   action: 'SAVE' | 'RATE';
-  data: OrderUpdateDTO;
+  data: OrderSummaryDTO;
 }
 
 @Component({
@@ -112,8 +112,9 @@ export class ModalEditOrderComponent implements OnInit {
    */
   onSubmit() {
     if (this.orderForm.valid) {
-      console.log('Modal sendet SAVE mit Daten:', this.orderForm.value); // Debugging
-      this.activeModal.close({ action: 'SAVE', data: this.orderForm.value });
+      console.log('Modal sendet SAVE mit Daten:', this.orderForm.getRawValue()); // Debugging
+      // getRawValue Stellt sicher, dass auch deaktivierte Felder (z.B. supplierId, falls gesperrt) enthalten sind.
+      this.activeModal.close({ action: 'SAVE', data: this.orderForm.getRawValue() });
     } else {
       this.handleInvalidForm();
     }
@@ -124,7 +125,8 @@ export class ModalEditOrderComponent implements OnInit {
    */
   onRate() {
     if (this.orderForm.valid) {
-      this.activeModal.close({ action: 'RATE', data: this.orderForm.value });
+      // getRawValue Stellt sicher, dass auch deaktivierte Felder (z.B. supplierId, falls gesperrt) enthalten sind.
+      this.activeModal.close({ action: 'RATE', data: this.orderForm.getRawValue() });
     } else {
       this.handleInvalidForm();
     }
