@@ -4,15 +4,15 @@ import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validator
 import { NgbAccordionModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { LucideAngularModule, X } from 'lucide-angular';
 import { FormSection, ORDER_FORM_CONFIG } from '../../models/order.config';
-import { DefaultService, OrderSummaryDTO } from '../../openapi-gen';
+import { OrderSummaryDTO } from '../../openapi-gen';
 
 @Component({
   selector: 'app-modal-form-order',
   imports: [CommonModule, ReactiveFormsModule, NgbAccordionModule, LucideAngularModule],
-  templateUrl: './modal-form-order.html',
-  styleUrl: './modal-form-order.scss',
+  templateUrl: './modal-edit-order.html',
+  styleUrl: './modal-edit-order.scss',
 })
-export class ModalFormOrderComponent implements OnInit {
+export class ModalEditOrderComponent implements OnInit {
   /**
    * Lucide Icon
    * @protected
@@ -24,12 +24,6 @@ export class ModalFormOrderComponent implements OnInit {
    * @private
    */
   private activeModal = inject(NgbActiveModal);
-
-  /**
-   * Injected supplier service for loading suppliers in the form
-   * @private
-   */
-  private supplierService = inject(DefaultService);
 
   /**
    * We declare the Set to store the titles of the open sections.
@@ -82,57 +76,18 @@ export class ModalFormOrderComponent implements OnInit {
     if (this.config.length > 0) {
       this.expandedSections.add(this.config[0].sectionTitle);
     }
+    // Falls wir eine Bestellung bearbeiten, füllen wir JETZT die Werte nach.
+    // Das garantiert, dass die supplierId auch im Dropdown "selected" wird.
+    const orderToEdit = this.order();
+    if (orderToEdit) {
+      this.orderForm.patchValue(orderToEdit);
 
-    // 2. Lieferanten laden und Dropdown-Optionen befüllen
-    this.supplierService.getAllSuppliers().subscribe(suppliers => {
-      // Wir suchen die Sektion und das Feld für 'supplierId'
-      const section = this.config.find(s => s.sectionTitle === 'Lieferant & Ansprechperson');
-      const supplierField = section?.fields.find(f => f.key === 'supplierId');
-
-      if (supplierField) {
-        // Mapping: Backend Supplier -> Frontend Dropdown Option
-        supplierField.options = suppliers.map(s => ({
-          value: s.id || '', // WICHTIG: Hier wird die supplierId als Wert gesetzt
-          label: s.name, // Der Name wird angezeigt
-        }));
-
-        // 3. Wenn wir hier sind, ist das Dropdown bereit.
-        // Falls wir eine Bestellung bearbeiten, füllen wir JETZT die Werte nach.
-        // Das garantiert, dass die supplierId auch im Dropdown "selected" wird.
-        const orderToEdit = this.order();
-        if (orderToEdit) {
-          this.orderForm.patchValue(orderToEdit);
-
-          // Zusatz-Check: Falls Status RATED ist, sperren
-          if (orderToEdit.ratingStatus === 'RATED') {
-            this.orderForm.disable();
-          }
-        }
+      // Zusatz-Check: Falls Status RATED ist, sperren
+      if (orderToEdit.ratingStatus === 'RATED') {
+        this.orderForm.disable();
       }
-    });
+    }
   }
-
-  /**
-   * Loads suppliers from the SupplierService and maps them to the select options
-   * in the form configuration.
-   */
-  /*
-  private loadSuppliers() {
-    this.supplierService.getAllSuppliers().subscribe(suppliers => {
-      // Find the section with the title "Lieferant & Ansprechperson"
-      const section = this.config.find(s => s.sectionTitle === 'Lieferant & Ansprechperson');
-      // Find the field with the key 'supplierId' in that section
-      const supplierField = section?.fields.find(f => f.key === 'supplierId');
-      // Map suppliers to the field options {value, label}
-      if (supplierField) {
-        supplierField.options = suppliers.map(s => ({
-          value: s.id || '', // Die technische ID
-          label: s.name, // Der Anzeigename für das Dropdown
-        }));
-      }
-    });
-  }
-  */
 
   /**
    * Checks if errors exist in a form section.

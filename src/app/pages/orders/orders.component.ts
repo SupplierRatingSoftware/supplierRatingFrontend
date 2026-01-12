@@ -12,10 +12,11 @@ import {
 } from '@ng-bootstrap/ng-bootstrap';
 import { ToastComponent } from '../../components/toast/toast.component';
 import { ListItem } from '../../components/list-item/list-item';
-import { ModalFormOrderComponent } from '../../components/modal-form-order/modal-form-order';
+import { ModalEditOrderComponent } from '../../components/modal-edit-order/modal-edit-order';
 import { PanelFormOrderComponent } from '../../components/panel-form-order/panel-form-order';
 import { DefaultService, OrderCreateDTO, OrderSummaryDTO, OrderUpdateDTO, RatingCreateDTO } from '../../openapi-gen';
 import { ModalRatingComponent } from '../../components/modal-rating/modal-rating';
+import { ModalAddOrderComponent } from '../../components/modal-add-order/modal-add-order';
 
 // HIER: Das Interface einfach lokal definieren.
 interface OrderModalResult {
@@ -201,7 +202,7 @@ export class OrdersComponent implements OnInit {
    * Opens Modal for adding or editing an order
    */
   openAddOrderModal() {
-    const modalRef = this.modalService.open(ModalFormOrderComponent, this.modalOptions);
+    const modalRef = this.modalService.open(ModalAddOrderComponent, this.modalOptions);
     modalRef.result.then(
       (result: OrderModalResult) => {
         // Wir wissen, bei "Neu" ist es ein CreateDTO
@@ -220,7 +221,7 @@ export class OrdersComponent implements OnInit {
     );
   }
 
-  /**
+  /** this.createAndAddOrder(createData);
    * Opens the modal in edit mode for an existing order
    * @param summaryOrder The order to edit
    * Öffnet das Modal im Bearbeitungs-Modus.
@@ -228,38 +229,27 @@ export class OrdersComponent implements OnInit {
    *
    */
   openEditOrderModal(summaryOrder: OrderSummaryDTO) {
-    // 1. Lade-Indikator oder Fehlerbehandlung könnte hier sinnvoll sein
-    // 2. Wir holen das volle 'OrderDetailDTO' vom Backend
-    this.orderService
-      .getOrderById(summaryOrder.id)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: fullOrder => {
-          // 3. Erst wenn Daten da sind, Modal öffnen
-          const modalRef = this.modalService.open(ModalFormOrderComponent, this.modalOptions);
+    const modalRef = this.modalService.open(ModalEditOrderComponent, this.modalOptions);
 
-          // 4. Das volle Objekt (mit supplierId!) an das Modal übergeben
-          modalRef.componentInstance.order.set(fullOrder);
+    // Das summaryOrder an das Modal übergeben
+    modalRef.componentInstance.order.set(summaryOrder);
 
-          // 5. Ergebnis verarbeiten (wie bisher)
-          modalRef.result.then(
-            (result: OrderModalResult) => {
-              const updateData = result.data as OrderUpdateDTO;
+    // 5. Ergebnis verarbeiten (wie bisher)
+    modalRef.result.then(
+      (result: OrderModalResult) => {
+        const updateData = result.data;
 
-              if (result.action === 'SAVE') {
-                this.updateExistingOrder(summaryOrder.id, updateData);
-              } else if (result.action === 'RATE') {
-                const combinedData = { ...updateData, id: summaryOrder.id };
-                this.openRatingModal(combinedData);
-              }
-            },
-            () => {
-              /* Modal abgebrochen */
-            }
-          );
-        },
-        error: () => this.errorMessage.set('Fehler beim Laden der Bestelldetails.'),
-      });
+        if (result.action === 'SAVE') {
+          this.updateExistingOrder(summaryOrder.id, updateData);
+        } else if (result.action === 'RATE') {
+          const combinedData = { ...updateData, id: summaryOrder.id };
+          this.openRatingModal(combinedData);
+        }
+      },
+      () => {
+        /* Modal abgebrochen */
+      }
+    );
   }
 
   /**
@@ -348,12 +338,12 @@ export class OrdersComponent implements OnInit {
           // Wenn wir auch ein Rating haben, speichern wir das jetzt mit der neuen ID
           if (orderRating) {
             this.createRatingForOrder(newOrder.id, orderRating);
-          } else {
+          } /*else {
             // Kein Rating -> Fertig. Liste aktualisieren.
             // Wir müssen newOrder in die Liste der SummaryDTOs pushen.
             // Da SummaryDTO meist weniger Felder hat als DetailDTO, ist der Cast ok.
             this.orders.update(current => [...current, newOrder as unknown as OrderSummaryDTO]);
-          }
+          }*/
         },
         error: () => this.errorMessage.set('Fehler beim Erstellen der Bestellung.'),
       });
