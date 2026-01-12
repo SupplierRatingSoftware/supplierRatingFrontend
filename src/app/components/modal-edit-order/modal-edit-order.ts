@@ -4,7 +4,7 @@ import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validator
 import { NgbAccordionModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { LucideAngularModule, X } from 'lucide-angular';
 import { FormSection, ORDER_FORM_CONFIG } from '../../models/order.config';
-import { OrderSummaryDTO, OrderUpdateDTO } from '../../openapi-gen';
+import { OrderUpdateDTO } from '../../openapi-gen';
 
 /**
  * Wir exportieren das Interface, damit orders.component.ts es findet.
@@ -51,7 +51,7 @@ export class ModalEditOrderComponent implements OnInit {
    * State of the order
    * @description The order state is used to store the currently edited order
    */
-  order = signal<OrderSummaryDTO | undefined>(undefined);
+  order = signal<OrderUpdateDTO | undefined>(undefined);
 
   /**
    * Represents a reactive form group for managing order information.
@@ -91,9 +91,9 @@ export class ModalEditOrderComponent implements OnInit {
       this.orderForm.patchValue(orderToEdit);
 
       // Zusatz-Check: Falls Status RATED ist, sperren
-      if (orderToEdit.ratingStatus === 'RATED') {
+      /*if (orderToEdit.ratingStatus === 'RATED') {
         this.orderForm.disable();
-      }
+      }*/
     }
   }
 
@@ -109,12 +109,11 @@ export class ModalEditOrderComponent implements OnInit {
 
   /**
    * Submits the form data if valid.
-   * Uses getRawValue() to ensure disabled fields (like ID or pre-set Supplier) are included.
    */
   onSubmit() {
     if (this.orderForm.valid) {
-      console.log('Modal sendet SAVE mit Daten:', this.orderForm.getRawValue()); // Debugging
-      this.activeModal.close({ action: 'SAVE', data: this.orderForm.getRawValue() });
+      console.log('Modal sendet SAVE mit Daten:', this.orderForm.value); // Debugging
+      this.activeModal.close({ action: 'SAVE', data: this.orderForm.value });
     } else {
       this.handleInvalidForm();
     }

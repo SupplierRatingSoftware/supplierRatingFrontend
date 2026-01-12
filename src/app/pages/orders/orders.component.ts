@@ -212,7 +212,7 @@ export class OrdersComponent implements OnInit {
     );
   }
 
-  /** this.createAndAddOrder(createData);
+  /**
    * Opens the modal in edit mode for an existing order
    * @param summaryOrder The order to edit
    */
