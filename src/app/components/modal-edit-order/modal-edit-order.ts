@@ -4,7 +4,7 @@ import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validator
 import { NgbAccordionModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { LucideAngularModule, X } from 'lucide-angular';
 import { FormSection, ORDER_FORM_CONFIG } from '../../models/order.config';
-import { OrderSummaryDTO } from '../../openapi-gen';
+import { OrderDetailDTO } from '../../openapi-gen';
 
 /**
  * Wir exportieren das Interface, damit orders.component.ts es findet.
@@ -12,7 +12,7 @@ import { OrderSummaryDTO } from '../../openapi-gen';
  */
 export interface OrderEditResult {
   action: 'SAVE' | 'RATE';
-  data: OrderSummaryDTO;
+  data: OrderDetailDTO;
 }
 
 @Component({
@@ -54,7 +54,7 @@ export class ModalEditOrderComponent implements OnInit {
    * State of the order
    * @description The order state is used to store the currently edited order
    */
-  order = signal<OrderSummaryDTO | undefined>(undefined);
+  order = signal<OrderDetailDTO | undefined>(undefined);
 
   /**
    * Represents a reactive form group for managing order information.

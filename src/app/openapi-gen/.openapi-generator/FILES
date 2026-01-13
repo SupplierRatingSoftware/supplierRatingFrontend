@@ -1,5 +1,4 @@
 .gitignore
-.openapi-generator-ignore
 README.md
 api.base.service.ts
 api.module.ts
@@ -13,7 +12,6 @@ model/models.ts
 model/orderBaseDTO.ts
 model/orderCreateDTO.ts
 model/orderDetailDTO.ts
-model/orderSummaryDTO.ts
 model/orderUpdateDTO.ts
 model/ratingBaseDTO.ts
 model/ratingCreateDTO.ts

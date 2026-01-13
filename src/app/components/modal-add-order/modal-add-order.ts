@@ -4,16 +4,7 @@ import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validator
 import { NgbAccordionModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { LucideAngularModule, X } from 'lucide-angular';
 import { FormSection, ORDER_FORM_CONFIG } from '../../models/order.config';
-import { DefaultService, OrderCreateDTO } from '../../openapi-gen';
-
-/**
- * Wir exportieren das Interface, damit orders.component.ts es findet.
- * Wir definieren es so, dass es das Ergebnis der Modal-Aktion beschreibt.
- */
-export interface OrderAddResult {
-  action: 'SAVE' | 'RATE';
-  data: OrderCreateDTO;
-}
+import { DefaultService, OrderDetailDTO } from '../../openapi-gen';
 
 @Component({
   selector: 'app-modal-add-order',
@@ -57,7 +48,7 @@ export class ModalAddOrderComponent implements OnInit {
    * State of the order
    * @description The order state is used to store the currently edited order
    */
-  order = signal<OrderCreateDTO | undefined>(undefined);
+  order = signal<OrderDetailDTO | undefined>(undefined);
 
   /**
    * Represents a reactive form group for managing order information.
@@ -154,17 +145,6 @@ export class ModalAddOrderComponent implements OnInit {
       this.handleInvalidForm();
     }
   }*/
-
-  /**
-   * Submits the rating data if valid.
-   */
-  onRate() {
-    if (this.orderForm.valid) {
-      this.activeModal.close({ action: 'RATE', data: this.orderForm.value });
-    } else {
-      this.handleInvalidForm();
-    }
-  }
 
   /**
    * Handles invalid form submission by marking all fields as touched
