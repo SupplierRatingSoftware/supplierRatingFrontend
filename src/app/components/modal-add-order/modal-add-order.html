@@ -66,7 +66,5 @@
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-secondary" (click)="cancel()">Abbrechen</button>
-    <button type="submit" class="btn btn-primary px-5">
-      {{ order() ? 'Änderungen speichern' : 'Bestellung erstellen' }}
-    </button>
+  <button type="button" class="btn btn-primary" (click)="onSubmit()">Bestellung erstellen</button>
 </div>

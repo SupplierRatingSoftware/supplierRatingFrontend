@@ -226,9 +226,9 @@ export class OrdersComponent implements OnInit {
         const updateData = result.data;
 
         if (result.action === 'SAVE') {
-          this.updateExistingOrder(detailedOrder.id, updateData as OrderUpdateDTO);
+          this.updateExistingOrder(detailedOrder.id, updateData);
         } else if (result.action === 'RATE') {
-          this.openRatingModal(updateData);
+          this.openRatingModal(detailedOrder.id, updateData);
         }
       },
       () => {
@@ -243,9 +243,15 @@ export class OrdersComponent implements OnInit {
    * @param formData The updated data from the form
    * @private
    */
-  private updateExistingOrder(id: string, formData: OrderUpdateDTO) {
+  private updateExistingOrder(id: string, formData: Partial<OrderDetailDTO>) {
+    const existingOrder = this.orders().find(o => o.id === id);
+
+    const updatedOrder: OrderUpdateDTO = {
+      ...existingOrder,
+      ...formData,
+    } as OrderUpdateDTO;
     this.orderService
-      .updateOrder(id, formData)
+      .updateOrder(id, updatedOrder)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
@@ -260,7 +266,7 @@ export class OrdersComponent implements OnInit {
    * 3. Das Rating Modal (Verkettung)
    * Wird aufgerufen, wenn User "Speichern & Bewerten" klickte.
    */
-  private openRatingModal(orderData: OrderDetailDTO) {
+  private openRatingModal(id: string, orderData: Partial<OrderDetailDTO>) {
     const modalRef = this.modalService.open(ModalRatingComponent, this.modalOptions);
 
     // Wir übergeben die Order-Daten an das Rating-Modal
@@ -269,7 +275,7 @@ export class OrdersComponent implements OnInit {
     modalRef.result.then(
       (ratingResult: RatingCreateDTO) => {
         if (!ratingResult) return;
-        this.createRatingForOrder(orderData.id, ratingResult);
+        this.createRatingForOrder(id, ratingResult);
       },
       () => {
         /* dismissed */

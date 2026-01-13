@@ -12,7 +12,7 @@ import { OrderDetailDTO } from '../../openapi-gen';
  */
 export interface OrderEditResult {
   action: 'SAVE' | 'RATE';
-  data: OrderDetailDTO;
+  data: Partial<OrderDetailDTO>;
 }
 
 @Component({
