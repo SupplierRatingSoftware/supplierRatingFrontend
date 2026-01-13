@@ -93,7 +93,6 @@ export class ModalEditOrderComponent implements OnInit {
     console.log('Modal lädt orderToEdit:', orderToEdit); // Debugging
     if (orderToEdit) {
       this.orderForm.patchValue(orderToEdit);
-
       // Zusatz-Check: Falls Status RATED ist, sperren
       if (orderToEdit.ratingStatus === 'RATED') {
         this.orderForm.disable();
