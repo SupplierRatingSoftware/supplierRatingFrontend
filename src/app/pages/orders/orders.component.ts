@@ -176,7 +176,7 @@ export class OrdersComponent implements OnInit {
   openAddOrderModal() {
     const modalRef = this.modalService.open(ModalAddOrderComponent, this.modalOptions);
     modalRef.result.then(
-      (result: OrderCreateDTO) => {
+      (result: Partial<OrderDetailDTO>) => {
         this.createAndAddOrder(result);
       },
       () => {
@@ -190,13 +190,14 @@ export class OrdersComponent implements OnInit {
    * @param orderCreate
    * @private
    */
-  private createAndAddOrder(orderCreate: OrderCreateDTO) {
-    // Debugging: Damit du in der Konsole (F12) siehst, was wirklich gesendet wird
-    console.log('Sende Create-Order:', orderCreate);
+  private createAndAddOrder(orderCreate: Partial<OrderDetailDTO>) {
+    const newOrder: OrderCreateDTO = {
+      ...orderCreate,
+    } as OrderCreateDTO;
+    console.log('Sende Create-Order:', newOrder);
 
-    // Cast ist sicher, da wir orderRating entfernt haben
     this.orderService
-      .createOrder(orderCreate)
+      .createOrder(newOrder)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
