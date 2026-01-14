@@ -16,7 +16,7 @@ import { ModalEditOrderComponent, OrderEditResult } from '../../components/modal
 import { PanelFormOrderComponent } from '../../components/panel-form-order/panel-form-order';
 import { DefaultService, OrderCreateDTO, OrderDetailDTO, OrderUpdateDTO, RatingCreateDTO } from '../../openapi-gen';
 import { ModalRatingComponent } from '../../components/modal-rating/modal-rating';
-import { ModalAddOrderComponent } from '../../components/modal-add-order/modal-add-order';
+import { ModalAddOrderComponent, OrderAddResult } from '../../components/modal-add-order/modal-add-order';
 
 @Component({
   selector: 'app-orders',
@@ -176,8 +176,8 @@ export class OrdersComponent implements OnInit {
   openAddOrderModal() {
     const modalRef = this.modalService.open(ModalAddOrderComponent, this.modalOptions);
     modalRef.result.then(
-      (result: Partial<OrderDetailDTO>) => {
-        this.createAndAddOrder(result);
+      (result: OrderAddResult) => {
+        this.createAndAddOrder(result.data);
       },
       () => {
         /* dismissed */

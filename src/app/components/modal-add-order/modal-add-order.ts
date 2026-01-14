@@ -6,6 +6,15 @@ import { LucideAngularModule, X } from 'lucide-angular';
 import { FormSection, ORDER_FORM_CONFIG } from '../../models/order.config';
 import { DefaultService, OrderDetailDTO } from '../../openapi-gen';
 
+/**
+ * Wir exportieren das Interface, damit orders.component.ts es findet.
+ * Wir definieren es so, dass es das Ergebnis der Modal-Aktion beschreibt.
+ */
+export interface OrderAddResult {
+  action: 'SAVE';
+  data: Partial<OrderDetailDTO>;
+}
+
 @Component({
   selector: 'app-modal-add-order',
   imports: [CommonModule, ReactiveFormsModule, NgbAccordionModule, LucideAngularModule],
