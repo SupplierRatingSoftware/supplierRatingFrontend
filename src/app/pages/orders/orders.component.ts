@@ -86,6 +86,11 @@ export class OrdersComponent implements OnInit {
   readonly orders = signal<OrderDetailDTO[]>([]);
 
   /**
+   * State: Selected order ID
+   */
+  readonly selectedOrderId = signal<string | null>(null);
+
+  /**
    * State: The actual search term for filtering list-items
    */
   readonly searchTerm = signal<string>('');
