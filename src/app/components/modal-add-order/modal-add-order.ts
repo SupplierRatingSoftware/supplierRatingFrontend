@@ -4,15 +4,24 @@ import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validator
 import { NgbAccordionModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { LucideAngularModule, X } from 'lucide-angular';
 import { FormSection, ORDER_FORM_CONFIG } from '../../models/order.config';
-import { DefaultService, OrderSummaryDTO } from '../../openapi-gen';
+import { DefaultService, OrderDetailDTO } from '../../openapi-gen';
+
+/**
+ * Wir exportieren das Interface, damit orders.component.ts es findet.
+ * Wir definieren es so, dass es das Ergebnis der Modal-Aktion beschreibt.
+ */
+export interface OrderAddResult {
+  action: 'SAVE';
+  data: Partial<OrderDetailDTO>;
+}
 
 @Component({
-  selector: 'app-modal-form-order',
+  selector: 'app-modal-add-order',
   imports: [CommonModule, ReactiveFormsModule, NgbAccordionModule, LucideAngularModule],
-  templateUrl: './modal-form-order.html',
-  styleUrl: './modal-form-order.scss',
+  templateUrl: './modal-add-order.html',
+  styleUrl: './modal-add-order.scss',
 })
-export class ModalFormOrderComponent implements OnInit {
+export class ModalAddOrderComponent implements OnInit {
   /**
    * Lucide Icon
    * @protected
@@ -48,7 +57,7 @@ export class ModalFormOrderComponent implements OnInit {
    * State of the order
    * @description The order state is used to store the currently edited order
    */
-  order = signal<OrderSummaryDTO | undefined>(undefined);
+  order = signal<OrderDetailDTO | undefined>(undefined);
 
   /**
    * Represents a reactive form group for managing order information.
@@ -74,64 +83,35 @@ export class ModalFormOrderComponent implements OnInit {
   }
 
   /**
-   * AKTION: "Bestellung bewerten"
-   * Schließt das Modal und signalisiert der Page, dass das Rating-Modal folgen soll.
-   */
-  onRate() {
-    if (this.orderForm.valid) {
-      this.activeModal.close({ action: 'RATE', data: this.orderForm.value });
-    } else {
-      this.orderForm.markAllAsTouched();
-    }
-  }
-
-  /**
    * Lifecycle hook that is called after the component is initialized.
    * For handling form initialization and data pre-filling
    */
   ngOnInit() {
-    this.loadSuppliers();
-    // Expand the first section by default, if there are sections
+    // 1. Config laden (Default Section öffnen)
     if (this.config.length > 0) {
       this.expandedSections.add(this.config[0].sectionTitle);
     }
-    // Load suppliers and map them to the form options
-    this.supplierService.getAllSuppliers().subscribe(suppliers => {
-      const supplierField = this.config
-        .find(s => s.sectionTitle === 'Lieferant & Ansprechperson')
-        ?.fields.find(f => f.key === 'supplier');
-      if (supplierField) {
-        supplierField.options = suppliers.map(s => ({ value: s.id || '', label: s.name }));
-      }
-    });
-    // Check if an order is present
-    const currentOrder = this.order();
-    if (currentOrder) {
-      // Patching the data into the form
-      this.orderForm.patchValue(currentOrder);
-      // If the order is already rated, disable the form
-      if (currentOrder.ratingStatus === 'RATED') {
-        this.orderForm.disable();
-      }
-    }
-  }
 
-  /**
-   * Loads suppliers from the SupplierService and maps them to the select options
-   * in the form configuration.
-   */
-  private loadSuppliers() {
+    // 2. Lieferanten laden und Dropdown-Optionen befüllen
     this.supplierService.getAllSuppliers().subscribe(suppliers => {
-      // Find the section with the title "Lieferant & Ansprechperson"
+      // Wir suchen die Sektion und das Feld für 'supplierId'
       const section = this.config.find(s => s.sectionTitle === 'Lieferant & Ansprechperson');
-      // Find the field with the key 'supplierId' in that section
       const supplierField = section?.fields.find(f => f.key === 'supplierId');
-      // Map suppliers to the field options {value, label}
+
       if (supplierField) {
+        // Mapping: Backend Supplier -> Frontend Dropdown Option
         supplierField.options = suppliers.map(s => ({
-          value: s.id || '', // Die technische ID
-          label: s.name, // Der Anzeigename für das Dropdown
+          value: s.id || '', // WICHTIG: Hier wird die supplierId als Wert gesetzt
+          label: s.name, // Der Name wird angezeigt
         }));
+
+        // 3. Wenn wir hier sind, ist das Dropdown bereit.
+        // Falls wir eine Bestellung bearbeiten, füllen wir JETZT die Werte nach.
+        // Das garantiert, dass die supplierId auch im Dropdown "selected" wird.
+        const orderToEdit = this.order();
+        if (orderToEdit) {
+          this.orderForm.patchValue(orderToEdit);
+        }
       }
     });
   }
@@ -146,23 +126,46 @@ export class ModalFormOrderComponent implements OnInit {
     });
   }
 
-  /**
-   * Handles form submission and closes the modal with the form data if valid.
-   */
   onSubmit() {
     if (this.orderForm.valid) {
-      this.activeModal.close(this.orderForm.value);
+      console.log('Modal sendet SAVE mit Daten:', this.orderForm.getRawValue()); // Debugging
+      this.activeModal.close({ action: 'SAVE', data: this.orderForm.getRawValue() });
     } else {
-      // Mark all fields as touched to display validation messages
-      this.orderForm.markAllAsTouched();
-
-      // Push all invalid sections to the expandedSections set -> these sections will expand
-      this.config.forEach(section => {
-        if (this.isSectionInvalid(section)) {
-          this.expandedSections.add(section.sectionTitle);
-        }
-      });
+      this.handleInvalidForm();
     }
+  }
+
+  /**
+   * Submits the form data if valid.
+   * Uses getRawValue() to ensure disabled fields (like ID or pre-set Supplier) are included.
+   */
+  /*onSubmit() {
+    if (this.orderForm.valid) {
+      // WICHTIG: getRawValue() statt value nutzen!
+      const formData = this.orderForm.getRawValue();
+
+      console.log('Modal sendet SAVE mit Daten:', formData); // Debugging
+
+      this.activeModal.close({
+        action: 'SAVE',
+        data: formData,
+      });
+    } else {
+      this.handleInvalidForm();
+    }
+  }*/
+
+  /**
+   * Handles invalid form submission by marking all fields as touched
+   * and expanding sections with errors.
+   */
+  private handleInvalidForm() {
+    this.orderForm.markAllAsTouched();
+    this.config.forEach(section => {
+      if (this.isSectionInvalid(section)) {
+        this.expandedSections.add(section.sectionTitle);
+      }
+    });
   }
 
   /**

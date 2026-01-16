@@ -12,7 +12,7 @@ info:
 
     IDs in paths refer to the openBIS **PermID** (stable technical identifier).
     Codes in payloads refer to the openBIS **Code** (human readable business identifier).
-  version: 1.3.0
+  version: 1.4.0
 servers:
   - url: http://localhost:8080/api/v1
     description: Local Development Server
@@ -120,13 +120,13 @@ paths:
             type: string
       responses:
         '200':
-          description: 'List of orders [returns an array of OrderSummaryDTO]'
+          description: 'List of orders [returns an array of OrderDetailDTO]'
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/OrderSummaryDTO'
+                  $ref: '#/components/schemas/OrderDetailDTO'
     post:
       summary: Record new order
       description: Creates a new order (Type BESTELLUNG) and assigns it to a supplier. The code is generated automatically.
@@ -302,47 +302,47 @@ components:
           type: string
           description: Mapped to $NAME
           examples:
-            - 'Acme Corp'
+            - "Acme Corp"
         customerNumber:
           type: string
           description: Mapped to KUNDENNUMMER
           examples:
-            - 'KD-1234'
+            - "KD-1234"
         addition:
           type: string
           description: Mapped to LIEFERANTEN_ZUSATZ
           examples:
-            - 'Building B'
+            - "Building B"
         street:
           type: string
           description: Mapped to LIEFERANTEN_STRASSE
           examples:
-            - 'Industrial Ave 5'
+            - "Industrial Ave 5"
         poBox:
           type: string
           description: Mapped to LIEFERANTEN_POSTFACH
         country:
           type: string
           description: Mapped to LIEFERANTEN_LAND (Vocabulary LIEFERANTEN_LAND)
-          enum: [CH, D, F, FL, NL]
+          enum: [ CH, D, F, FL, NL ]
           examples:
-            - 'CH'
+            - "CH"
         zipCode:
           type: string
           description: Mapped to LIEFERANTEN_POSTLEITZAHL
           examples:
-            - '8005'
+            - "8005"
         city:
           type: string
           description: Mapped to LIEFERANTEN_ORT
           examples:
-            - 'Zurich'
+            - "Zurich"
         website:
           type: string
           description: Mapped to LIEFERANTEN_WEBLINK
           pattern: '^(http|https|ftp)://\S+$'
           examples:
-            - 'https://acme.com'
+            - "https://acme.com"
         email:
           type: string
           description: Mapped to LIEFERANTEN_EMAIL
@@ -397,7 +397,7 @@ components:
               type: array
               description: List of all orders belonging to this supplier
               items:
-                $ref: '#/components/schemas/OrderSummaryDTO'
+                $ref: '#/components/schemas/OrderDetailDTO'
 
     # --- ORDER DTOS ---
     OrderBaseDTO:
@@ -415,13 +415,13 @@ components:
           type: string
           description: Mapped to NAME (Short description)
           examples:
-            - 'Lab material Q1'
+            - "Lab material Q1"
         mainCategory:
           type: string
           description: Mapped to BESTELLUNG_HK (Vocabulary BESTELLUNGHK)
-          enum: [Beschaffung, Dienstleistung]
+          enum: [ Beschaffung, Dienstleistung ]
           examples:
-            - 'Beschaffung'
+            - "Beschaffung"
         subCategory:
           type: string
           description: Mapped to BESTELLUNG_UK (Vocabulary BESTELLUNGFK)
@@ -436,22 +436,22 @@ components:
             - PC Software
             - Prüfmaschine
           examples:
-            - 'Messmittel'
+            - "Messmittel"
         details:
           type: string
           description: Mapped to BEZEICHNUNG
           examples:
-            - '50x Precision scales'
+            - "50x Precision scales"
         frequency:
           type: string
           description: Mapped to RYTHMUS [sic!]
           examples:
-            - 'One-time'
+            - "One-time"
         contactPerson:
           type: string
           description: Mapped to ANSPRECHPERSON
           examples:
-            - 'John Doe'
+            - "John Doe"
         contactEmail:
           type: string
           description: Mapped to ANSPRECHPERSON_EMAIL
@@ -465,7 +465,7 @@ components:
           type: string
           description: Mapped to BESTELLART
           examples:
-            - 'Email'
+            - "Email"
         orderedBy:
           type: string
           description: Mapped to BESTELLER (Name of initiator)
@@ -474,7 +474,7 @@ components:
           format: date
           description: Mapped to BESTELLDATUM (YYYY-MM-DD)
           examples:
-            - '2023-12-15'
+            - "2023-12-15"
         deliveryDate:
           type: string
           format: date
@@ -495,14 +495,14 @@ components:
               type: string
               description: Reference to supplier (PermID) - mandatory for assignment
               examples:
-                - '2023050512345'
+                - "2023050512345"
 
     OrderUpdateDTO:
       title: OrderUpdateDTO
       $ref: '#/components/schemas/OrderBaseDTO'
 
-    OrderSummaryDTO:
-      title: OrderSummaryDTO
+    OrderDetailDTO:
+      title: OrderDetailDTO
       allOf:
         - $ref: '#/components/schemas/OrderBaseDTO'
         - type: object
@@ -518,15 +518,8 @@ components:
               description: OpenBIS Code
             ratingStatus:
               type: string
-              enum: [RATED, PENDING]
+              enum: [ RATED, PENDING ]
               description: Helps the frontend to show if already rated.
-
-    OrderDetailDTO:
-      title: OrderDetailDTO
-      allOf:
-        - $ref: '#/components/schemas/OrderSummaryDTO'
-        - type: object
-          properties:
             supplierId:
               type: string
               description: PermID of the parent supplier
@@ -534,7 +527,7 @@ components:
               type: string
               description: Name of the parent supplier (for display)
             ratingId:
-              type: ['string', 'null']
+              type: [ "string", "null" ]
               description: PermID of the linked rating (if exists), otherwise null.
 
     # --- RATING DTOS ---

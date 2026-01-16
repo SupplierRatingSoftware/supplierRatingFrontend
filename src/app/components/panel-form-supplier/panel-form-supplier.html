@@ -14,56 +14,75 @@
     <div class="detail-panel">
       @if (supplier(); as s) {
       <div class="p-4">
+
         @for (section of config; track section.sectionTitle) {
-        <div class="mb-5">
-          <h5 class="section-header text-body-primary fw-medium border-bottom pb-2 mb-3">{{ section.sectionTitle }}</h5>
+          <div class="mb-5">
+            <h5 class="section-header text-body-primary fw-medium border-bottom pb-2 mb-3">
+              {{ section.sectionTitle }}
+            </h5>
 
-          @if (section.sectionTitle === 'Bewertungs-Übersicht' && !hasRatings(s)) {
-          <div class="alert alert-secondary mt-3">Noch keine Bewertungen vorhanden.</div>
-          } @else {
-          <div class="row g-3">
-            @for (field of section.fields; track field.key) {
+            @if (section.sectionTitle === 'Bewertungs-Übersicht' && !hasRatings(s)) {
+              <div class="alert alert-secondary mt-3">
+                Noch keine Bewertungen vorhanden.
+              </div>
+            }
+            @else {
+              <div class="row g-3">
+                @for (field of section.fields; track field.key) {
 
-            <div [class]="field.gridClass || 'col-12'">
-              @if (field.type === 'rating') {
-              <div class="d-flex flex-column">
-                <small class="text-body-secondary fw-medium mb-1">{{ field.label }}</small>
-                <div class="d-flex align-items-center gap-2">
-                  <ngb-rating
-                    [rate]="getStatNumber(s, field.key)"
-                    [max]="5"
-                    [readonly]="true"
-                    class="text-warning fs-5">
-                  </ngb-rating>
-                  <span class="fw-bold text-body-tertiary"> {{ getStatDisplayValue(s, field.key) }}/5 </span>
-                </div>
+                  <div [class]="field.gridClass || 'col-12'">
+
+                    @if (field.type === 'rating') {
+                      <div class="d-flex flex-column">
+                        <small class="text-body-secondary fw-medium mb-1">{{ field.label }}</small>
+                        <div class="d-flex align-items-center gap-2">
+                          <ngb-rating
+                            [rate]="getStatNumber(s, field.key)"
+                            [max]="5"
+                            [readonly]="true"
+                            class="text-warning fs-5">
+                          </ngb-rating>
+                          <span class="fw-bold text-body-tertiary">
+                              {{ getStatDisplayValue(s, field.key) }}/5
+                            </span>
+                        </div>
+                      </div>
+                    }
+
+                    @else if (field.type === 'stat-total') {
+                      <div class="alert alert-info d-flex justify-content-between align-items-center mt-2">
+                        <span class="fw-bold">{{ field.label }}</span>
+                        <span class="fs-2 fw-bold d-block lh-1">
+                            {{ getStatDisplayValue(s, field.key) }}
+                          </span>
+                      </div>
+                    }
+
+                    @else if (field.type === 'number' && field.key === 'totalRatingCount') {
+                      <span class="info-label text-body-secondary fw-medium">
+                          <i>{{ field.label }}: </i>
+                        </span>
+                      <span class="info-value text-body-tertiary fw-light">
+                          {{ s.stats.totalRatingCount || 0 }}
+                        </span>
+                    }
+
+                    @else {
+                      <span class="info-label text-body-secondary fw-medium">
+                          <i>{{ field.label }}: </i>
+                        </span>
+                      <span class="info-value text-body-tertiary fw-light text-wrap">
+                          {{ getSupplierValue(s, field.key) || '-' }}
+                        </span>
+                    }
+
+                  </div>
+                }
               </div>
-              } @else if (field.type === 'stat-total') {
-              <div class="alert alert-info d-flex justify-content-between align-items-center mt-2">
-                <span class="fw-bold">{{ field.label }}</span>
-                <span class="fs-2 fw-bold d-block lh-1"> {{ getStatDisplayValue(s, field.key) }} </span>
-              </div>
-              } @else if (field.type === 'number' && field.key === 'totalRatingCount') {
-              <span class="info-label text-body-secondary fw-medium">
-                <i>{{ field.label }}: </i>
-              </span>
-              <span class="info-value text-body-tertiary fw-light">
-                <!--                          {{ s.stats?.totalRatingCount || 0 }}-->
-              </span>
-              } @else {
-              <span class="info-label text-body-secondary fw-medium">
-                <i>{{ field.label }}: </i>
-              </span>
-              <span class="info-value text-body-tertiary fw-light text-wrap">
-                {{ getSupplierValue(s, field.key) || '-' }}
-              </span>
-              }
-            </div>
             }
           </div>
-          }
-        </div>
         }
+
       </div>
 
       } @else {

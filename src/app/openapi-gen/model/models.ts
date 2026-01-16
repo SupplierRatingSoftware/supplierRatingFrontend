@@ -1,7 +1,6 @@
 export * from './orderBaseDTO';
 export * from './orderCreateDTO';
 export * from './orderDetailDTO';
-export * from './orderSummaryDTO';
 export * from './orderUpdateDTO';
 export * from './ratingBaseDTO';
 export * from './ratingCreateDTO';

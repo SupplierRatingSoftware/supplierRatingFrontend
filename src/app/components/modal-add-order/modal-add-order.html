@@ -1,0 +1,70 @@
+<div class="modal-header">
+  <h4 class="modal-title">{{ order() ? 'Bestellung bearbeiten' : 'Neue Bestellung erfassen' }}</h4>
+  <button type="button" class="btn cancel-btns ms-auto me-2 p-1" aria-label="Close" (click)="cancel()">
+    <i-lucide [img]="X" aria-hidden="true"></i-lucide>
+  </button>
+</div>
+<div class="modal-body">
+  <form [formGroup]="orderForm" (ngSubmit)="onSubmit()" id="orderForm" class="container-fluid">
+    <div ngbAccordion [closeOthers]="false">
+      @for (section of config; track section.sectionTitle) {
+        <div
+          ngbAccordionItem
+          [collapsed]="!expandedSections.has(section.sectionTitle)"
+          (shown)="expandedSections.add(section.sectionTitle)"
+          (hidden)="expandedSections.delete(section.sectionTitle)">
+          <h2 ngbAccordionHeader>
+            <button ngbAccordionButton type="button">
+              {{ section.sectionTitle }} @if (isSectionInvalid(section)) {
+              <span class="ms-2 badge bg-danger text-white">!</span>
+            }
+            </button>
+          </h2>
+
+          <div ngbAccordionCollapse>
+            <div ngbAccordionBody>
+              <ng-template>
+                <div class="row">
+                  @for (field of section.fields; track field.key) {
+                    <div [class]="field.gridClass || 'col-12'" class="mb-3">
+                      <label [for]="'modal-' + field.key" class="form-label">
+                        {{ field.label }} {{ field.required ? '*' : '' }}
+                      </label>
+
+                      @switch (field.type) { @case ('select') {
+                        <select [id]="'modal-' + field.key" class="form-select" [formControlName]="field.key">
+                          @for (opt of field.options; track opt.value) {
+                            <option [value]="opt.value">{{ opt.label }}</option>
+                          }
+                        </select>
+                      } @case ('textarea') {
+                        <textarea
+                          [id]="'modal-' + field.key"
+                          class="form-control"
+                          [formControlName]="field.key"
+                          rows="3"></textarea>
+                      } @default {
+                        <input
+                          [type]="field.type"
+                          [id]="'modal-' + field.key"
+                          class="form-control"
+                          [formControlName]="field.key"
+                          [placeholder]="field.placeholder || ''" />
+                      } } @if (orderForm.get(field.key)?.invalid && orderForm.get(field.key)?.touched) {
+                      <div class="text-danger small mt-1">{{ field.label }} ist erforderlich oder ungültig.</div>
+                    }
+                    </div>
+                  }
+                </div>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="cancel()">Abbrechen</button>
+  <button type="button" class="btn btn-primary" (click)="onSubmit()">Bestellung erstellen</button>
+</div>

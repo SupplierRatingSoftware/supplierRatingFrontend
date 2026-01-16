@@ -86,7 +86,11 @@ export class ModalRatingComponent implements OnInit {
   ngOnInit() {
     // 1. Zuerst die konditionale Sperrung (basierend auf Kontaktperson) anwenden
     this.applyConditionalValidators();
-    // 2. Bestehende Bewertungen laden (falls vorhanden)
+
+    // 2. Automatisches Berechnen starten (NEU HINZUGEFÜGT)
+    this.setupAutoCalculation();
+
+    // 3. Bestehende Bewertungen laden (falls vorhanden)
     const currentRating = this.order(); //?.orderRating;
     if (currentRating) {
       this.ratingForm.patchValue(currentRating);
@@ -95,6 +99,46 @@ export class ModalRatingComponent implements OnInit {
     // NEU: Wenn der Status bereits 'RATED' ist, das Formular sperren
     if (this.order()?.ratingStatus === 'RATED') {
       this.ratingForm.disable(); // Deaktiviert alle Controls (Sterne, Textareas)
+    }
+  }
+
+  /**
+   * NEU: Abonniert Änderungen an den Rating-Feldern und berechnet den Durchschnitt neu.
+   */
+  private setupAutoCalculation() {
+    // Wir hören auf JEDE Änderung im Formular
+    this.ratingForm.valueChanges.subscribe(() => {
+      this.calculateTotalScore();
+    });
+  }
+
+  /**
+   * NEU: Berechnet den Durchschnittswert der aktiven Bewertungsfelder
+   */
+  private calculateTotalScore() {
+    // Liste der Felder, die in den Durchschnitt einfließen
+    // (Diese Keys müssen mit deiner Rating-Config übereinstimmen)
+    const ratingKeys = ['quality', 'cost', 'reliability', 'availability'];
+
+    let sum = 0;
+    let count = 0;
+
+    ratingKeys.forEach(key => {
+      const control = this.ratingForm.get(key);
+      // Nur wenn Feld existiert, aktiviert (enabled) ist und einen Wert hat, zählt es
+      if (control && control.enabled && Number(control.value) > 0) {
+        sum += Number(control.value);
+        count++;
+      }
+    });
+
+    const average = count > 0 ? sum / count : 0;
+
+    // Setze den Wert in das 'totalScore' Feld (ohne einen neuen Event-Loop auszulösen)
+    const totalControl = this.ratingForm.get('totalScore');
+    if (totalControl) {
+      // Wir speichern den exakten Wert, die Pipe im HTML kümmert sich um die Anzeige
+      totalControl.setValue(average, { emitEvent: false });
     }
   }
 
@@ -146,7 +190,6 @@ export class ModalRatingComponent implements OnInit {
   /**
    * Handles form submission and closes the modal with the form data if valid.
    */
-  //todo: totalScore berechnen
   onSubmit() {
     if (this.ratingForm.valid) {
       this.activeModal.close(this.ratingForm.value);

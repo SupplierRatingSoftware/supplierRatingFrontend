@@ -12,9 +12,11 @@ import {
 } from '@ng-bootstrap/ng-bootstrap';
 import { ToastComponent } from '../../components/toast/toast.component';
 import { ListItem } from '../../components/list-item/list-item';
-import { ModalFormOrderComponent } from '../../components/modal-form-order/modal-form-order';
+import { ModalEditOrderComponent, OrderEditResult } from '../../components/modal-edit-order/modal-edit-order';
 import { PanelFormOrderComponent } from '../../components/panel-form-order/panel-form-order';
-import { DefaultService, OrderCreateDTO, OrderSummaryDTO, OrderUpdateDTO } from '../../openapi-gen';
+import { DefaultService, OrderCreateDTO, OrderDetailDTO, OrderUpdateDTO, RatingCreateDTO } from '../../openapi-gen';
+import { ModalRatingComponent } from '../../components/modal-rating/modal-rating';
+import { ModalAddOrderComponent, OrderAddResult } from '../../components/modal-add-order/modal-add-order';
 
 @Component({
   selector: 'app-orders',
@@ -81,7 +83,7 @@ export class OrdersComponent implements OnInit {
   /**
    * State: List of all orders
    */
-  readonly orders = signal<OrderSummaryDTO[]>([]);
+  readonly orders = signal<OrderDetailDTO[]>([]);
 
   /**
    * State: Selected order ID
@@ -117,6 +119,7 @@ export class OrdersComponent implements OnInit {
       .subscribe({
         next: data => {
           this.orders.set(data);
+          console.log('Bestellungen geladen:', data);
         },
         error: () => {
           this.errorMessage.set(
@@ -140,42 +143,17 @@ export class OrdersComponent implements OnInit {
    * 2. Lädt Details (inkl. supplierName, ratingId).
    * 3. Lädt Rating (falls vorhanden).
    */
-  openDetailPanel(summaryOrder: OrderSummaryDTO) {
+  openDetailPanel(detailedOrder: OrderDetailDTO) {
     this.errorMessage.set(null);
+    // 1. Offcanvas öffnen
+    const panelInstance = this.offCanvasService.open(PanelFormOrderComponent, this.offCanvasOptions);
+    // Daten an das Panel übergeben (Signal setzen)
+    panelInstance.componentInstance.order.set(detailedOrder);
 
-    // Set selected order ID (for changing active state of list-item)
-    this.selectedOrderId.set(summaryOrder.id);
-
-    // 1. Offcanvas öffnen und Referenz speichern
-    this.activePanelRef = this.offCanvasService.open(PanelFormOrderComponent, this.offCanvasOptions);
-
-    // Ab hier nutzen wir this.activePanelRef statt der lokalen const offcanvasRef
-    const panelInstance = this.activePanelRef.componentInstance as PanelFormOrderComponent;
-
-    // Setze vorläufige Daten (Name fehlt hier evtl. wenn aus Liste geladen)
-    panelInstance.order.set(summaryOrder);
-
-    // Optional: Titel oder Loading State setzen, falls gewünscht.
-    // Das Panel zeigt "Keine Daten geladen" an, bis wir das Signal setzen.
-
-    // 2. Volle Order-Daten laden (GET /orders/{id})
-    this.orderService
-      .getOrderById(summaryOrder.id)
-      .pipe(takeUntilDestroyed(this.destroyRef)) // Wichtig: Stoppt Request wenn Component zerstört wird
-      .subscribe({
-        next: detailedOrder => {
-          // Daten an das Panel übergeben (Signal setzen)
-          panelInstance.order.set(detailedOrder);
-
-          // 3. Prüfen, ob eine Rating ID existiert, und falls ja: Rating laden
-          if (detailedOrder.ratingId) {
-            this.loadRatingForPanel(detailedOrder.ratingId, panelInstance);
-          }
-        },
-        error: () => {
-          this.errorMessage.set('Fehler beim Laden der Details.');
-        },
-      });
+    // 3. Prüfen, ob eine Rating ID existiert, und falls ja: Rating laden
+    if (detailedOrder.ratingId) {
+      this.loadRatingForPanel(detailedOrder.ratingId, panelInstance.componentInstance);
+    }
   }
 
   /**
@@ -200,66 +178,69 @@ export class OrdersComponent implements OnInit {
   /**
    * Opens Modal for adding or editing an order
    */
-  openOrderModal() {
-    this.handleOrderModal();
-  }
-
-  /**
-   * Opens the modal in edit mode for an existing order
-   * @param order The order to edit
-   */
-  openEditOrderModal(order: OrderSummaryDTO) {
-    this.handleOrderModal(order);
-  }
-
-  /**
-   * Internal helper to manage the order modal lifecycle for both create and update actions.
-   * @param order Optional order for edit mode
-   * @private
-   */
-  private handleOrderModal(order?: OrderSummaryDTO) {
-    const modalRef = this.modalService.open(ModalFormOrderComponent, this.modalOptions);
-
-    if (order) {
-      modalRef.componentInstance.order.set(order);
-    }
-
+  openAddOrderModal() {
+    const modalRef = this.modalService.open(ModalAddOrderComponent, this.modalOptions);
     modalRef.result.then(
-      (result: OrderCreateDTO) => {
-        if (!result) return;
-
-        if (order?.id) {
-          this.updateExistingOrder(order.id, result);
-        } else {
-          this.createAndAddOrder(result);
-        }
+      (result: OrderAddResult) => {
+        this.createAndAddOrder(result.data);
       },
-      reason => {
-        if (reason !== 0 && reason !== 1 && reason !== undefined) {
-          console.log(reason);
-          this.errorMessage.set(`Fehler beim Bearbeiten des Eintrages: ${reason}`);
-        }
+      () => {
+        /* dismissed */
       }
     );
   }
 
   /**
    * Creates a new order and adds it to the list view
-   * @param formData
+   * @param orderCreate
    * @private
    */
-  private createAndAddOrder(formData: OrderCreateDTO) {
+  private createAndAddOrder(orderCreate: Partial<OrderDetailDTO>) {
+    const newOrder: OrderCreateDTO = {
+      ...orderCreate,
+    } as OrderCreateDTO;
+    console.log('Sende Create-Order:', newOrder);
+
     this.orderService
-      .createOrder(formData)
+      .createOrder(newOrder)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: addedOrder => {
-          this.orders.update(current => [...current, addedOrder]);
-          // TODO: Optional: Toast anzeigen
-          //this.toastService.show('Bestellung erfolgreich angelegt');
+        next: () => {
+          this.loadOrders();
         },
-        error: () => this.errorMessage.set(`Fehler beim Speichern: ${formData.name}`),
+        error: err => {
+          console.error('Fehler beim Erstellen:', err); // Zeigt dir den genauen Fehler im Browser
+          this.errorMessage.set('Fehler beim Erstellen der Bestellung. Bitte prüfen Sie die Eingaben.');
+        },
       });
+  }
+
+  /**
+   * Opens the modal in edit mode for an existing order
+   * @param detailedOrder The order to edit
+   */
+  openEditOrderModal(detailedOrder: OrderDetailDTO) {
+    const modalRef = this.modalService.open(ModalEditOrderComponent, this.modalOptions);
+
+    // Das detailedOrder an das Modal übergeben
+    console.log('Öffne Edit Modal für Bestellung:', detailedOrder);
+    modalRef.componentInstance.order.set(detailedOrder);
+
+    // 5. Ergebnis verarbeiten (wie bisher)
+    modalRef.result.then(
+      (result: OrderEditResult) => {
+        const updateData = result.data;
+
+        if (result.action === 'SAVE') {
+          this.updateExistingOrder(detailedOrder.id, updateData);
+        } else if (result.action === 'RATE') {
+          this.openRatingModal(detailedOrder.id, updateData);
+        }
+      },
+      () => {
+        /* Modal abgebrochen */
+      }
+    );
   }
 
   /**
@@ -268,18 +249,64 @@ export class OrdersComponent implements OnInit {
    * @param formData The updated data from the form
    * @private
    */
-  private updateExistingOrder(id: string, formData: OrderUpdateDTO) {
-    const existing = this.orders().find(s => s.id === id);
-    const updatedPayload = { ...existing, ...formData, id };
+  private updateExistingOrder(id: string, formData: Partial<OrderDetailDTO>) {
+    const existingOrder = this.orders().find(o => o.id === id);
 
+    const updatedOrder: OrderUpdateDTO = {
+      ...existingOrder,
+      ...formData,
+    } as OrderUpdateDTO;
     this.orderService
-      .updateOrder(id, updatedPayload)
+      .updateOrder(id, updatedOrder)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: updated => {
-          this.orders.update(list => list.map(s => (s.id === id ? updated : s)));
+        next: () => {
+          // load whole list new to see the edited order
+          this.loadOrders();
         },
         error: () => this.errorMessage.set('Fehler beim Aktualisieren.'),
+      });
+  }
+
+  /**
+   * 3. Das Rating Modal (Verkettung)
+   * Wird aufgerufen, wenn User "Speichern & Bewerten" klickte.
+   */
+  private openRatingModal(id: string, orderData: Partial<OrderDetailDTO>) {
+    const modalRef = this.modalService.open(ModalRatingComponent, this.modalOptions);
+
+    // Wir übergeben die Order-Daten an das Rating-Modal
+    modalRef.componentInstance.order.set(orderData);
+
+    modalRef.result.then(
+      (ratingResult: RatingCreateDTO) => {
+        if (!ratingResult) return;
+        this.createRatingForOrder(id, ratingResult);
+      },
+      () => {
+        /* dismissed */
+      }
+    );
+  }
+
+  /**
+   * Erstellt das Rating
+   */
+  private createRatingForOrder(orderId: string, ratingData: RatingCreateDTO) {
+    // Wir setzen die orderId explizit, falls sie im Formular fehlte
+    const payload: RatingCreateDTO = { ...ratingData, orderId };
+
+    // Achtung: Wenn DefaultService kein 'createRating' hat, prüfen ob es einen RatingService gibt.
+    // Falls DefaultService alle Methoden generiert hat, ist das hier korrekt:
+    this.orderService
+      .createRating(payload)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          // Liste neu laden, damit der Status "RATED" sichtbar wird
+          this.loadOrders();
+        },
+        error: () => this.errorMessage.set('Bestellung gespeichert, aber Bewertung fehlgeschlagen.'),
       });
   }
 

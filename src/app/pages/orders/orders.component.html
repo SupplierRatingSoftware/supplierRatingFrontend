@@ -6,11 +6,10 @@
       <app-list-item
         [label]="item.name"
         [icon]="UserIcon"
-        [isActive]="item.id === selectedOrderId()"
-        (click)="openDetailPanel(item)"
+        (itemSelected)="openDetailPanel(item)"
         (editSelected)="openEditOrderModal(item)">
       </app-list-item>
     }
   </ul>
 </div>
-<app-add-btn (action)="openOrderModal()"></app-add-btn>
+<app-add-btn (action)="openAddOrderModal()"></app-add-btn>
