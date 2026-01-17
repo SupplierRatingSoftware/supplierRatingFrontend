@@ -1,6 +1,8 @@
 .sidebar {
   width: 200px;
-  transition: width 0.4s ease;
+  transition:
+    width 0.4s ease,
+    transform 0.3s ease;
   background-color: var(--bs-tertiary-bg);
 
   &.collapsed {
@@ -17,7 +19,6 @@
   }
 
   .sidebar-text {
-    //transition: opacity 0.2s ease-in-out 0.2s;
     color: var(--bs-body-color);
   }
 
@@ -41,18 +42,23 @@ aside i-lucide {
   color: var(--bs-emphasis-color);
 }
 
-@media (max-width: 768px) {
+/* Mobile styles - hide sidebar by default, show on toggle */
+@media (max-width: 767.98px) {
   .sidebar {
-    width: 80px;
+    position: fixed;
+    top: 56px; /* Height of navbar */
+    left: 0;
+    width: 200px;
+    transform: translateX(-100%);
+    z-index: 1050;
 
-    .sidebar-text {
-      display: none;
+    &.mobile-open {
+      transform: translateX(0);
     }
 
-    #sidebar-toggle {
-      right: auto;
-      left: 50%;
-      transform: translateX(-50%);
+    /* Always show text on mobile when open */
+    .sidebar-text {
+      display: block;
     }
   }
 }

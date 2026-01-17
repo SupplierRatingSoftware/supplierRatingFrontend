@@ -1,5 +1,12 @@
 <nav class="navbar navbar-expand-lg flex-shrink-0 bg-body-secondary">
   <section class="container-fluid">
+    <button (click)="toggleMobileMenu()" class="btn d-md-none me-2" type="button" aria-label="Toggle menu">
+      @if (isMobileMenuOpen()) {
+        <i-lucide [img]="XIcon" [strokeWidth]="1.5"></i-lucide>
+      } @else {
+        <i-lucide [img]="MenuIcon" [strokeWidth]="1.5"></i-lucide>
+      }
+    </button>
     <a class="navbar-brand" href="#">
       <!-- TODO: suppress CheckImageSize -->
       <img alt="Brand" class="d-inline-block align-text-top" height="24" src="brand-logo/empa-brand-logo2.png" />

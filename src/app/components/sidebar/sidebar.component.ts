@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutes } from '../../app.routes.config';
 import { ChevronLeft, ChevronRight, LayoutDashboard, LucideAngularModule, NotepadText, User } from 'lucide-angular';
+import { SidebarService } from '../../services/sidebar.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -12,6 +13,8 @@ import { ChevronLeft, ChevronRight, LayoutDashboard, LucideAngularModule, Notepa
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidebarComponent {
+  private sidebarService = inject(SidebarService);
+
   /**
    * Lucide Icons
    * @protected
@@ -23,9 +26,14 @@ export class SidebarComponent {
   protected readonly ChevronLeft = ChevronLeft;
 
   /**
-   * Signal for the collapsed status
+   * Signal for the collapsed status on desktop
    */
   isCollapsed = signal(false);
+
+  /**
+   * Mobile menu open state from service
+   */
+  isMobileMenuOpen = this.sidebarService.isMobileMenuOpen;
 
   /**
    * Global base-routing
@@ -33,8 +41,27 @@ export class SidebarComponent {
    */
   protected readonly baseRoute = AppRoutes.BASE;
 
+  constructor() {
+    // Auto-expand sidebar on larger screens
+    if (typeof window !== 'undefined') {
+      const mediaQuery = window.matchMedia('(min-width: 768px)');
+
+      // Set initial state
+      if (mediaQuery.matches) {
+        this.isCollapsed.set(false);
+      }
+
+      // Listen for screen size changes
+      mediaQuery.addEventListener('change', e => {
+        if (e.matches) {
+          this.isCollapsed.set(false);
+        }
+      });
+    }
+  }
+
   /**
-   * Toggle the sidebar collapsed state
+   * Toggle the sidebar collapsed state (desktop only)
    */
   toggleSidebar() {
     this.isCollapsed.update(value => !value);
