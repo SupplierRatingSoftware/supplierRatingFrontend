@@ -15,17 +15,15 @@
       @if (order(); as s) {
       <div class="p-4">
         @for (section of orderConfig; track section.sectionTitle) {
-        <div class="mb-4">
-          <h5 class="section-header text-body-primary fw-medium">{{ section.sectionTitle }}</h5>
+        <div class="mb-5">
+          <h5 class="section-header text-body-primary fw-medium border-bottom pb-2 mb-3">{{ section.sectionTitle }}</h5>
           <div class="row">
             @for (field of section.fields; track field.key) {
             <div [class]="field.gridClass || 'col-12'" class="mb-3">
               <span class="info-label text-body-secondary fw-medium">
                 <i>{{ field.label }}: </i>
               </span>
-              <span class="info-value text-body-tertiary fw-light text-nowrap">
-                {{ getOrderValue(s, field) || '-' }}
-              </span>
+              <p class="info-value text-body-tertiary fw-light text-wrap">{{ getOrderValue(s, field) || '-' }}</p>
             </div>
             }
           </div>
@@ -40,8 +38,8 @@
             @for (field of section.fields; track field.key) {
             <div [class]="field.gridClass || 'col-12'">
               @if (field.type === 'rating') {
-              <div class="d-flex align-items-center justify-content-between">
-                <span>{{ field.label }}</span>
+              <div class="d-flex align-items-center justify-content-between gap-2">
+                <p class="mb-0 text-warning-emphasis">{{ field.label }}</p>
                 <div class="d-flex align-items-center gap-2">
                   <ngb-rating
                     [rate]="getRatingNumber(r, field.key) || 0"
@@ -53,13 +51,15 @@
                 </div>
               </div>
               } @else if (field.type === 'stat-total') {
-              <div class="alert alert-info d-flex justify-content-between align-items-center mt-3">
+              <div class="alert alert-info d-flex justify-content-between align-items-center mt-2">
                 <span class="fw-bold">{{ field.label }}</span>
-                <span class="fs-2 fw-bold">{{ r.totalScore | number:'1.1-1' }}</span>
+                <span class="fs-2 fw-bold d-block lh-1">{{ r.totalScore | number:'1.1-1' }}</span>
               </div>
               } @else {
-              <small class="text-muted d-block mt-2">{{ field.label }}</small>
-              <p class="mb-0">{{ getRatingValue(r, field.key) || '-' }}</p>
+              <span class="info-label text-body-secondary fw-medium mt-2">
+                <i>{{ field.label }}: </i>
+              </span>
+              <p class="info-value text-body-tertiary fw-light text-wrap">{{ getRatingValue(r, field.key) || '-' }}</p>
               }
             </div>
             }
