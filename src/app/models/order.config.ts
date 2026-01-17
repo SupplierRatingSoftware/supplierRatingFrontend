@@ -38,14 +38,14 @@ export const ORDER_FORM_CONFIG: FormSection[] = [
   {
     sectionTitle: 'Allgemeine Informationen',
     fields: [
-      { key: 'name', label: 'Kurzbezeichnung', required: true, type: 'text', gridClass: 'col-3' },
-      { key: 'details', label: 'Details', required: false, type: 'textarea', gridClass: 'col-9' },
+      { key: 'name', label: 'Kurzbezeichnung', required: true, type: 'text', gridClass: 'col-5' },
+      { key: 'details', label: 'Details', required: false, type: 'textarea', gridClass: 'col-7' },
       {
         key: 'mainCategory',
         label: 'Hauptkategorie',
         required: true,
         type: 'select',
-        gridClass: 'col-md-4',
+        gridClass: 'col-md-6',
         options: [
           { value: 'Beschaffung', label: 'Beschaffung' },
           { value: 'Dienstleistung', label: 'Dienstleistung' },
@@ -56,7 +56,7 @@ export const ORDER_FORM_CONFIG: FormSection[] = [
         label: 'Unterkategorie',
         required: true,
         type: 'select',
-        gridClass: 'col-md-4',
+        gridClass: 'col-md-6',
         options: [
           { value: 'Beratung', label: 'Beratung' },
           { value: 'Dienstleistung', label: 'Dienstleistung' },
@@ -69,7 +69,7 @@ export const ORDER_FORM_CONFIG: FormSection[] = [
           { value: 'Prüfmaschine', label: 'Prüfmaschine' },
         ],
       },
-      { key: 'frequency', label: 'Rhythmus der Bestellung', required: false, type: 'text', gridClass: 'col-4' },
+      { key: 'frequency', label: 'Rhythmus der Bestellung', required: false, type: 'text', gridClass: 'col-6' },
       { key: 'reason', label: 'Grund der Bestellung', required: true, type: 'text', gridClass: 'col-12' },
     ],
   },
