@@ -17,10 +17,11 @@ import { PanelFormOrderComponent } from '../../components/panel-form-order/panel
 import { DefaultService, OrderCreateDTO, OrderDetailDTO, OrderUpdateDTO, RatingCreateDTO } from '../../openapi-gen';
 import { ModalRatingComponent } from '../../components/modal-rating/modal-rating';
 import { ModalAddOrderComponent, OrderAddResult } from '../../components/modal-add-order/modal-add-order';
+import { ListItemHeadersComponent } from '../../components/list-item-headers/list-item-headers.component';
 
 @Component({
   selector: 'app-orders',
-  imports: [ListSearch, AddBtn, ListItem, ToastComponent, LucideAngularModule],
+  imports: [ListSearch, AddBtn, ListItem, ToastComponent, LucideAngularModule, ListItemHeadersComponent],
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
