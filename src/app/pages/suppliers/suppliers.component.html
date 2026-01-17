@@ -10,8 +10,8 @@
       <!-- ATTENTION this totalRatingCount object does not come with the SupplierSummaryDTO!-->
       <app-list-item
         [label]="item.name"
-        [label2]="item.stats?.totalRatingCount?.toString()"
-        [label3]="item.city?.toString()"
+        [label2]="item.stats.totalRatingCount?.toString()"
+        [label3]="item.city.toString()"
         [icon]="UserIcon"
         [isActive]="item.id === selectedSupplierId()"
         (itemSelected)="selectSupplier(item)"
