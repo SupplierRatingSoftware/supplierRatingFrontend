@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core'; // output hinzugefügt
-import { LucideAngularModule, LucideIconData, Pencil } from 'lucide-angular';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { LucideAngularModule, LucideIconData, Pencil, User } from 'lucide-angular';
 
 @Component({
   selector: 'app-list-item',
@@ -38,6 +38,24 @@ export class ListItem {
    */
   readonly itemSelected = output<void>();
   readonly editSelected = output<void>();
+
+  /**
+   * Computed class for secondary label styling based on icon and value
+   */
+  readonly secondaryLabelClass = computed(() => {
+    // if the list-item icon isn't correct, don't color the text
+    if (this.icon() !== User) return '';
+
+    // change text color to red if value is 0
+    const val = this.labelSecondary();
+    if (val === '0') return 'text-danger';
+
+    // change text color to green if value is a positive number
+    const num = Number(val);
+    if (!isNaN(num) && num > 0) return 'text-success';
+
+    return '';
+  });
 
   /**
    * Click on list-item
