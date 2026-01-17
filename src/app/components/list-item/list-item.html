@@ -17,14 +17,14 @@
       <div class="row flex-grow-1 m-0 align-items-center overflow-hidden">
         <div class="col-12 col-md-6 col-lg-4 text-truncate ps-2 text-start">{{ label() }}</div>
         @if (label2() !== undefined){
-        <div class="col-4 col-md-6 col-lg-4 d-none d-md-block text-truncate ps-2" [class]="secondaryLabelClass()">
+        <div class="d-none d-md-block col-12 col-md-6 col-lg-4 text-truncate ps-2" [class]="secondaryLabelClass()">
           {{ label2() }}
         </div>
         } @if (label3() !== undefined){ @if (icon() === User) {
-        <div class="d-none d-md-block col-12 col-md-6 col-lg-4 text-truncate ps-2 text-start">{{ label3() }}</div>
+        <div class="d-none d-lg-block col-12 col-md-6 col-lg-4 text-truncate ps-2 text-start">{{ label3() }}</div>
         } @else {
         <div
-          class="d-none d-md-block col-12 col-md-6 col-lg-4 text-truncate ps-2 text-start"
+          class="d-none d-lg-block col-12 col-md-6 col-lg-4 text-truncate ps-2 text-start"
           [class.text-warning]="label3()?.toUpperCase() !== 'RATED'"
           [class.text-success]="label3()?.toUpperCase() === 'RATED'">
           <i
