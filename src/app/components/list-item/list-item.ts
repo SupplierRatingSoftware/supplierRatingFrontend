@@ -18,10 +18,12 @@ export class ListItem {
   /**
    * Input: Properties for the list item.
    * @description Label is for the displayed text of the list item.
+   * @description Optional: LabelSecondary is for the displayed secondary text of the list item.
    * @description Icon is for the displayed icon of the list item.
    * @readonly
    */
   readonly label = input.required<string>();
+  readonly labelSecondary = input<string>();
   readonly icon = input.required<LucideIconData>();
 
   /**

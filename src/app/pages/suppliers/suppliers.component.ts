@@ -9,10 +9,11 @@ import { ListItem } from '../../components/list-item/list-item';
 import { ModalFormSupplierComponent } from '../../components/modal-form-supplier/modal-form-supplier';
 import { PanelFormSupplierComponent } from '../../components/panel-form-supplier/panel-form-supplier';
 import { DefaultService, SupplierCreateDTO, SupplierSummaryDTO, SupplierUpdateDTO } from '../../openapi-gen';
+import { ListItemHeadersComponent } from '../../components/list-item-headers/list-item-headers.component';
 
 @Component({
   selector: 'app-suppliers',
-  imports: [ListSearch, AddBtn, ToastComponent, LucideAngularModule, ListItem],
+  imports: [ListSearch, AddBtn, ToastComponent, LucideAngularModule, ListItem, ListItemHeadersComponent],
   templateUrl: './suppliers.component.html',
   styleUrl: './suppliers.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
