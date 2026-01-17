@@ -8,7 +8,7 @@ import { AppRoutes } from './app.routes.config';
 
 export const routes: Routes = [
   // 1. Redirect root URL
-  { path: '', redirectTo: `${AppRoutes.BASE}/dashboard`, pathMatch: 'full' },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
 
   // 2. Login Page
   { path: 'login', component: LoginComponent },
