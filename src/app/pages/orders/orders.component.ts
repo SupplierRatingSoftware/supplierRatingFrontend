@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, OnIni
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ListSearch } from '../../components/list-search/list-search';
 import { AddBtn } from '../../components/add-btn/add-btn';
-import { LucideAngularModule, User } from 'lucide-angular';
+import { LucideAngularModule, NotepadText } from 'lucide-angular';
 import {
   NgbModal,
   NgbModalOptions,
@@ -30,7 +30,7 @@ export class OrdersComponent implements OnInit {
    * Lucide Icon
    * @protected
    */
-  protected readonly UserIcon = User;
+  protected readonly NotepadText = NotepadText;
 
   // Hier speichern wir den Zugriff auf das Panel
   private activePanelRef?: NgbOffcanvasRef;
