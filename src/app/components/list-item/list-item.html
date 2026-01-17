@@ -1,11 +1,12 @@
 <li>
   <div
-    class="list-card d-flex align-items-center mt-2 mb-2 p-2 rounded-4 shadow border"
+    class="btn btn-outline-secondary list-card d-flex align-items-center mt-2 mb-2 p-2 rounded-4 shadow border"
     [class.bg-body-tertiary]="!isActive()"
     [class.active]="isActive()">
     <button
       type="button"
-      class="d-flex align-items-center flex-grow-1 border-0 p-0 text-start text-body"
+      class="btn d-flex align-items-center flex-grow-1 border-0 p-0 text-start text-body"
+      aria-label="Item öffnen"
       (click)="showContent()">
       <i-lucide
         [img]="icon()"

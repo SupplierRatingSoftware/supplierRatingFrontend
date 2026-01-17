@@ -1,25 +1,48 @@
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/mixins';
+
 .list-card {
   transition:
     transform 0.2s ease-in-out,
     box-shadow 0.2s ease-in-out;
   cursor: pointer;
   &:hover {
+    // highlight effect on hover
     transform: translateY(-1px);
     box-shadow: var(--bs-box-shadow-lg) !important;
   }
 }
 
-#editBtn:hover {
-  background-color: var(--bs-secondary-bg);
+.btn:hover {
+  background-color: var(--bs-secondary-bg) !important;
 }
 
-button {
-  background-color: transparent;
-  transition:
-    transform 0.2s ease-in-out,
-    box-shadow 0.2s ease-in-out;
+#editBtn:hover {
+  // high contrast on hover
+  background-color: var(--bs-tertiary-bg) !important;
+}
+
+button > i-lucide {
+  // good contrast on hover on all color-themes
+  color: var(--bs-secondary-text-emphasis) !important;
 }
 
 .active {
   background-color: var(--bs-secondary-bg) !important;
+}
+
+p {
+  // smaller text labels on smaller screens
+  @include media-breakpoint-up(xs) {
+    font-size: 0.8rem;
+  }
+
+  @include media-breakpoint-up(md) {
+    font-size: 0.9rem;
+  }
+
+  @include media-breakpoint-up(lg) {
+    font-size: 1rem;
+  }
 }
