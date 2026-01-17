@@ -12,13 +12,27 @@
         <div class="col-6 col-lg-4 text-center">
           <img src="brand-logo/empa_logo_light.png" class="img-fluid mb-3 theme-aware-logo" alt="Empa Logo" />
           <p class="text-primary-emphasis mb-3 fs-4 fs-sm-1">Supply Rating Software</p>
-          <form>
+          <form (ngSubmit)="onLogin()">
             <div class="form-floating mb-3">
-              <input type="text" class="form-control" id="floatingUsername" placeholder="username" />
+              <input
+                type="text"
+                class="form-control"
+                id="floatingUsername"
+                name="username"
+                placeholder="username"
+                [ngModel]="username()"
+                (ngModelChange)="username.set($event)" />
               <label for="floatingUsername" class="form-label">Username</label>
             </div>
             <div class="form-floating mb-3">
-              <input type="password" class="form-control" id="floatingPassword" placeholder="password" />
+              <input
+                type="password"
+                class="form-control"
+                id="floatingPassword"
+                name="password"
+                placeholder="password"
+                [ngModel]="password()"
+                (ngModelChange)="password.set($event)" />
               <label for="floatingPassword" class="form-label">Password</label>
             </div>
             <div class="d-grid">
