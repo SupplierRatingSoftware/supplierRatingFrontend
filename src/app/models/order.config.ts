@@ -38,8 +38,8 @@ export const ORDER_FORM_CONFIG: FormSection[] = [
   {
     sectionTitle: 'Allgemeine Informationen',
     fields: [
-      { key: 'name', label: 'Kurzbezeichnung', required: true, type: 'text', gridClass: 'col-5' },
-      { key: 'details', label: 'Details', required: false, type: 'textarea', gridClass: 'col-7' },
+      { key: 'name', label: 'Kurzbezeichnung', required: true, type: 'text', gridClass: 'col-6' },
+      { key: 'details', label: 'Details', required: false, type: 'textarea', gridClass: 'col-6' },
       {
         key: 'mainCategory',
         label: 'Hauptkategorie',

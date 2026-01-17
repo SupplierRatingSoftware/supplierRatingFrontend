@@ -28,23 +28,23 @@ export const RATING_FORM_CONFIG: FormSection[] = [
   {
     sectionTitle: 'Bewertung',
     fields: [
-      { key: 'quality', label: 'Qualität', required: true, type: 'rating', gridClass: 'col-12 col-lg-5' },
+      { key: 'quality', label: 'Qualität', required: true, type: 'rating', gridClass: 'col-12' },
       {
         key: 'qualityReason',
         label: 'Begründung Qualität',
         required: true,
         type: 'textarea',
-        gridClass: 'col-12 col-lg-7',
+        gridClass: 'col-12',
       },
-      { key: 'cost', label: 'Kosten', required: true, type: 'rating', gridClass: 'col-12 col-lg-5' },
-      { key: 'costReason', label: 'Begründung Kosten', required: true, type: 'textarea', gridClass: 'col-12 col-lg-7' },
-      { key: 'reliability', label: 'Termintreue', required: true, type: 'rating', gridClass: 'col-12 col-lg-5' },
+      { key: 'cost', label: 'Kosten', required: true, type: 'rating', gridClass: 'col-12' },
+      { key: 'costReason', label: 'Begründung Kosten', required: true, type: 'textarea', gridClass: 'col-12' },
+      { key: 'reliability', label: 'Termintreue', required: true, type: 'rating', gridClass: 'col-12' },
       {
         key: 'reliabilityReason',
         label: 'Begründung Termintreue',
         required: true,
         type: 'textarea',
-        gridClass: 'col-12 col-lg-7',
+        gridClass: 'col-12',
       },
       {
         key: 'availability',
@@ -52,7 +52,7 @@ export const RATING_FORM_CONFIG: FormSection[] = [
         required: false,
         requiredIfContact: true,
         type: 'rating',
-        gridClass: 'col-12 col-lg-5',
+        gridClass: 'col-12',
       },
       {
         key: 'availabilityReason',
@@ -60,14 +60,14 @@ export const RATING_FORM_CONFIG: FormSection[] = [
         required: false,
         requiredIfContact: true,
         type: 'textarea',
-        gridClass: 'col-12 col-lg-7',
+        gridClass: 'col-12',
       },
       {
         key: 'totalScore',
         label: 'Ergebnis Gesamtbewertung',
         required: false,
         type: 'stat-total',
-        gridClass: 'col-md-12',
+        gridClass: 'col-12',
       },
       {
         key: 'ratingComment',
