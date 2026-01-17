@@ -9,6 +9,24 @@
 }
 
 /* Responsive Width Utilities (not included in Bootstrap) */
+@media (min-width: 0px) {
+  .w-xs-25 {
+    width: 25% !important;
+  }
+  .w-xs-50 {
+    width: 50% !important;
+  }
+  .w-xs-75 {
+    width: 75% !important;
+  }
+  .w-xs-100 {
+    width: 100% !important;
+  }
+  .w-xs-auto {
+    width: auto !important;
+  }
+}
+
 @media (min-width: 576px) {
   .w-sm-25 {
     width: 25% !important;
