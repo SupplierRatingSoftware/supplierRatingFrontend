@@ -136,7 +136,17 @@ export class SuppliersComponent implements OnInit {
     const offcanvasRef = this.offCanvasService.open(PanelFormSupplierComponent, this.offCanvasOptions);
 
     // Send data into Offcanvas Component
-    offcanvasRef.componentInstance.supplier.set(supplier);
+    // We need to fetch the full details to get the orders and stats if they are missing in summary
+    this.supplierService.getSupplierById(supplier.id).subscribe({
+      next: fullSupplier => {
+        offcanvasRef.componentInstance.supplier.set(fullSupplier);
+      },
+      error: () => {
+        // Fallback to summary if detail fetch fails, though stats might be missing
+        offcanvasRef.componentInstance.supplier.set(supplier);
+        this.errorMessage.set('Konnte Details nicht laden.');
+      },
+    });
   }
 
   /**
@@ -201,6 +211,7 @@ export class SuppliersComponent implements OnInit {
       .subscribe({
         next: addedSupplier => {
           this.suppliers.update(current => [...current, addedSupplier]);
+          // Fetch full details to ensure we have everything needed for display/selection if needed immediately
           this.selectSupplier(addedSupplier);
         },
         error: () => this.errorMessage.set(`Fehler beim Speichern: ${formData.name}`),
@@ -222,7 +233,7 @@ export class SuppliersComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: updated => {
-          this.suppliers.update(list => list.map(s => (s.id === id ? updated : s)));
+          this.loadSuppliers();
           this.selectSupplier(updated);
         },
         error: () => this.errorMessage.set('Fehler beim Aktualisieren.'),
