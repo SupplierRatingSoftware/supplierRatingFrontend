@@ -14,9 +14,17 @@
         [strokeWidth]="1.3"
         class="flex-grow-0 ps-2 me-2"
         aria-hidden="true"></i-lucide>
-      <div class="d-flex container justify-content-between align-items-center overflow-hidden">
-        <p class="m-0 ms-2 text-truncate">{{ label() }}</p>
-        <p class="m-0 ms-2 d-none d-md-block text-nowrap" [class]="secondaryLabelClass()">{{ labelSecondary() }}</p>
+      <div class="row flex-grow-1 m-0 align-items-center overflow-hidden">
+        <div class="col-12 col-md-4 text-truncate ps-2 text-start">{{ label() }}</div>
+        <div
+          class="d-none d-md-block text-truncate ps-2"
+          [class.col-md-4]="icon() !== User"
+          [class.col-md-2]="icon() === User"
+          [class.text-start]="icon() !== User"
+          [class.text-center]="icon() === User"
+          [class]="secondaryLabelClass()">
+          {{ labelSecondary() }}
+        </div>
       </div>
     </button>
     <button

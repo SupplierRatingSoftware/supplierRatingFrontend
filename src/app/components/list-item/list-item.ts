@@ -14,6 +14,7 @@ export class ListItem {
    * @protected
    */
   protected readonly Pencil = Pencil;
+  protected readonly User = User;
 
   /**
    * Input: Properties for the list item.

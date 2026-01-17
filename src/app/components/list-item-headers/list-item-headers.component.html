@@ -1,8 +1,12 @@
 <div class="d-flex align-items-center ms-1 ms-md-3 me-1 me-md-3 px-2 mb-1">
   <div class="ps-2 me-2" style="width: 36px; box-sizing: content-box"></div>
-  <div class="d-flex container justify-content-between overflow-hidden">
-    <span class="m-0 ms-2 fw-bold text-truncate">{{ header() }}</span>
-    <span class="m-0 ms-2 fw-bold d-none d-md-block text-nowrap">{{ headerSecondary() }}</span>
+  <div class="row flex-grow-1 m-0 align-items-center overflow-hidden text-start">
+    <div class="col-12 col-md-4 text-truncate fw-bold ps-2">
+      {{ header() }}
+    </div>
+    <div class="col-md-4 d-none d-md-block text-truncate fw-bold ps-2">
+      {{ headerSecondary() }}
+    </div>
   </div>
   <div class="ms-2 me-2" style="width: 45px"></div>
 </div>
