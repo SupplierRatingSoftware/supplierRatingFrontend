@@ -319,12 +319,29 @@ export class OrdersComponent implements OnInit {
       return list;
     }
 
-    //Todo: Extend filtering criteria as needed
     // Else filter the list based on the search term
     return list.filter(
       order =>
         // Search by name
         (order.name || '').toLowerCase().includes(term) ||
+        // Or search by code
+        (order.mainCategory || '').toLowerCase().includes(term) ||
+        // Or search by city
+        (order.subCategory || '').toLowerCase().includes(term) ||
+        // Or search by customerNumber
+        (order.details || '').toLowerCase().includes(term) ||
+        // Or search by street
+        (order.contactPerson || '').toLowerCase().includes(term) ||
+        // Or search by website
+        (order.contactEmail || '').toLowerCase().includes(term) ||
+        // Or search by vatId
+        (order.contactPhone || '').toLowerCase().includes(term) ||
+        // Or search by poBox
+        (order.orderMethod || '').toLowerCase().includes(term) ||
+        // Or search by email
+        (order.orderComment || '').toLowerCase().includes(term) ||
+        // Or search by phoneNumber
+        (order.supplierName || '').toLowerCase().includes(term) ||
         // Or search by orderedBy
         (order.orderedBy || '').toLowerCase().includes(term)
     );
