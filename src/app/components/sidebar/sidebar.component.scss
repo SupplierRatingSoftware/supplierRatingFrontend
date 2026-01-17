@@ -51,6 +51,7 @@ aside i-lucide {
     width: 200px !important; /* Force full width on mobile */
     transform: translateX(-100%);
     z-index: 1050;
+    height: calc(100vh - 56px) !important; /* Override h-100 to fit viewport minus navbar */
 
     &.mobile-open {
       transform: translateX(0);

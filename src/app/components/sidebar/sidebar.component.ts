@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutes } from '../../app.routes.config';
@@ -14,6 +14,7 @@ import { SidebarService } from '../../services/sidebar.service';
 })
 export class SidebarComponent {
   private sidebarService = inject(SidebarService);
+  private destroyRef = inject(DestroyRef);
 
   /**
    * Lucide Icons
@@ -52,11 +53,15 @@ export class SidebarComponent {
       }
 
       // Listen for screen size changes
-      mediaQuery.addEventListener('change', e => {
+      const listener = (e: MediaQueryListEvent) => {
         if (e.matches) {
           this.isCollapsed.set(false);
         }
-      });
+      };
+
+      mediaQuery.addEventListener('change', listener);
+      // Clean up listener when component is destroyed
+      this.destroyRef.onDestroy(() => mediaQuery.removeEventListener('change', listener));
     }
   }
 

@@ -5,7 +5,7 @@
   <div class="d-flex flex-column align-items-center mb-auto mt-3">
     <div class="flex-grow-1 d-flex align-items-center">
       <span class="fs-4 sidebar-text me-5">Menü</span>
-      <button (click)="toggleSidebar()" class="btn ms-auto d-none d-md-block">
+      <button (click)="toggleSidebar()" class="btn ms-auto d-none d-md-block" aria-label="Toggle Sidebar">
         @if (isCollapsed()) {
           <i-lucide [img]="ChevronRight" [strokeWidth]="1.3"></i-lucide>
         } @else {
