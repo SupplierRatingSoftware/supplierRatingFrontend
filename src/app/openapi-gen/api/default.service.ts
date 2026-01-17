@@ -10,7 +10,7 @@
 /* tslint:disable:no-unused-variable member-ordering */
 
 import { Inject, Injectable, Optional } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse, HttpEvent, HttpContext } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpEvent, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 

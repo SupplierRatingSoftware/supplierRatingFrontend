@@ -3,13 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ListSearch } from '../../components/list-search/list-search';
 import { AddBtn } from '../../components/add-btn/add-btn';
 import { LucideAngularModule, NotepadText } from 'lucide-angular';
-import {
-  NgbModal,
-  NgbModalOptions,
-  NgbOffcanvas,
-  NgbOffcanvasOptions,
-  NgbOffcanvasRef,
-} from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalOptions, NgbOffcanvas, NgbOffcanvasOptions } from '@ng-bootstrap/ng-bootstrap';
 import { ToastComponent } from '../../components/toast/toast.component';
 import { ListItem } from '../../components/list-item/list-item';
 import { ModalEditOrderComponent, OrderEditResult } from '../../components/modal-edit-order/modal-edit-order';
@@ -32,9 +26,6 @@ export class OrdersComponent implements OnInit {
    * @protected
    */
   protected readonly NotepadText = NotepadText;
-
-  // Hier speichern wir den Zugriff auf das Panel
-  private activePanelRef?: NgbOffcanvasRef;
 
   /**
    * Injected NgbModal as our modal service
