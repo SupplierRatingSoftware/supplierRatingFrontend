@@ -17,6 +17,13 @@ button {
   }
 }
 
+#rateBtn {
+  &:hover {
+    background-color: var(--bs-warning);
+    color: var(--bs-body-bg);
+  }
+}
+
 .accordion-button {
   background-color: var(--bs-secondary-bg);
   color: var(--bs-body-color);
