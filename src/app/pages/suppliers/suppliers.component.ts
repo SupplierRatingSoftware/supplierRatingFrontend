@@ -136,9 +136,6 @@ export class SuppliersComponent implements OnInit {
 
     // Send data into Offcanvas Component
     offcanvasRef.componentInstance.supplier.set(supplier);
-
-    // Reset selection when offcanvas is closed
-    offcanvasRef.result.then(() => this.selectedSupplierId.set(null));
   }
 
   /**

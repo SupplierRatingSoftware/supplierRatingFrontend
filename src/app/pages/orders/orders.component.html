@@ -6,6 +6,7 @@
       <app-list-item
         [label]="item.name"
         [icon]="UserIcon"
+        [isActive]="item.id === selectedOrderId()"
         (itemSelected)="openDetailPanel(item)"
         (editSelected)="openEditOrderModal(item)">
       </app-list-item>

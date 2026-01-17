@@ -32,7 +32,7 @@ export class OrdersComponent implements OnInit {
    */
   protected readonly UserIcon = User;
 
-  // NEU: Hier speichern wir den Zugriff auf das Panel
+  // Hier speichern wir den Zugriff auf das Panel
   private activePanelRef?: NgbOffcanvasRef;
 
   /**
@@ -145,6 +145,10 @@ export class OrdersComponent implements OnInit {
    */
   openDetailPanel(detailedOrder: OrderDetailDTO) {
     this.errorMessage.set(null);
+
+    // Set selected order ID (for changing active state of list-item)
+    this.selectedOrderId.set(detailedOrder.id);
+
     // 1. Offcanvas öffnen
     const panelInstance = this.offCanvasService.open(PanelFormOrderComponent, this.offCanvasOptions);
     // Daten an das Panel übergeben (Signal setzen)
