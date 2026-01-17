@@ -2,14 +2,8 @@ import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, OnIni
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ListSearch } from '../../components/list-search/list-search';
 import { AddBtn } from '../../components/add-btn/add-btn';
-import { LucideAngularModule, User } from 'lucide-angular';
-import {
-  NgbModal,
-  NgbModalOptions,
-  NgbOffcanvas,
-  NgbOffcanvasOptions,
-  NgbOffcanvasRef,
-} from '@ng-bootstrap/ng-bootstrap';
+import { LucideAngularModule, NotepadText } from 'lucide-angular';
+import { NgbModal, NgbModalOptions, NgbOffcanvas, NgbOffcanvasOptions } from '@ng-bootstrap/ng-bootstrap';
 import { ToastComponent } from '../../components/toast/toast.component';
 import { ListItem } from '../../components/list-item/list-item';
 import { ModalEditOrderComponent, OrderEditResult } from '../../components/modal-edit-order/modal-edit-order';
@@ -17,10 +11,11 @@ import { PanelFormOrderComponent } from '../../components/panel-form-order/panel
 import { DefaultService, OrderCreateDTO, OrderDetailDTO, OrderUpdateDTO, RatingCreateDTO } from '../../openapi-gen';
 import { ModalRatingComponent } from '../../components/modal-rating/modal-rating';
 import { ModalAddOrderComponent, OrderAddResult } from '../../components/modal-add-order/modal-add-order';
+import { ListItemHeadersComponent } from '../../components/list-item-headers/list-item-headers.component';
 
 @Component({
   selector: 'app-orders',
-  imports: [ListSearch, AddBtn, ListItem, ToastComponent, LucideAngularModule],
+  imports: [ListSearch, AddBtn, ListItem, ToastComponent, LucideAngularModule, ListItemHeadersComponent],
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,10 +25,7 @@ export class OrdersComponent implements OnInit {
    * Lucide Icon
    * @protected
    */
-  protected readonly UserIcon = User;
-
-  // NEU: Hier speichern wir den Zugriff auf das Panel
-  private activePanelRef?: NgbOffcanvasRef;
+  protected readonly NotepadText = NotepadText;
 
   /**
    * Injected NgbModal as our modal service
@@ -66,7 +58,7 @@ export class OrdersComponent implements OnInit {
    */
   private readonly offCanvasOptions: NgbOffcanvasOptions = {
     animation: true,
-    panelClass: 'w-sm-100 w-md-50',
+    panelClass: 'w-xs-100 w-sm-100 w-md-50',
     position: 'end',
     backdrop: true,
     scroll: true,
@@ -145,6 +137,10 @@ export class OrdersComponent implements OnInit {
    */
   openDetailPanel(detailedOrder: OrderDetailDTO) {
     this.errorMessage.set(null);
+
+    // Set selected order ID (for changing active state of list-item)
+    this.selectedOrderId.set(detailedOrder.id);
+
     // 1. Offcanvas öffnen
     const panelInstance = this.offCanvasService.open(PanelFormOrderComponent, this.offCanvasOptions);
     // Daten an das Panel übergeben (Signal setzen)
@@ -323,12 +319,29 @@ export class OrdersComponent implements OnInit {
       return list;
     }
 
-    //Todo: Extend filtering criteria as needed
     // Else filter the list based on the search term
     return list.filter(
       order =>
         // Search by name
         (order.name || '').toLowerCase().includes(term) ||
+        // Or search by code
+        (order.mainCategory || '').toLowerCase().includes(term) ||
+        // Or search by city
+        (order.subCategory || '').toLowerCase().includes(term) ||
+        // Or search by customerNumber
+        (order.details || '').toLowerCase().includes(term) ||
+        // Or search by street
+        (order.contactPerson || '').toLowerCase().includes(term) ||
+        // Or search by website
+        (order.contactEmail || '').toLowerCase().includes(term) ||
+        // Or search by vatId
+        (order.contactPhone || '').toLowerCase().includes(term) ||
+        // Or search by poBox
+        (order.orderMethod || '').toLowerCase().includes(term) ||
+        // Or search by email
+        (order.orderComment || '').toLowerCase().includes(term) ||
+        // Or search by phoneNumber
+        (order.supplierName || '').toLowerCase().includes(term) ||
         // Or search by orderedBy
         (order.orderedBy || '').toLowerCase().includes(term)
     );

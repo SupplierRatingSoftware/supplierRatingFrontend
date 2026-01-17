@@ -8,92 +8,86 @@
   <form [formGroup]="ratingForm" (ngSubmit)="onSubmit()" id="ratingForm" class="container-fluid">
     <div ngbAccordion [closeOthers]="false">
       @for (section of config; track section.sectionTitle) {
-        <div
-          ngbAccordionItem
-          [collapsed]="!expandedSections.has(section.sectionTitle)"
-          (shown)="expandedSections.add(section.sectionTitle)"
-          (hidden)="expandedSections.delete(section.sectionTitle)">
-          <h2 ngbAccordionHeader>
-            <button ngbAccordionButton type="button">
-              {{ section.sectionTitle }} @if (isSectionInvalid(section)) {
-              <span class="ms-2 badge bg-danger text-white">!</span>
+      <div
+        ngbAccordionItem
+        [collapsed]="!expandedSections.has(section.sectionTitle)"
+        (shown)="expandedSections.add(section.sectionTitle)"
+        (hidden)="expandedSections.delete(section.sectionTitle)">
+        <h2 ngbAccordionHeader>
+          <button ngbAccordionButton type="button">
+            {{ section.sectionTitle }} @if (isSectionInvalid(section)) {
+            <span class="ms-2 badge bg-danger text-white">!</span>
             }
-            </button>
-          </h2>
+          </button>
+        </h2>
 
-          <div ngbAccordionCollapse>
-            <div ngbAccordionBody>
-              <ng-template>
-                <div class="row">
-                  @for (field of section.fields; track field.key) {
-                    <div [class]="field.gridClass || 'col-12'" class="mb-3">
-                      <label [for]="'modal-' + field.key" class="form-label">
-                        {{ field.label }} {{ field.required ? '*' : '' }}
-                      </label>
+        <div ngbAccordionCollapse>
+          <div ngbAccordionBody>
+            <ng-template>
+              <div class="row">
+                @for (field of section.fields; track field.key) {
+                <div [class]="field.gridClass || 'col-12'" class="mb-3">
+                  <label [for]="'modal-' + field.key" class="form-label">
+                    {{ field.label }} {{ field.required ? '*' : '' }}
+                  </label>
 
-                      @switch (field.type) {
-
-                        @case ('textarea') {
-                          <textarea
-                            [id]="'modal-' + field.key"
-                            class="form-control"
-                            [formControlName]="field.key"
-                            rows="3"></textarea>
-                        }
-
-                        @case ('rating') {
-                          <div class="d-flex align-items-center gap-2">
-                            <ngb-rating
-                              [id]="'modal-' + field.key"
-                              [max]="5"
-                              [formControlName]="field.key"
-                              class="text-warning fs-3"
-                              style="outline: none;"
-                              tabindex="0">
-                            </ngb-rating>
-                            <span class="fw-bold text-muted">
-                          {{ ratingForm.get(field.key)?.value ? ratingForm.get(field.key)?.value + '/5' : '-' }}
-                        </span>
-                          </div>
-                        }
-
-                        @case ('stat-total') {
-                          <div class="alert alert-info d-flex justify-content-between align-items-center mb-0">
-                            <span class="fw-bold">Berechnete Gesamtnote:</span>
-                            <span class="fs-4 fw-bold">
-                          {{ ratingForm.get(field.key)?.value ? (ratingForm.get(field.key)?.value | number:'1.1-1') : '-' }}
-                        </span>
-                          </div>
-                          <input type="hidden" [formControlName]="field.key">
-                        }
-
-                        @default {
-                          <input
-                            [type]="field.type"
-                            [id]="'modal-' + field.key"
-                            class="form-control"
-                            [formControlName]="field.key"
-                            [placeholder]="field.placeholder || ''" />
-                        }
-                      }
-
-                      @if (ratingForm.get(field.key)?.invalid && ratingForm.get(field.key)?.touched) {
-                        <div class="text-danger small mt-1">{{ field.label }} ist erforderlich oder ungültig.</div>
-                      }
-                    </div>
+                  @switch (field.type) { @case ('textarea') {
+                  <textarea
+                    [id]="'modal-' + field.key"
+                    class="form-control"
+                    [formControlName]="field.key"
+                    rows="3"></textarea>
+                  } @case ('rating') {
+                  <div class="d-flex align-items-center gap-2">
+                    <ngb-rating
+                      [id]="'modal-' + field.key"
+                      [max]="5"
+                      [formControlName]="field.key"
+                      class="text-warning fs-3"
+                      style="outline: none"
+                      tabindex="0">
+                    </ngb-rating>
+                    <span class="fw-bold text-muted">
+                      {{ ratingForm.get(field.key)?.value ? ratingForm.get(field.key)?.value + '/5' : '-' }}
+                    </span>
+                  </div>
+                  } @case ('stat-total') {
+                  <div class="alert alert-info d-flex justify-content-between align-items-center mb-0">
+                    <span class="fw-bold">Berechnete Gesamtnote:</span>
+                    <span class="fs-4 fw-bold">
+                      {{ ratingForm.get(field.key)?.value ? (ratingForm.get(field.key)?.value | number:'1.1-1') : '-' }}
+                    </span>
+                  </div>
+                  <input type="hidden" [formControlName]="field.key" />
+                  } @default {
+                  <input
+                    [type]="field.type"
+                    [id]="'modal-' + field.key"
+                    class="form-control"
+                    [formControlName]="field.key"
+                    [placeholder]="field.placeholder || ''" />
+                  } } @if (ratingForm.get(field.key)?.invalid && ratingForm.get(field.key)?.touched) {
+                  <div class="text-danger small mt-1">{{ field.label }} ist erforderlich oder ungültig.</div>
                   }
                 </div>
-              </ng-template>
-            </div>
+                }
+              </div>
+            </ng-template>
           </div>
         </div>
+      </div>
       }
     </div>
   </form>
 </div>
 <div class="modal-footer">
   <button type="reset" class="btn cancel-btns me-2" (click)="cancel()">Abbrechen</button>
-  <button type="submit" form="ratingForm" id="submitBtn" class="btn btn-primary" [disabled]="ratingForm.invalid || !!message()">
+  <button
+    type="submit"
+    form="ratingForm"
+    class="btn me-2"
+    id="submitBtn"
+    [disabled]="ratingForm.invalid || !!message()">
     {{ 'Bewertung absenden' }}
   </button>
 </div>

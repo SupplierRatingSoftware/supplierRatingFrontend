@@ -1,10 +1,17 @@
 <div class="container-fluid d-flex flex-column p-2 h-100 position-relative">
   <app-toast [message]="errorMessage()" (exitToast)="closeToast()"></app-toast>
   <app-list-search class="mb-3" (searchChange)="searchTerm.set($event)"></app-list-search>
+  <app-list-item-headers
+    [header]="'Firmenname'"
+    [header2]="'Anz. Bewertungen'"
+    [header3]="'Ort'"></app-list-item-headers>
   <ul class="list-unstyled ms-1 ms-md-3 me-1 me-md-3">
     @for (item of filteredSuppliers(); track item.id) {
+      <!-- ATTENTION this totalRatingCount object does not come with the SupplierSummaryDTO!-->
       <app-list-item
         [label]="item.name"
+        [label2]="item.stats?.totalRatingCount?.toString()"
+        [label3]="item.city?.toString()"
         [icon]="UserIcon"
         [isActive]="item.id === selectedSupplierId()"
         (itemSelected)="selectSupplier(item)"

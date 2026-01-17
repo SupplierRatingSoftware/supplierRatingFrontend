@@ -65,8 +65,10 @@
   </form>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-secondary" (click)="cancel()">Abbrechen</button>
-  <button type="button" class="btn btn-outline-primary me-2" (click)="onSubmit()">Änderungen speichern</button>
+  <button type="button" class="btn cancel-btns me-2" aria-label="Close" (click)="cancel()">Abbrechen</button>
+  <button type="submit" id="submitBtn" class="btn me-2" aria-label="Save" (click)="onSubmit()">
+    Änderungen speichern
+  </button>
   <div
     class="d-flex align-items-center small fw-bold"
     [class.text-warning]="order()?.ratingStatus !== 'RATED'"
@@ -79,6 +81,6 @@
     {{ order()?.ratingStatus === 'RATED' ? 'Bereits bewertet und daher nicht mehr änderbar' : 'Bewertung ausstehend' }}
   </div>
   @if (order()?.ratingStatus !== 'RATED') {
-  <button type="button" class="btn btn-outline-primary me-2" (click)="onRate()">Bestellung bewerten</button>
+  <button type="submit" id="rateBtn" class="btn me-2" aria-label="Rate" (click)="onRate()">Bestellung bewerten</button>
   }
 </div>

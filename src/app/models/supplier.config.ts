@@ -107,7 +107,7 @@ export const SUPPLIER_FORM_CONFIG: FormSection[] = [
         label: 'Ergebnis Gesamtbewertung',
         required: false,
         type: 'stat-total',
-        gridClass: 'col-md-6',
+        gridClass: 'col-md-12',
       },
       {
         key: 'totalRatingCount',

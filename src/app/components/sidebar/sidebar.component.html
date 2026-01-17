@@ -1,8 +1,11 @@
-<aside [class.collapsed]="isCollapsed()" class="sidebar d-flex flex-column flex-shrink-0 p-1 h-100 shadow">
+<aside
+  [class.collapsed]="isCollapsed()"
+  [class.mobile-open]="isMobileMenuOpen()"
+  class="sidebar d-flex flex-column flex-shrink-0 p-1 h-100 shadow">
   <div class="d-flex flex-column align-items-center mb-auto mt-3">
     <div class="flex-grow-1 d-flex align-items-center">
       <span class="fs-4 sidebar-text me-5">Menü</span>
-      <button (click)="toggleSidebar()" class="btn ms-auto">
+      <button (click)="toggleSidebar()" class="btn ms-auto d-none d-md-block" aria-label="Toggle Sidebar">
         @if (isCollapsed()) {
           <i-lucide [img]="ChevronRight" [strokeWidth]="1.3"></i-lucide>
         } @else {
@@ -54,6 +57,7 @@
       ngbDropdownToggle
       role="button"
       style="cursor: pointer">
+      <!-- TODO: Display dynamic username -->
       <img alt="" class="rounded-circle me-2" height="32" src="https://github.com/mdo.png" width="32" />
       <strong class="sidebar-text">Testuser</strong>
     </a>

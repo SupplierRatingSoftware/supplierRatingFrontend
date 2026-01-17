@@ -84,40 +84,44 @@ export class ModalRatingComponent implements OnInit {
    * @returns The total score as a number.
    */
   ngOnInit() {
-    // 1. Zuerst die konditionale Sperrung (basierend auf Kontaktperson) anwenden
+    // Expand all sections by default
+    this.config.forEach(section => this.expandedSections.add(section.sectionTitle));
+
+    // Apply conditional locking (based on contact person)
     this.applyConditionalValidators();
 
-    // 2. Automatisches Berechnen starten (NEU HINZUGEFÜGT)
+    // Start automatic calculation (NEWLY ADDED)
     this.setupAutoCalculation();
 
-    // 3. Bestehende Bewertungen laden (falls vorhanden)
+    // Load existing ratings (if available)
     const currentRating = this.order(); //?.orderRating;
     if (currentRating) {
       this.ratingForm.patchValue(currentRating);
     }
 
-    // NEU: Wenn der Status bereits 'RATED' ist, das Formular sperren
+    // When the status is already 'RATED', disable the form
     if (this.order()?.ratingStatus === 'RATED') {
       this.ratingForm.disable(); // Deaktiviert alle Controls (Sterne, Textareas)
     }
   }
 
   /**
-   * NEU: Abonniert Änderungen an den Rating-Feldern und berechnet den Durchschnitt neu.
+   * Subscribe to changes in the rating fields and recalculate the average.
+   * @private
    */
   private setupAutoCalculation() {
-    // Wir hören auf JEDE Änderung im Formular
+    // Listen for any change in the form
     this.ratingForm.valueChanges.subscribe(() => {
       this.calculateTotalScore();
     });
   }
 
   /**
-   * NEU: Berechnet den Durchschnittswert der aktiven Bewertungsfelder
+   * Calculate the average value of the active rating fields
    */
   private calculateTotalScore() {
-    // Liste der Felder, die in den Durchschnitt einfließen
-    // (Diese Keys müssen mit deiner Rating-Config übereinstimmen)
+    // List of fields that contribute to the average
+    // (These keys must match your rating configuration)
     const ratingKeys = ['quality', 'cost', 'reliability', 'availability'];
 
     let sum = 0;
@@ -125,7 +129,7 @@ export class ModalRatingComponent implements OnInit {
 
     ratingKeys.forEach(key => {
       const control = this.ratingForm.get(key);
-      // Nur wenn Feld existiert, aktiviert (enabled) ist und einen Wert hat, zählt es
+      // Only count if field exists, is enabled, and has a positive value
       if (control && control.enabled && Number(control.value) > 0) {
         sum += Number(control.value);
         count++;
@@ -134,10 +138,10 @@ export class ModalRatingComponent implements OnInit {
 
     const average = count > 0 ? sum / count : 0;
 
-    // Setze den Wert in das 'totalScore' Feld (ohne einen neuen Event-Loop auszulösen)
+    // Set the value in the 'totalScore' field without triggering a new event loop
     const totalControl = this.ratingForm.get('totalScore');
     if (totalControl) {
-      // Wir speichern den exakten Wert, die Pipe im HTML kümmert sich um die Anzeige
+      // Save the exact value, the pipe in HTML takes care of display
       totalControl.setValue(average, { emitEvent: false });
     }
   }
@@ -145,31 +149,30 @@ export class ModalRatingComponent implements OnInit {
   private applyConditionalValidators() {
     const hasContactPerson = !!this.order()?.contactPerson; //
 
-    // Wir gehen generisch durch alle Sektionen und Felder der Konfiguration
+    // Iterate through all sections and fields in the configuration
     this.config.forEach(section => {
       section.fields.forEach(field => {
-        // Wir prüfen nur Felder, die das Flag 'requiredIfContact' haben
+        // Only check fields with the 'requiredIfContact' flag
         if (field.requiredIfContact) {
           const control = this.ratingForm.get(field.key);
 
           if (control) {
             if (hasContactPerson) {
-              // FALL 1: Kontaktperson vorhanden -> Feld aktivieren und Validierung setzen
+              // Case 1: ContactPerson exists -> activate and set validation
               control.enable();
               const validators: ValidatorFn[] = [Validators.required];
               if (field.type === 'rating') validators.push(Validators.min(1));
               control.setValidators(validators);
             } else {
-              // FALL 2: Keine Kontaktperson -> Feld komplett deaktivieren
+              // Case 2: No ContactPerson -> completely disable field
               control.disable();
               control.clearValidators();
 
-              // WICHTIG: Wert zurücksetzen, damit alte Eingaben
-              // nicht die Berechnung des totalScore beeinflussen
+              // IMPORTANT: Reset value to prevent old inputs from affecting totalScore calculation
               control.setValue(field.type === 'rating' ? 0 : '');
             }
 
-            // Angular mitteilen, dass sich der Status des Feldes geändert hat
+            // Inform Angular about the field status change
             control.updateValueAndValidity();
           }
         }
@@ -208,7 +211,7 @@ export class ModalRatingComponent implements OnInit {
 
   onToastClosed() {
     this.message.set(null);
-    this.warningConfirmed.set(true); // User hat die Warnung weggeklickt
+    this.warningConfirmed.set(true); // User has dismissed the warning
   }
 
   cancel() {

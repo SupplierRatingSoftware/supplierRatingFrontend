@@ -9,10 +9,11 @@ import { ListItem } from '../../components/list-item/list-item';
 import { ModalFormSupplierComponent } from '../../components/modal-form-supplier/modal-form-supplier';
 import { PanelFormSupplierComponent } from '../../components/panel-form-supplier/panel-form-supplier';
 import { DefaultService, SupplierCreateDTO, SupplierSummaryDTO, SupplierUpdateDTO } from '../../openapi-gen';
+import { ListItemHeadersComponent } from '../../components/list-item-headers/list-item-headers.component';
 
 @Component({
   selector: 'app-suppliers',
-  imports: [ListSearch, AddBtn, ToastComponent, LucideAngularModule, ListItem],
+  imports: [ListSearch, AddBtn, ToastComponent, LucideAngularModule, ListItem, ListItemHeadersComponent],
   templateUrl: './suppliers.component.html',
   styleUrl: './suppliers.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -55,7 +56,7 @@ export class SuppliersComponent implements OnInit {
    */
   private readonly offCanvasOptions: NgbOffcanvasOptions = {
     animation: true,
-    panelClass: 'w-sm-100 w-md-50',
+    panelClass: 'w-xs-100 w-sm-100 w-md-50',
     position: 'end',
     backdrop: true,
     scroll: true,
@@ -135,10 +136,17 @@ export class SuppliersComponent implements OnInit {
     const offcanvasRef = this.offCanvasService.open(PanelFormSupplierComponent, this.offCanvasOptions);
 
     // Send data into Offcanvas Component
-    offcanvasRef.componentInstance.supplier.set(supplier);
-
-    // Reset selection when offcanvas is closed
-    offcanvasRef.result.then(() => this.selectedSupplierId.set(null));
+    // We need to fetch the full details to get the orders and stats if they are missing in summary
+    this.supplierService.getSupplierById(supplier.id).subscribe({
+      next: fullSupplier => {
+        offcanvasRef.componentInstance.supplier.set(fullSupplier);
+      },
+      error: () => {
+        // Fallback to summary if detail fetch fails, though stats might be missing
+        offcanvasRef.componentInstance.supplier.set(supplier);
+        this.errorMessage.set('Konnte Details nicht laden.');
+      },
+    });
   }
 
   /**
@@ -203,6 +211,7 @@ export class SuppliersComponent implements OnInit {
       .subscribe({
         next: addedSupplier => {
           this.suppliers.update(current => [...current, addedSupplier]);
+          // Fetch full details to ensure we have everything needed for display/selection if needed immediately
           this.selectSupplier(addedSupplier);
         },
         error: () => this.errorMessage.set(`Fehler beim Speichern: ${formData.name}`),
@@ -224,7 +233,7 @@ export class SuppliersComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: updated => {
-          this.suppliers.update(list => list.map(s => (s.id === id ? updated : s)));
+          this.loadSuppliers();
           this.selectSupplier(updated);
         },
         error: () => this.errorMessage.set('Fehler beim Aktualisieren.'),

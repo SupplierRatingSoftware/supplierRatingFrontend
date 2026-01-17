@@ -1,0 +1,10 @@
+.mobile-backdrop {
+  position: fixed;
+  top: 56px; /* Height of navbar */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1040; /* Below sidebar (1050) but above content */
+  cursor: pointer;
+}
