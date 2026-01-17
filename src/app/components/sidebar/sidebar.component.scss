@@ -48,7 +48,7 @@ aside i-lucide {
     position: fixed;
     top: 56px; /* Height of navbar */
     left: 0;
-    width: 200px;
+    width: 200px !important; /* Force full width on mobile */
     transform: translateX(-100%);
     z-index: 1050;
 
@@ -56,9 +56,15 @@ aside i-lucide {
       transform: translateX(0);
     }
 
-    /* Always show text on mobile when open */
+    /* Always show text on mobile - override collapsed state */
     .sidebar-text {
-      display: block;
+      display: block !important;
+    }
+
+    /* Always show full nav links on mobile */
+    .nav-link {
+      margin: 0.25rem 0.5rem !important;
+      padding: 0.75rem 1rem !important;
     }
   }
 }

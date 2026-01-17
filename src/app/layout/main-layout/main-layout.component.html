@@ -4,6 +4,11 @@
   </header>
 
   <section class="d-flex flex-grow-1 overflow-hidden">
+    <!-- Mobile backdrop -->
+    @if (isMobileMenuOpen()) {
+      <div (click)="closeMobileMenu()" class="mobile-backdrop d-md-none"></div>
+    }
+
     <app-sidebar></app-sidebar>
 
     <main class="content-wrapper flex-grow-1 p-3 overflow-y-scroll">
