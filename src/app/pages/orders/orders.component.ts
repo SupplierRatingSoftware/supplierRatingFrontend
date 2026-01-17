@@ -58,7 +58,7 @@ export class OrdersComponent implements OnInit {
    */
   private readonly offCanvasOptions: NgbOffcanvasOptions = {
     animation: true,
-    panelClass: 'w-sm-100 w-md-50',
+    panelClass: 'w-xs-100 w-sm-100 w-md-50',
     position: 'end',
     backdrop: true,
     scroll: true,
