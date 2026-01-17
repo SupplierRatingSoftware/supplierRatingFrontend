@@ -14,5 +14,6 @@ export class ListItemHeadersComponent {
    * @readonly
    */
   readonly header = input.required<string>();
-  readonly headerSecondary = input<string>();
+  readonly header2 = input<string | null>(null);
+  readonly header3 = input<string | null>(null);
 }

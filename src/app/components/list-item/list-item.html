@@ -15,16 +15,25 @@
         class="flex-grow-0 ps-2 me-2"
         aria-hidden="true"></i-lucide>
       <div class="row flex-grow-1 m-0 align-items-center overflow-hidden">
-        <div class="col-12 col-md-4 text-truncate ps-2 text-start">{{ label() }}</div>
-        <div
-          class="d-none d-md-block text-truncate ps-2"
-          [class.col-md-4]="icon() !== User"
-          [class.col-md-2]="icon() === User"
-          [class.text-start]="icon() !== User"
-          [class.text-center]="icon() === User"
-          [class]="secondaryLabelClass()">
-          {{ labelSecondary() }}
+        <div class="col-12 col-md-6 col-lg-4 text-truncate ps-2 text-start">{{ label() }}</div>
+        @if (label2() !== undefined){
+        <div class="col-4 col-md-6 col-lg-4 d-none d-md-block text-truncate ps-2" [class]="secondaryLabelClass()">
+          {{ label2() }}
         </div>
+        } @if (label3() !== undefined){ @if (icon() === User) {
+        <div class="d-none d-md-block col-12 col-md-6 col-lg-4 text-truncate ps-2 text-start">{{ label3() }}</div>
+        } @else {
+        <div
+          class="d-none d-md-block col-12 col-md-6 col-lg-4 text-truncate ps-2 text-start"
+          [class.text-warning]="label3()?.toUpperCase() !== 'RATED'"
+          [class.text-success]="label3()?.toUpperCase() === 'RATED'">
+          <i
+            class="d-none d-lg-block bi"
+            [class.bi-exclamation-triangle-fill]="label3()?.toUpperCase() !== 'RATED'"
+            [class.bi-check-circle-fill]="label3()?.toUpperCase() === 'RATED'">
+          </i>
+        </div>
+        } }
       </div>
     </button>
     <button

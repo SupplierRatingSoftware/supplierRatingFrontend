@@ -18,13 +18,15 @@ export class ListItem {
 
   /**
    * Input: Properties for the list item.
-   * @description Label is for the displayed text of the list item.
-   * @description Optional: LabelSecondary is for the displayed secondary text of the list item.
+   * @description Required: 1st label is for data to be displayed of the list item.
+   * @description Optional: 2nd label is for data to be displayed of the list item.
+   * @description Optional: 3rd label is for data to be displayed of the list item.
    * @description Icon is for the displayed icon of the list item.
    * @readonly
    */
   readonly label = input.required<string>();
-  readonly labelSecondary = input<string>();
+  readonly label2 = input<string | undefined>(undefined);
+  readonly label3 = input<string | undefined>(undefined);
   readonly icon = input.required<LucideIconData>();
 
   /**
@@ -48,7 +50,7 @@ export class ListItem {
     if (this.icon() !== User) return '';
 
     // change text color to red if value is 0
-    const val = this.labelSecondary();
+    const val = this.label2();
     if (val === '0') return 'text-danger';
 
     // change text color to green if value is a positive number
