@@ -10,7 +10,7 @@ RUN npm install
 # Code kopieren und bauen
 COPY . .
 # Wir bauen für Production (nutzt environment.prod.ts)
-RUN npm run build -- --configuration production
+RUN npm run build --configuration production
 
 # --- Stage 2: Serve with Nginx ---
 FROM nginx:alpine
