@@ -130,30 +130,28 @@ export class OrdersComponent implements OnInit {
   }
 
   /**
-   * Wird aufgerufen, wenn man auf ein Item klickt (nicht auf den Edit-Button).
-   * 1. Öffnet das Offcanvas.
-   * 2. Lädt Details (inkl. supplierName, ratingId).
-   * 3. Lädt Rating (falls vorhanden).
+   * Opens the detail panel for a specific order, passing the order data to it and checking for an associated rating.
+   * @param detailedOrder
    */
   openDetailPanel(detailedOrder: OrderDetailDTO) {
     this.errorMessage.set(null);
-
     // Set selected order ID (for changing active state of list-item)
     this.selectedOrderId.set(detailedOrder.id);
-
-    // 1. Offcanvas öffnen
+    // open offcanvas panel
     const panelInstance = this.offCanvasService.open(PanelFormOrderComponent, this.offCanvasOptions);
-    // Daten an das Panel übergeben (Signal setzen)
+    // transfer the order data to the panel
     panelInstance.componentInstance.order.set(detailedOrder);
-
-    // 3. Prüfen, ob eine Rating ID existiert, und falls ja: Rating laden
+    // If the order has a rating, load it and pass it to the panel
     if (detailedOrder.ratingId) {
       this.loadRatingForPanel(detailedOrder.ratingId, panelInstance.componentInstance);
     }
   }
 
   /**
-   * Hilfsmethode um das Rating zu laden und ins Panel zu schieben
+   * loads the rating for the given panel and passes it to the panel instance
+   * @param ratingId
+   * @param panelInstance
+   * @private
    */
   private loadRatingForPanel(ratingId: string, panelInstance: PanelFormOrderComponent) {
     this.ratingService
@@ -265,8 +263,10 @@ export class OrdersComponent implements OnInit {
   }
 
   /**
-   * 3. Das Rating Modal (Verkettung)
-   * Wird aufgerufen, wenn User "Speichern & Bewerten" klickte.
+   * Opens the rating modal for a specific order, opens by clicking on the button to rate when user wants to rate an order
+   * @param id
+   * @param orderData
+   * @private
    */
   private openRatingModal(id: string, orderData: Partial<OrderDetailDTO>) {
     const modalRef = this.modalService.open(ModalRatingComponent, this.modalOptions);
@@ -286,7 +286,10 @@ export class OrdersComponent implements OnInit {
   }
 
   /**
-   * Erstellt das Rating
+   * Creates a rating for a specific order
+   * @param orderId
+   * @param ratingData
+   * @private
    */
   private createRatingForOrder(orderId: string, ratingData: RatingCreateDTO) {
     // Wir setzen die orderId explizit, falls sie im Formular fehlte

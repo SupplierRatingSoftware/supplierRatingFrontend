@@ -6,9 +6,8 @@ import { LucideAngularModule, X } from 'lucide-angular';
 import { FormSection, ORDER_FORM_CONFIG } from '../../models/order.config';
 import { OrderDetailDTO } from '../../openapi-gen';
 
-/**
- * Wir exportieren das Interface, damit orders.component.ts es findet.
- * Wir definieren es so, dass es das Ergebnis der Modal-Aktion beschreibt.
+/** We export the interface so that orders.component.ts can find it.
+ * We define it to describe the result of the modal action.
  */
 export interface OrderEditResult {
   action: 'SAVE' | 'RATE';
@@ -63,6 +62,11 @@ export class ModalEditOrderComponent implements OnInit {
    */
   protected orderForm: FormGroup = new FormGroup(this.buildFormControls());
 
+  /**
+   * Builds the form controls based on the configuration.
+   * @private
+   * @returns A record of form controls
+   */
   private buildFormControls(): Record<string, AbstractControl> {
     const group: Record<string, AbstractControl> = {};
     this.config.forEach(section => {
@@ -84,16 +88,16 @@ export class ModalEditOrderComponent implements OnInit {
    * For handling form initialization and data pre-filling
    */
   ngOnInit() {
-    // 1. Config laden (Default Section öffnen)
+    // first section expanded by default
     if (this.config.length > 0) {
       this.expandedSections.add(this.config[0].sectionTitle);
     }
-    // Falls wir eine Bestellung bearbeiten, füllen wir JETZT die Werte nach.
+    // if we have an order, we patch the form
     const orderToEdit = this.order();
     console.log('Modal lädt orderToEdit:', orderToEdit); // Debugging
     if (orderToEdit) {
       this.orderForm.patchValue(orderToEdit);
-      // Zusatz-Check: Falls Status RATED ist, sperren
+      // check if the order is already rated
       if (orderToEdit.ratingStatus === 'RATED') {
         this.orderForm.disable();
       }
@@ -102,6 +106,8 @@ export class ModalEditOrderComponent implements OnInit {
 
   /**
    * Checks if errors exist in a form section.
+   * @param section The form section to check
+   * @returns True if any field in the section is invalid and touched/dirty
    */
   isSectionInvalid(section: FormSection): boolean {
     return section.fields.some(field => {
@@ -116,7 +122,7 @@ export class ModalEditOrderComponent implements OnInit {
   onSubmit() {
     if (this.orderForm.valid) {
       console.log('Modal sendet SAVE mit Daten:', this.orderForm.getRawValue()); // Debugging
-      // getRawValue Stellt sicher, dass auch deaktivierte Felder (z.B. supplierId, falls gesperrt) enthalten sind.
+      // getRawValue makes sure that also disabled fields (e.g. supplierId, if locked) are included.
       this.activeModal.close({ action: 'SAVE', data: this.orderForm.getRawValue() });
     } else {
       this.handleInvalidForm();
@@ -128,7 +134,7 @@ export class ModalEditOrderComponent implements OnInit {
    */
   onRate() {
     if (this.orderForm.valid) {
-      // getRawValue Stellt sicher, dass auch deaktivierte Felder (z.B. supplierId, falls gesperrt) enthalten sind.
+      // getRawValue makes sure that also disabled fields (e.g. supplierId, if locked) are included.
       this.activeModal.close({ action: 'RATE', data: this.orderForm.getRawValue() });
     } else {
       this.handleInvalidForm();

@@ -66,6 +66,10 @@ export class ModalRatingComponent implements OnInit {
    */
   protected ratingForm: FormGroup = new FormGroup(this.buildFormControls());
 
+  /** * Builds the form controls based on the rating configuration.
+   * @returns A record of form controls keyed by their field names.
+   * @private
+   */
   private buildFormControls(): Record<string, AbstractControl> {
     const group: Record<string, AbstractControl> = {};
     this.config.forEach(section => {
@@ -94,14 +98,14 @@ export class ModalRatingComponent implements OnInit {
     this.setupAutoCalculation();
 
     // Load existing ratings (if available)
-    const currentRating = this.order(); //?.orderRating;
+    const currentRating = this.order();
     if (currentRating) {
       this.ratingForm.patchValue(currentRating);
     }
 
     // When the status is already 'RATED', disable the form
     if (this.order()?.ratingStatus === 'RATED') {
-      this.ratingForm.disable(); // Deaktiviert alle Controls (Sterne, Textareas)
+      this.ratingForm.disable();
     }
   }
 
@@ -118,6 +122,8 @@ export class ModalRatingComponent implements OnInit {
 
   /**
    * Calculate the average value of the active rating fields
+   * and update the 'totalScore' field accordingly.
+   * @private
    */
   private calculateTotalScore() {
     // List of fields that contribute to the average
@@ -146,6 +152,13 @@ export class ModalRatingComponent implements OnInit {
     }
   }
 
+  /**
+   * Applies conditional validators based on the presence of a contact person in the order.
+   * If a contact person exists, certain fields are enabled and marked as required.
+   * If no contact person exists, those fields are disabled and cleared of validators.
+   * Additionally, fields are reset to default values to prevent old inputs from affecting calculations.
+   * @private
+   */
   private applyConditionalValidators() {
     const hasContactPerson = !!this.order()?.contactPerson; //
 
@@ -182,6 +195,8 @@ export class ModalRatingComponent implements OnInit {
 
   /**
    * Checks if errors exist in a form section.
+   * @param section The form section to check.
+   * @returns True if any field in the section is invalid and touched/dirty, false otherwise.
    */
   isSectionInvalid(section: FormSection): boolean {
     return section.fields.some(field => {
@@ -192,6 +207,8 @@ export class ModalRatingComponent implements OnInit {
 
   /**
    * Handles form submission and closes the modal with the form data if valid.
+   * If the form is invalid, it marks all fields as touched to display validation messages
+   * and expands any sections containing invalid fields.
    */
   onSubmit() {
     if (this.ratingForm.valid) {
@@ -209,11 +226,17 @@ export class ModalRatingComponent implements OnInit {
     }
   }
 
+  /** Handles the closing of the toast message.
+   * Resets the message state and marks the warning as confirmed.
+   */
   onToastClosed() {
     this.message.set(null);
     this.warningConfirmed.set(true); // User has dismissed the warning
   }
 
+  /** Cancels the modal without saving changes.
+   * Dismisses the active modal.
+   */
   cancel() {
     this.activeModal.dismiss();
   }

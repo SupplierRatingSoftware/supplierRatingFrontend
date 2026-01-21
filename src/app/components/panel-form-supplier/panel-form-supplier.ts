@@ -39,6 +39,7 @@ export class PanelFormSupplierComponent {
   /**
    * Help method to check if supplier has ratings
    * @param s The Supplier object
+   * @return True if the supplier has ratings, false otherwise
    */
   hasRatings(s: SupplierSummaryDTO): boolean {
     return !!s.stats && (s.stats.totalRatingCount || 0) > 0;
@@ -67,6 +68,7 @@ export class PanelFormSupplierComponent {
    * We safely cast the string key to a RatingStats interface key.
    * @param s The Supplier object
    * @param key The technical key from the configuration
+   * @return The numeric value of the specified stat key, or 0 if not available
    */
   getStatNumber(s: SupplierSummaryDTO, key: string): number {
     if (!s.stats) return 0;
@@ -80,6 +82,7 @@ export class PanelFormSupplierComponent {
    * Otherwise, it returns a dash ('-').
    * @param s The Supplier object
    * @param key The technical key from the configuration
+   * @return The formatted stat value as a string
    */
   getStatDisplayValue(s: SupplierSummaryDTO, key: string): string {
     const val = this.getStatNumber(s, key);

@@ -48,9 +48,16 @@ export class ModalFormSupplierComponent implements OnInit {
    * Represents a reactive form group for managing supplier information.
    * This form group contains controls for various supplier-related fields,
    * including their business and contact information.
+   * It is based on the supplier configuration.
+   * @protected
    */
   protected supplierForm: FormGroup = new FormGroup(this.buildFormControls());
 
+  /**
+   * Builds the form controls based on the configuration.
+   * @returns A record of form controls keyed by their field keys.
+   * @private
+   */
   private buildFormControls(): Record<string, AbstractControl> {
     const group: Record<string, AbstractControl> = {};
     this.config.forEach(section => {
@@ -86,6 +93,8 @@ export class ModalFormSupplierComponent implements OnInit {
 
   /**
    * Checks if errors exist in a form section.
+   * @param section The form section to check
+   * @returns True if any field in the section is invalid and touched or dirty, false otherwise
    */
   isSectionInvalid(section: FormSection): boolean {
     return section.fields.some(field => {
@@ -96,6 +105,7 @@ export class ModalFormSupplierComponent implements OnInit {
 
   /**
    * Handles form submission and closes the modal with the form data if valid.
+   * Otherwise, marks all fields as touched to display validation messages.
    */
   onSubmit() {
     if (this.supplierForm.valid) {

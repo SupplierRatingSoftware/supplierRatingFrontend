@@ -22,7 +22,7 @@ export interface FieldMeta {
 }
 
 /**
- * Central configuration for displaying order-form sections
+ * Central configuration for displaying rating-form sections
  */
 export const RATING_FORM_CONFIG: FormSection[] = [
   {

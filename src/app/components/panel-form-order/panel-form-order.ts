@@ -47,13 +47,13 @@ export class PanelFormOrderComponent {
    */
   getOrderValue(o: OrderDetailDTO, field: FieldMeta): string | number | undefined | null {
     // Special case for supplier name
-    // Wir prüfen auf 'supplierId' (falls so in Config) ODER 'supplierName'
+    // Check if the field key is 'supplierId' or 'supplierName'
     if (field.key === 'supplierId' || field.key === 'supplierName') {
-      // 1. Priorität: Der Name
+      // Prefer displaying the supplier name if available
       if (o.supplierName) {
         return o.supplierName;
       }
-      // 2. Priorität: Die ID (damit man wenigstens etwas sieht)
+      //Display a placeholder if only the ID is available
       if (o.supplierId) {
         return `ID: ${o.supplierId} (Name wird geladen...)`;
       }
@@ -75,6 +75,7 @@ export class PanelFormOrderComponent {
    * We safely cast the string key to a Rating interface key.
    * @param r
    * @param key
+   * @return The value of the specified key in the Rating object
    */
   getRatingValue(r: RatingDetailDTO, key: string): string | number | undefined | null {
     // Secured access via type-cast on Rating index type
@@ -86,6 +87,7 @@ export class PanelFormOrderComponent {
    * We safely cast the string key to a Rating interface key.
    * @param r
    * @param key
+   * @return The numeric value of the specified key in the Rating object, or 0 if not a number
    */
   getRatingNumber(r: RatingDetailDTO, key: string): number {
     const val = r[key as keyof RatingDetailDTO];
