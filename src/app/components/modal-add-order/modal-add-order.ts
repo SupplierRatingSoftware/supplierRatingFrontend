@@ -6,9 +6,8 @@ import { LucideAngularModule, X } from 'lucide-angular';
 import { FormSection, ORDER_FORM_CONFIG } from '../../models/order.config';
 import { DefaultService, OrderDetailDTO } from '../../openapi-gen';
 
-/**
- * Wir exportieren das Interface, damit orders.component.ts es findet.
- * Wir definieren es so, dass es das Ergebnis der Modal-Aktion beschreibt.
+/** Exporting the interface so that orders.component.ts can find it.
+ * We define it to describe the result of the modal action.
  */
 export interface OrderAddResult {
   action: 'SAVE';
@@ -66,6 +65,11 @@ export class ModalAddOrderComponent implements OnInit {
    */
   protected orderForm: FormGroup = new FormGroup(this.buildFormControls());
 
+  /**
+   * Builds the form controls based on the configuration.
+   * @private
+   * @returns A record of form controls
+   */
   private buildFormControls(): Record<string, AbstractControl> {
     const group: Record<string, AbstractControl> = {};
     this.config.forEach(section => {
@@ -87,27 +91,25 @@ export class ModalAddOrderComponent implements OnInit {
    * For handling form initialization and data pre-filling
    */
   ngOnInit() {
-    // 1. Config laden (Default Section öffnen)
+    //openes first section by default
     if (this.config.length > 0) {
       this.expandedSections.add(this.config[0].sectionTitle);
     }
 
-    // 2. Lieferanten laden und Dropdown-Optionen befüllen
+    // loading suppliers and populating dropdown options
     this.supplierService.getAllSuppliers().subscribe(suppliers => {
-      // Wir suchen die Sektion und das Feld für 'supplierId'
+      // Searching for the supplierId field in the config to populate its options
       const section = this.config.find(s => s.sectionTitle === 'Lieferant & Ansprechperson');
       const supplierField = section?.fields.find(f => f.key === 'supplierId');
 
       if (supplierField) {
-        // Mapping: Backend Supplier -> Frontend Dropdown Option
+        // Mapping suppliers to dropdown options
         supplierField.options = suppliers.map(s => ({
-          value: s.id || '', // WICHTIG: Hier wird die supplierId als Wert gesetzt
-          label: s.name, // Der Name wird angezeigt
+          value: s.id || '', // important: fallback to empty string if id is undefined
+          label: s.name, // Name of the supplier is shown
         }));
 
-        // 3. Wenn wir hier sind, ist das Dropdown bereit.
-        // Falls wir eine Bestellung bearbeiten, füllen wir JETZT die Werte nach.
-        // Das garantiert, dass die supplierId auch im Dropdown "selected" wird.
+        // Dropdown options are now populated. Next, we can pre-fill the form if editing an existing order.
         const orderToEdit = this.order();
         if (orderToEdit) {
           this.orderForm.patchValue(orderToEdit);
@@ -118,6 +120,9 @@ export class ModalAddOrderComponent implements OnInit {
 
   /**
    * Checks if errors exist in a form section.
+   * @description This method checks if any field within the given section has validation errors.
+   * @param section The form section to check for errors.
+   * @returns True if any field in the section is invalid, false otherwise.
    */
   isSectionInvalid(section: FormSection): boolean {
     return section.fields.some(field => {
@@ -126,6 +131,9 @@ export class ModalAddOrderComponent implements OnInit {
     });
   }
 
+  /** Submits the form data if valid.
+   * Uses getRawValue() to ensure disabled fields (like ID or pre-set Supplier) are included.
+   */
   onSubmit() {
     if (this.orderForm.valid) {
       console.log('Modal sendet SAVE mit Daten:', this.orderForm.getRawValue()); // Debugging
@@ -134,26 +142,6 @@ export class ModalAddOrderComponent implements OnInit {
       this.handleInvalidForm();
     }
   }
-
-  /**
-   * Submits the form data if valid.
-   * Uses getRawValue() to ensure disabled fields (like ID or pre-set Supplier) are included.
-   */
-  /*onSubmit() {
-    if (this.orderForm.valid) {
-      // WICHTIG: getRawValue() statt value nutzen!
-      const formData = this.orderForm.getRawValue();
-
-      console.log('Modal sendet SAVE mit Daten:', formData); // Debugging
-
-      this.activeModal.close({
-        action: 'SAVE',
-        data: formData,
-      });
-    } else {
-      this.handleInvalidForm();
-    }
-  }*/
 
   /**
    * Handles invalid form submission by marking all fields as touched

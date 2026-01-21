@@ -67,6 +67,11 @@ export class SuppliersComponent implements OnInit {
    * @private
    */
   private supplierService: DefaultService = inject(DefaultService);
+
+  /**
+   * Injected DestroyRef for cleaning up subscriptions
+   * @private
+   */
   private destroyRef = inject(DestroyRef);
 
   /**
@@ -127,6 +132,7 @@ export class SuppliersComponent implements OnInit {
 
   /**
    * Select Supplier and show Offcanvas with data-details
+   * @param supplier The supplier to select
    */
   selectSupplier(supplier: SupplierSummaryDTO) {
     // Set selected supplier ID (for changing active state of list-item)
