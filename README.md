@@ -60,49 +60,7 @@ src/app
 └── environments    // Configuration for Dev/Prod (API URLs, etc.)
 ```
 
-## 4. Getting Started
-
-### 4.2 Prerequisites
-Ensure the following tools are installed:
-* **Node.js** (v20 or higher recommended)
-* **npm** (installed with Node.js)
-* **Angular CLI** (optional but recommended: `npm install -g @angular/cli`)
-* **Docker** (for container-based deployment)
-
-### 4.3 Environment Variables
-The application uses environment files to configure the backend connection.
-
-* `src/environments/environment.ts`: Configuration for local development.
-* `src/environments/environment.prod.ts`: Configuration for production builds.
-
-**Key variable:**
-* `apiUrl`: The base URL of the backend (Default: `http://localhost:8080/api/v1`).
-
-### 4.4 Configuration
-If the backend URL changes, adjust the `src/environments/environment.ts` file:
-
-```typescript
-export const environment = {
-  production: false,
-  apiUrl: 'http://<YOUR-BACKEND-HOST>:8080/api/v1',
-};
-```
-If the backend API definition (openapi.yaml) changes, the client must be regenerated: `npm run generate:api`
-
-### 4.5 Installation
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/SupplierRatingSoftware/supplierRatingFrontend.git
-   cd supplierRatingFrontend/
-   
-2. Install dependencies:
-   ```bash
-   npm install
-   
-### 4.6 Start the application
-
-
-## 5. Contributing
+## 4. Contributing
 
 First off, thank you for considering contributing to the Supplier Rating Frontend! 🚀
 
@@ -135,5 +93,5 @@ To keep the codebase clean and maintainable, please keep the following in mind:
 
 Thank you for your support! ❤️
 
-## 9. License
+## 5. License
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
